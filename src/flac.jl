@@ -1,170 +1,3 @@
-abstract StreamMetaData
-
-@enum MetadataType InfoType=0 PaddingType=1 ApplicationType=2 SeektableType=3 VorbisCommentType=4 CuesheetType=5 PictureType=6
-
-immutable StreamInfoMetaData <: StreamMetaData
-    typ::MetadataType
-    is_last::Bool
-    len::Cuint
-    minblocksize::Int32
-    maxblocksize::Int32
-    minframesize::Int32
-    maxframesize::Int32
-    samplerate::Int32
-    channels::Int32
-    bitspersample::Int32
-    totalsamples::Int64
-end
-
-immutable StreamPaddingMetaData <: StreamMetaData
-    typ::MetadataType
-    is_last::Bool
-    len::Cuint
-end
-
-immutable StreamApplicationMetaData <: StreamMetaData
-    typ::MetadataType
-    is_last::Bool
-    len::Cuint
-    id::NTuple{4,Char}
-    data::Ptr{UInt8}
-end
-
-immutable SeekPoint
-    sample_number::UInt64
-    stream_offset::UInt64
-    frame_samples::Cuint
-end
-
-immutable StreamSeekTableMetaData <: StreamMetaData
-    typ::MetadataType
-    is_last::Bool
-    len::Cuint
-    num_points::Cuint
-    points::Ptr{SeekPoint}
-end
-
-immutable VorbisCommentEntry
-    len::UInt32
-    entry::Ptr{UInt8}
-end
-
-Base.show(io::IO,e::VorbisCommentEntry) = 
-    println(io, bytestring(e.entry,e.len))
-
-immutable StreamVorbisCommentMetaData <: StreamMetaData
-    typ::MetadataType
-    is_last::Bool
-    len::Cuint
-    vendor::VorbisCommentEntry
-    n::UInt32
-    comments::Ptr{VorbisCommentEntry}
-end
-
-immutable CueSheetIndex
-    offset::UInt64
-    number::UInt8
-end
-
-immutable StreamCueSheetMetaData <: StreamMetaData
-    typ::MetadataType
-    is_last::Bool
-    len::Cuint
-    offset::UInt64
-    number::UInt8
-    isrc::NTuple{13,Char}
-    ## Will need to explore 
-end
-
-function Base.show(io::IO, ib::StreamInfoMetaData)
-    println("StreamInfo metadata block")
-    println(io," minblocksize: ", ib.minblocksize)
-    println(io," maxblocksize: ", ib.maxblocksize)
-    println(io," minframesize: ", ib.minframesize)
-    println(io," maxframesize: ", ib.maxframesize)
-    println(io," samplerate: ", ib.samplerate)
-    println(io," channels: ", ib.channels)
-    println(io," bitspersample: ", ib.bitspersample)
-    println(io," totalsamples: ", ib.totalsamples)
-    println(io)
-end
-
-
-function Base.show(io::IO,c::StreamVorbisCommentMetaData)
-    show(io,c.vendor)
-    for cc in pointer_to_array(c.comments,c.n)
-        show(io,cc)
-    end
-    println(io)
-end
-
-@doc "standard metadata callback function" ->
-function mcallback(d::Ptr{Void}, mp::Ptr{Int32}, client::Ptr{Void})
-    gv = pointer_to_array(mp,3)
-    show(gv)
-    println()
-    println(" type: ", gv[1])
-    println(" islast: ", Bool(gv[2]))
-    println(" length: ", gv[3])
-    if gv[1] == 0
-        show(unsafe_load(reinterpret(Ptr{StreamInfoBlock},mp + 4*sizeof(Int32))))
-    end
-    if gv[1] == 4
-        show(unsafe_load(reinterpret(Ptr{FLACVorbisComment},mp+4*sizeof(Int32))))
-    end
-    nothing
-end
-
-const mcallback_c = cfunction(mcallback, Void, (Ptr{Void}, Ptr{Int32}, Ptr{Void}))
-
-@doc "error callback"->
-function ecallback(d::Ptr{Void}, status::Int32, client::Ptr{Void})
-    error("Got error callback with status = $status")
-end
-
-const ecallback_c = cfunction(ecallback, Void,
-                              (Ptr{Void}, Int32, Ptr{Void}))
-
-@doc "write callback" ->
-function wcallback(d::Ptr{Void}, frame::Ptr{Int32},
-                   buffer::Ptr{Ptr{Int32}}, client::Ptr{Void})
-    fr = pointer_to_array(frame,7)
-    println("Frame")
-    println(" blocksize: ", fr[1])
-    println(" samplerate: ", fr[2])
-    println(" channels: ", fr[3])
-    println(" channel assignment: ", fr[4])
-    println(" bits per sample: ", fr[5])
-    println(" number type: ", fr[6])
-    println(" frame or sample number: ", fr[7])
-    zero(Int32)
-end
-
-const wcallback_c = cfunction(wcallback, Int32, 
-                              (Ptr{Void}, Ptr{Int32},
-                               Ptr{Ptr{Int32}}, Ptr{Void})) 
-
-function flacopen(s::AbstractString)
-    dd = ccall((:FLAC__stream_decoder_new,flac),Ptr{Void},())
-    ccall((:FLAC__stream_decoder_set_md5_checking,flac),Void,(Ptr{Void},Bool),dd,true)
-    ccall((:FLAC__stream_decoder_set_metadata_respond_all,flac),Bool,(Ptr{Void},),dd)
-    err = ccall((:FLAC__stream_decoder_init_file,flac),Int32,
-                (Ptr{Void}, Ptr{UInt8}, Ptr{Void}, Ptr{Void}, Ptr{Void}),
-                dd, s, wcallback_c, mcallback_c, ecallback_c)
-    dd
-end
-
-setmd5(dd::Ptr{Void}) =
-    ccall((:FLAC__stream_decoder_set_md5_checking,flac),Void,(Ptr{Void},Bool),dd,true)
-
-setrespondall(dd::Ptr{Void}) = ccall((:FLAC__stream_decoder_set_metadata_respond_all,flac),Bool,(Ptr{Void},),dd)
-
-process_single(dd::Ptr{Void}) = ccall((:FLAC__stream_decoder_process_single,flac),Bool,(Ptr{Void},),dd)
-
-process_metadata(dd::Ptr{Void}) = ccall((:FLAC__stream_decoder_process_until_end_of_metadata,flac),Bool,(Ptr{Void},),dd)
-
-process_stream(dd::Ptr{Void}) = ccall((:FLAC__stream_decoder_process_until_end_of_stream,flac),Bool,(Ptr{Void},),dd)
-
 type StreamEncoder  # type not immutable so that finalizer can be applied
     v::Ptr{Void}
 end
@@ -211,7 +44,18 @@ function process_interleaved(en::StreamEncoder,buf::Vector{Int32})
     nothing
 end   
 
-function flacwrite(fnm::AbstractString,hdr::WAVHeader,mm::Vector{Int16})
+
+function Base.show(io::IO,en::StreamEncoder)
+    println("FLAC Stream Encoder")
+    println(" channels: ", Int(get_channels(en)))
+    println(" bits per sample: ", Int(get_bits_per_sample(en)))
+    println(" sample rate: ", Int(get_sample_rate(en)))
+    println(" blocksize: ", Int(get_blocksize(en)))
+    println(" encoder state: ", get_state(en))
+    println()
+end
+
+function flacwrite(fnm::AbstractString,mm::Vector{Int16},hdr::Dict=Dict{ASCIIString,Any}())
     en = StreamEncoder()
     set_compression_level(en,8)
     set_total_samples_estimate(en, hdr.dsiz >> 2)
@@ -233,16 +77,6 @@ function flacwrite(fnm::AbstractString,hdr::WAVHeader,mm::Vector{Int16})
     process_interleaved(en,convert(Vector{Int32},sub(mm,indsm)))
     ccall((:FLAC__stream_encoder_finish,flac),Bool,(Ptr{Void},),en)
     show(en)
-end
-
-function Base.show(io::IO,en::StreamEncoder)
-    println("FLAC Stream Encoder")
-    println(" channels: ", Int(get_channels(en)))
-    println(" bits per sample: ", Int(get_bits_per_sample(en)))
-    println(" sample rate: ", Int(get_sample_rate(en)))
-    println(" blocksize: ", Int(get_blocksize(en)))
-    println(" encoder state: ", get_state(en))
-    println()
 end
 
 function readinf(nm::ByteString)
