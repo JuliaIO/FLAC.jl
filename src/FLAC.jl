@@ -1,17 +1,16 @@
 module FLAC
 
 export
-       StreamInfoMetaData,
-       StreamVorbisCommentMetaData,
-       StreamPaddingMetaData,
-       StreamApplicationMetaData,
-       StreamSeekTableMetaData,
-       StreamCueSheetMetaData,
+       InfoMetaData,
+       VorbisCommentMetaData,
+       PaddingMetaData,
+       ApplicationMetaData,
+       SeekTableMetaData,
+       CueSheetMetaData,
 
        StreamDecoder,
        StreamEncoder,
-       initfile,
-       flacwrite
+       initfile!
 
 const depfile = joinpath(dirname(@__FILE__), "..", "deps", "deps.jl")
 if isfile(depfile)
@@ -21,6 +20,9 @@ else
 end
 
 include("metadata.jl")
+include("format.jl")
 include("decoder.jl")
+include("encoder.jl")
+
 
 end # module

@@ -3,8 +3,12 @@ using Compat
 
 @BinDeps.setup
 
-flac = library_dependency("libflac",aliases=["libFLAC"])
+libflac = library_dependency("libflac",aliases=["libFLAC"])
+libogg = library_dependency("libogg")
+libvorbis = library_dependency("libvorbis")
 
-provides(AptGet,"libflac-dev",flac)
+provides(AptGet,"libflac-dev",libflac)
+provides(AptGet,"libogg-dev",libogg)
+provides(AptGet,"libvorbis-dev",libvorbis)
 
-@BinDeps.install Dict(:libflac => :flac)
+@BinDeps.install Dict(:libflac => :libflac,:libogg => :libogg)

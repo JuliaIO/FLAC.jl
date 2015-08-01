@@ -1,12 +1,56 @@
-@doc "Metadata for a flac stream object - either read or write"->
+const libflac = "libFLAC.so"
+"""
+Metadata in a FLAC stream.
+
+Used in both encoding and decoding of a stream.
+Each type of metadata object contains an indicator
+of its `typ`, an indicator of whether this is the
+last metadata block and its length, in bytes.
+"""
 abstract StreamMetaData
 
-@enum MetadataType InfoType=0 PaddingType=1 ApplicationType=2 SeektableType=3 VorbisCommentType=4 CueSheetType=5 PictureType=6
+@enum(MetaDataType,
+      Info,
+      Padding,
+      Application,
+      SeekTable,
+      VorbisComment,
+      CueSheet,
+      Picture)
 
-type StreamInfoMetaData <: StreamMetaData
-    typ::MetadataType
-    is_last::Bool
-    len::Cuint
+@enum(PictureType,
+      Other,
+      FileIconStandard,
+      FileIcon,
+      FrontCover,
+      BackCover,
+      LeafletPage,
+      Media,
+      LeadArtist,
+      Artist,
+      Conductor,
+      Band,
+      Composer,
+      Lyricist,
+      RecordingLocation,
+      DuringRecording,
+      DuringPerformance,
+      VideoScreenCapture,
+      Fish,                             # ?
+      Illustration,
+      BandLogo,
+      PublisherLogo,
+      Undefined)
+
+"""
+A block containing information on the stream including
+`samplerate`, `channels`, `bitspersample`, `totalsamples`,
+and `mdsum`.
+"""
+type InfoMetaData <: StreamMetaData
+    typ::MetaDataType
+    is_last::Cint
+    len::Int64
     minblocksize::Int32
     maxblocksize::Int32
     minframesize::Int32
@@ -16,10 +60,243 @@ type StreamInfoMetaData <: StreamMetaData
     bitspersample::Int32
     totalsamples::Int64
     md5sum::NTuple{16,UInt8}
+    InfoMetaData() =
+        new(Info,0,0,0,0,0,0,0,0,0,0,tuple(fill(0x00,16)...))
 end
 
-function Base.show(io::IO, ib::StreamInfoMetaData)
-    ib.typ == InfoType || error("StreamInfoMetaData must have typ == $InfoType")
+"""
+`len` bytes of padding in the FLAC stream.
+"""
+type PaddingMetaData <: StreamMetaData
+    typ::MetaDataType
+    is_last::Cint
+    len::Int64
+    dummy::Cint
+end
+
+"""
+Application metadata
+
+Not sure what this is for.
+"""
+type ApplicationMetaData <: StreamMetaData
+    typ::MetaDataType
+    is_last::Cint
+    len::Int64
+    id::NTuple{4,Char}
+    data::Ptr{Void}
+end
+
+immutable SeekPoint
+    sample_number::Int64
+    stream_offset::Int64
+    frame_samples::UInt32
+end
+
+"""
+An array of `SeekPoint`s
+"""
+type SeekTableMetaData <: StreamMetaData
+    typ::MetaDataType
+    is_last::Cint
+    len::Int64
+    num_points::UInt32
+    points::Ptr{SeekPoint}
+end
+
+    
+"""
+A single Vorbis comment.
+
+Comments are usually key/value pairs of the form
+`ARTIST=Miles Davis`, `YEAR=1965`, etc.
+"""
+immutable VorbisCommentEntry
+    len::UInt32
+    entry::Ptr{UInt8}
+end
+
+Base.string(vce::VorbisCommentEntry) = bytestring(vce.entry,vce.length)
+
+"""
+Vorbis comment metadata.  The vendor comment is always present.
+"""
+type VorbisCommentMetaData <: StreamMetaData
+    typ::MetaDataType
+    is_last::Bool
+    len::Cuint
+    vendor::VorbisCommentEntry
+    n::UInt32
+    comments::Ptr{VorbisCommentEntry}
+end
+
+"""
+A single cue sheet index
+"""
+immutable CueSheetIndex
+    offset::UInt64
+    number::UInt8
+end
+
+"""
+A single track annotation in a CueSheet.
+
+I'm not sure about the offsets here.  In the C struct the `type` and `pre_emphasis` fields
+are single bits.
+"""
+immutable CueSheetTrack
+    offset::Int64
+    number::UInt8
+    isrc::NTuple{13,UInt8}
+    typ::Cuint
+#    pre_emphasis::Cuint
+    num_indices::UInt8
+    indices::Ptr{CueSheetIndex}
+end
+
+CueSheetTrack() = unsafe_load((:FLAC__StreamMetadata_CueSheet_Track,libflac),
+                              Ptr{CueSheetTrack},(Void,))
+                              
+"""
+Cue sheet meta data.
+
+An array of `CueSheetTrack`s
+"""
+type CueSheetMetaData <: StreamMetaData
+    typ::MetaDataType
+    is_last::Bool
+    len::Int64
+    media_catalog_number::NTuple{129,UInt8}
+    lead_in::Int64
+    is_cd::Cint
+    num_tracks::Cuint
+    tracks::Ptr{CueSheetTrack}
+end
+
+type PictureMetaData <: StreamMetaData
+    typ::MetaDataType
+    is_last::Bool
+    len::Int64
+    ptyp::PictureType
+    mime_type::Ptr{UInt8}
+    description::Ptr{UInt8}
+    width::UInt32
+    height::UInt32
+    depth::UInt32
+    color::UInt32
+    data_length::UInt32
+    data::Ptr{UInt8}
+end
+
+const MDTypes = DataType[InfoMetaData,PaddingMetaData,ApplicationMetaData,
+                         SeekTableMetaData,VorbisCommentMetaData,
+                         CueSheetMetaData,PictureMetaData];
+
+# Zero-argument external constructors for the metadata types.
+#
+# The finalizer is added because the memory is allocated by libflac
+# The first metadatatype, InfoMetaData, is skipped because it has an internal
+# zero-argument constructor.  This has the happy side-effect of aligning the tags
+# with the integer values of the MetaDataType.
+
+for (ind,typ) in enumerate(MDTypes[2:end])
+    @eval begin
+        $(symbol(typ))() =
+            unsafe_load(ccall((:FLAC__metadata_object_new,libflac),
+                              Ptr{$typ},(MetaDataType,),MetaDataType($ind)))
+    end
+end
+
+"""
+Factory to construct a subtype of StreamMetaData from an opaque pointer.
+
+Typically this is used in a callback function that is passed a `Ptr{Void}`.
+"""
+metadata(pt::Ptr{Void}) = unsafe_load(convert(Ptr{MDTypes[unsafe_load(convert(Ptr{Int32},pt))+1]},pt))
+
+## Specific constructors from file names
+"""
+Open the file, `fnm`, check that it is a flac stream and return any cue sheets, closing the file.
+"""
+function CueSheetMetaData(fnm::ByteString)
+    isreadable(fnm) || throw(ArgumentError(string("\"",fnm, "\" is not a path to a readable file"))) 
+    cue = Ptr{CueSheetMetaData}[C_NULL]
+    ccall((:FLAC__metadata_get_cuesheet,libflac),Bool,
+          (Ptr{UInt8},Ptr{Ptr{CueSheetMetaData}}),
+          fnm,cue) || error("call to get_cuesheet failed")
+    unsafe_load(cue[1])
+end
+
+"""
+Open the file, `fnm`, check that it is a flac stream and return the stream info, closing the file.
+"""
+function InfoMetaData(fnm::ByteString)
+    isreadable(fnm) || throw(ArgumentError(string("\"",fnm, "\" is not a path to a readable file")))
+    strinf = InfoMetaData()
+    ccall((:FLAC__metadata_get_streaminfo,libflac),Bool,
+          (Ptr{Uint8},Ref{InfoMetaData}),fnm,strinf) || error("call to get_streaminfo failed")
+    strinf
+end
+
+"""
+Open the file, `fnm`, check that it is a flac stream and return any Vorbis tags, closing the file.
+"""
+function VorbisCommentMetaData(fnm::ByteString)
+    isreadable(fnm) || throw(ArgumentError(string("\"",fnm, "\" is not a path to a readable file"))) 
+    vorb = Ptr{VorbisCommentMetaData}[C_NULL]
+    ccall((:FLAC__metadata_get_tags,libflac),Bool,
+          (Ptr{UInt8},Ptr{Ptr{VorbisCommentMetaData}}),
+          fnm,vorb) || error("call to get_tags failed")
+    unsafe_load(vorb[1])
+end
+
+"""
+Create a VorbisCommentMetaData object from a Dict of key/value pairs.
+
+Both the key and the value are converted to strings.
+"""
+function VorbisCommentMetaData(dd::Dict)
+    cv = VorbisCommentMetaData()
+    for (k,v) in dd
+        kk = string(k)
+        vv = string(v)
+        ccall((:FLAC__format_vorbiscomment_entry_name_is_legal,libflac),Bool,
+              (Ptr{UInt8},Cuint),kk,length(kk)) ||
+              error(string("\"",k, "\" is not a legal Vorbis comment name"))
+        ccall((:FLAC__format_vorbiscomment_entry_value_is_legal,libflac),Bool,
+              (Ptr{UInt8},Cuint),vv,length(vv)) ||
+              error(string("\"",v,"\" is not a legal Vorbis comment value"))
+        ce = [VorbisCommentEntry(0,C_NULL)]
+        ccall((:FLAC__metadata_object_vorbiscomment_entry_from_name_value_pair,libflac),
+              Bool,(Ptr{VorbisCommentEntry},Ptr{UInt8},Ptr{UInt8}),
+              ce,kk,vv) || error(string("failure to create vorbiscomment with key ",
+                                        k, " and value ", v))
+        ccall((:FLAC__metadata_object_vorbiscomment_append_comment,libflac),Bool,
+              (Ptr{VorbisCommentMetaData},VorbisCommentEntry,Bool),
+              &cv,ce[1],true) || error(string("failure to append vorbiscomment with key ",
+                                              k," and value ",v))
+    end
+    cv
+end
+
+function Base.convert(::Type{Dict},vc::VorbisCommentMetaData)
+    dd = Dict{ByteString,ByteString}()
+    dd["vendor"] = string(vc.vendor)
+    for e in pointer_to_array(vc.comments,vc.n)
+        k = Ptr{UInt8}[C_NULL]
+        v = Ptr{UInt8}[C_NULL]
+        ccall((:FLAC__metadata_object_vorbiscomment_entry_to_name_value_pair,libflac),
+              Bool,(VorbisCommentEntry,Ptr{Ptr{UInt8}},Ptr{Ptr{UInt8}}),
+              e,k,v) || error("failure in entry_to_name_value_pair")
+        dd[bytestring(k[1])] = bytestring(v[1])
+    end
+    dd
+end
+
+## show methods for various types of StreamMetaData
+
+function Base.show(io::IO, ib::InfoMetaData)
+    ib.typ == Info || error("StreamInfoMetaData must have typ == $InfoType")
     println("StreamInfo metadata block")
     println(io," is_last ", ib.is_last)
     println(io," len ", ib.len)
@@ -31,165 +308,34 @@ function Base.show(io::IO, ib::StreamInfoMetaData)
     println(io," channels: ", ib.channels)
     println(io," bitspersample: ", ib.bitspersample)
     println(io," totalsamples: ", ib.totalsamples)
+    println(io," md5sum: ", ib.md5sum)
     println(io)
 end
 
-##Create a stream info metadata object.  It may be better to do this
-##within julia so there is no conflict about who owns the memory
-StreamInfoMetaData() = unsafe_load(ccall((:FLAC__metadata_object_new,flac),
-                                         Ptr{StreamInfoMetaData},(MetadataType,),InfoType))
 
-## Create a StreamInfoMetaData object from an opaque pointer passed to a callback function.
-function StreamInfoMetaData(ptr::Ptr{Void})
-    rr = unsafe_load(reinterpret(Ptr{StreamInfoMetaData},ptr))
-    rr.typ == InfoType || error("ptr must point to a InfoType StreamMetaData object")
-    rr
-end
-
-## Open the file, `fnm`, check that it is a flac stream and return the stream info, closing the file.
-function StreamInfoMetaData(fnm::ByteString)
-    strinf = StreamInfoMetaData()
-    ccall((:FLAC__metadata_get_streaminfo,flac),Bool,
-          (Ptr{Uint8},Ref{StreamInfoMetaData}),fnm,strinf) || error("call to get_streaminfo failed")
-    strinf
-end
-
-@doc """
-Denotes a number of bytes of padding in the flac stream.
-"""->
-immutable StreamPaddingMetaData <: StreamMetaData
-    typ::MetadataType
-    is_last::Bool
-    len::Cuint
-end
-
-function StreamPaddingMetaData(ptr::Ptr{Void})
-    rr = unsafe_load(reinterpret(Ptr{StreamPaddingMetaData},ptr))
-    rr.typ == PaddingType || error("ptr must point to a PaddingType StreamMetaData object")
-    rr
-end
-
-function Base.show(io::IO, pb::StreamPaddingMetaData)
-    pb.typ == PaddingType || error("StreamPaddingMetaData object's typ must be $PaddingType")
+function Base.show(io::IO, pb::PaddingMetaData)
+    pb.typ == Padding || error("PaddingMetaData object's typ must be $PaddingType")
     println(io, "Flac stream padding metadata of length ", pb.len, " bytes.")
     println(io)
 end
 
-immutable StreamApplicationMetaData <: StreamMetaData
-    typ::MetadataType
-    is_last::Bool
-    len::Cuint
-    id::NTuple{4,UInt8}
-    data::Ptr{UInt8}
+function Base.show(io::IO, st::SeekTableMetaData)
+    st.typ == SeekTable || error("SeekTableType object's typ must be $SeektableType")
+    println(io, "Flac seek table metadata of length ", st.len, " bytes with ",
+            st.num_points, " points.")
+    pts = pointer_to_array(convert(Ptr{SeekPoint},st.points),st.num_points)
+    println(io, pts)
 end
 
-immutable SeekPoint
-    sample_number::UInt64
-    stream_offset::UInt64
-    frame_samples::Cuint
-end
+Base.string(e::VorbisCommentEntry) = bytestring(e.entry,e.len)
+                       
+Base.show(io::IO,e::VorbisCommentEntry) = println(io, string(e.entry))
 
-immutable StreamSeekTableMetaData <: StreamMetaData
-    typ::MetadataType
-    is_last::Bool
-    len::Cuint
-    num_points::Cuint
-    points::Ptr{SeekPoint}
-end
-
-@doc """
-A single vorbis comment.
-"""->
-immutable VorbisCommentEntry
-    len::UInt32
-    entry::Ptr{UInt8}
-end
-
-Base.show(io::IO,e::VorbisCommentEntry) = println(io, bytestring(e.entry,e.len))
-
-@doc """
-Vorbis comment metadata.  The vendor comment is always present.
-"""->
-type StreamVorbisCommentMetaData <: StreamMetaData
-    typ::MetadataType
-    is_last::Bool
-    len::Cuint
-    vendor::VorbisCommentEntry
-    n::UInt32
-    comments::Ptr{VorbisCommentEntry}
-end
-
-StreamVorbisCommentMetaData() =  unsafe_load(ccall((:FLAC__metadata_object_new,flac),
-                                                   Ptr{StreamVorbisCommentMetaData},
-                                                   (MetadataType,),VorbisCommentType))
-
-
-function StreamVorbisCommentMetaData(ptr::Ptr{Void})
-    rr = unsafe_load(reinterpret(Ptr{StreamVorbisCommentMetaData},ptr))
-    rr.typ == VorbisCommentType || error("ptr must point to a VorbisComment StreamMetaData object")
-    rr
-end
-
-function Base.show(io::IO,c::StreamVorbisCommentMetaData)
-    show(io,c.vendor)
+function Base.show(io::IO,c::VorbisCommentMetaData)
+    c.typ == VorbisComment || error("VorbisCommentMetaData's typ must be $VorbisComment")
+    println(io,"vendor=",string(c.vendor))
     for cc in pointer_to_array(c.comments,c.n)
         show(io,cc)
     end
     println(io)
 end
-
-function StreamVorbisCommentMetaData(fnm::ByteString)
-    vv = [Ptr{StreamVorbisCommentMetaData}(C_NULL);]
-    ccall((:FLAC__metadata_get_tags,flac),Bool,
-          (Ptr{UInt8},Ptr{Ptr{StreamVorbisCommentMetaData}}),fnm,vv) && return unsafe_load(vv[1])
-    StreamVorbisCommentMetaData()
-end
-    
-immutable CueSheetIndex
-    offset::UInt64
-    number::UInt8
-end
-
-@doc """
-A single track annotation in a CueSheet.
-I'm not sure about the offsets here.  In the C struct the `type` and `pre_emphasis` fields
-are single bits.
-"""->
-immutable CueSheetTrack
-    offset::Int64
-    number::UInt8
-    isrc::NTuple{13,UInt8}
-    typ::Cuint
-#    pre_emphasis::Cuint
-    num_indices::UInt8
-    indices::Ptr{CueSheetIndex}
-end
-
-CueSheetTrack() = unsafe_load((:FLAC__StreamMetadata_CueSheet_Track,flac),
-                              Ptr{CueSheetTrack},(Void,))
-                              
-@doc """
-Cue sheet meta data
-"""->
-type StreamCueSheetMetaData <: StreamMetaData
-    typ::MetadataType
-    is_last::Bool
-    len::Cuint
-    media_catalog_number::NTuple{129,UInt8}
-    lead_in::Int64
-    is_cd::Bool
-    num_tracks::Cuint
-    tracks::Ptr{CueSheetTrack}
-end
-
-StreamCueSheetMetaData() = unsafe_load(ccall((:FLAC__metadata_object_new,flac),
-                                             Ptr{StreamCueSheetMetaData},
-                                             (MetadataType,),CueSheetType))
-
-function StreamCueSheetMetaData(fnm::ByteString)
-    vv = [Ptr{StreamCueSheetMetaData}(C_NULL);]
-    ccall((:FLAC__metadata_get_cuesheet,flac),Bool,
-          (Ptr{UInt8},Ptr{Ptr{StreamCueSheetMetaData}}),fnm,vv) && return unsafe_load(vv[1])
-    StreamCueSheetMetaData()
-end
-

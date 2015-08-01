@@ -1,9 +1,8 @@
-@enum ChannelAssignment Independent=0 Left_Side=1 Right_Side=2 Mid_Side=3
+@enum(ChannelAssignment, Independent, Left_Side, Right_Side, Mid_Side)
 
-@enum FrameNumberType Frame=0 Sample=1
+@enum(FrameNumberType, FrameNo, SampleNo)
 
-abstract FrameHeader
-immutable FrameFrameHeader <: FrameHeader
+immutable FrameHeader
     blocksize::Cuint
     sample_rate::Cuint
     channels::Cuint
@@ -11,17 +10,6 @@ immutable FrameFrameHeader <: FrameHeader
     bits_per_sample::Cuint
     typ::FrameNumberType
     num::UInt32
-    crc::UInt8
-end
-
-immutable SampleFrameHeader <: FrameHeader
-    blocksize::Cuint
-    sample_rate::Cuint
-    channels::Cuint
-    channel_assignment::ChannelAssignment
-    bits_per_sample::Cuint
-    typ::FrameNumberType
-    num::UInt64
     crc::UInt8
 end
 
@@ -33,7 +21,7 @@ immutable FrameFooter
     crc::UInt16
 end
 
-@enum EntropyCodingMethodType Rice=0 Rice2=1
+@enum(EntropyCodingMethodType, Rice, Rice2)
 
 immutable PartitionedRiceContents
     parameters::Ptr{Cuint}
@@ -51,7 +39,7 @@ immutable EntropyCodingMethod
     data::PartitionedRice
 end
 
-@enum SubframeType Constant=0 Verbatim=1 Fixed=2 LPC=3
+@enum(SubframeType, SFConstant, SFVerbatim, SFFixed, SFLPC)
 
 abstract Subframe
 
@@ -68,7 +56,7 @@ const MAX_FIXED_ORDER = 0x00000004
 immutable SubFrame_Fixed <: Subframe
     method::EntropyCodingMethod
     order::Cuint
-    warmup::NTuple{MAX_FIXED_ORDER,Int32}
+    warmup::NTuple{Int(MAX_FIXED_ORDER),Int32}
     residual::Ptr{Int32}
 end
 
@@ -79,8 +67,8 @@ immutable SubFrame_LPC <: Subframe
     order::Cuint
     qlp_coeff_precision::Cuint
     quantization_level::Cint
-    qlp_coeff::NTuple{MAX_LPC_ORDER,Int32}
-    warmup::NTuple{MAX_LPC_ORDER,Int32}
+    qlp_coeff::NTuple{Int(MAX_LPC_ORDER),Int32}
+    warmup::NTuple{Int(MAX_LPC_ORDER),Int32}
     residual::Ptr{Int32}
 end
 
@@ -92,6 +80,6 @@ end
 
 immutable Frame
     header::FrameHeader
-    subframes::NTuple{MAX_CHANNELS,SubFrame}
+    subframes::NTuple{Int(MAX_CHANNELS),SubFrame}
     footer::FrameFooter
 end

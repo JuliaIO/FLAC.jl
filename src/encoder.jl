@@ -1,12 +1,23 @@
+"""
+Flac stream encoder object.
+
+All it contains is an opaque pointer.
+The zero-argument constructor creates a new stream decoder and wraps the pointer.
+
+The type is not an immutable because it uses a finalizer.
+"""
 type StreamEncoder  # type not immutable so that finalizer can be applied
     v::Ptr{Void}
 end
 
+"""
+Allows for passing the instance of the type in a `ccall`.
+"""
 Base.unsafe_convert(::Type{Ptr{Void}},en::StreamEncoder) = en.v
 
 function StreamEncoder()
-    en = StreamEncoder(ccall((:FLAC__stream_encoder_new,flac),Ptr{Void},()))
-    finalizer(en,x->ccall((:FLAC__stream_encoder_delete,flac),Void,(Ptr{Void},),x.v))
+    en = StreamEncoder(ccall((:FLAC__stream_encoder_new,libflac),Ptr{Void},()))
+    finalizer(en,x->ccall((:FLAC__stream_encoder_delete,libflac),Void,(Ptr{Void},),x.v))
     en
 end
 
@@ -19,17 +30,26 @@ for (nm,typ) in (("verify",:Bool),
                  ("blocksize",:Cuint))         # default 0 - encoder estimates
     @eval begin
         function $(symbol(string("set_",nm)))(en::StreamEncoder,val)
-            ccall(($(string("FLAC__stream_encoder_set_",nm)),flac),Bool,(Ptr{Void},$typ),en,val)
+            ccall(($(string("FLAC__stream_encoder_set_",nm)),libflac),Bool,(Ptr{Void},$typ),en,val)
         end
         function $(symbol(string("get_",nm)))(en::StreamEncoder)
-            ccall(($(string("FLAC__stream_encoder_get_",nm)),flac),$typ,(Ptr{Void},),en)
+            ccall(($(string("FLAC__stream_encoder_get_",nm)),libflac),$typ,(Ptr{Void},),en)
         end
     end
 end
-get_state(en::StreamEncoder) = ccall((:FLAC__stream_encoder_get_state,flac),Int32,(Ptr{Void},),en)
 
+get_state(en::StreamEncoder) = ccall((:FLAC__stream_encoder_get_state,libflac),Int32,(Ptr{Void},),en)
+
+"""
+### init_file
+
+Initialize the `StreamEncoder` object `en` to write the file `fnm`.
+
+Note that setting stream characteristics (`channels`, `bits_per_sample`, etc.)
+must be done **before** initializing the encoder.
+"""
 function init_file(en::StreamEncoder,fnm::ByteString)
-    ec = ccall((:FLAC__stream_encoder_init_file,flac),UInt32,
+    ec = ccall((:FLAC__stream_encoder_init_file,libflac),UInt32,
                (Ptr{Void},Ptr{Uint8},Ptr{Void},Ptr{Void}),
                en,fnm,C_NULL,C_NULL)
     ec == 0 || error("Error code $ec from stream_encoder_init_file")
@@ -38,7 +58,7 @@ end
 
 function process_interleaved(en::StreamEncoder,buf::Vector{Int32})
     nsamp = div(length(buf),get_channels(en))
-    ccall((:FLAC__stream_encoder_process_interleaved,flac),Bool,
+    ccall((:FLAC__stream_encoder_process_interleaved,libflac),Bool,
           (Ptr{Void},Ptr{Int32},Uint32),en,buf,nsamp) ||
          error("process_interleaved failed: encoder_state is $(get_state(en))")
     nothing
@@ -75,7 +95,7 @@ function flacwrite(fnm::AbstractString,mm::Vector{Int16},hdr::Dict=Dict{ASCIIStr
     end
     indsm = (indsm.start):length(mm)
     process_interleaved(en,convert(Vector{Int32},sub(mm,indsm)))
-    ccall((:FLAC__stream_encoder_finish,flac),Bool,(Ptr{Void},),en)
+    ccall((:FLAC__stream_encoder_finish,libflac),Bool,(Ptr{Void},),en)
     show(en)
 end
 

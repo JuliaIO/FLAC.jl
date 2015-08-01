@@ -8,8 +8,8 @@ end
 Base.unsafe_convert(::Type{Ptr{Void}},en::StreamDecoder) = en.v
 
 function StreamDecoder()
-    en = StreamDecoder(ccall((:FLAC__stream_decoder_new,flac),Ptr{Void},()))
-    finalizer(en,x->ccall((:FLAC__stream_decoder_delete,flac),Void,(Ptr{Void},),x.v))
+    en = StreamDecoder(ccall((:FLAC__stream_decoder_new,libflac),Ptr{Void},()))
+    finalizer(en,x->ccall((:FLAC__stream_decoder_delete,libflac),Void,(Ptr{Void},),x.v))
     en
 end
 
@@ -19,26 +19,47 @@ for (nm,typ) in (("ogg_serial_number",:Clong),
                  ("metadata_ignore",:MetadataType))
     @eval begin
         function $(symbol(string("set_",nm)))(dd::StreamDecoder,val)
-            ccall(($(string("FLAC__stream_decoder_set_",nm)),flac),Bool,(Ptr{Void},$typ),dd,val)
+            ccall(($(string("FLAC__stream_decoder_set_",nm)),libflac),Bool,(Ptr{Void},$typ),dd,val)
         end
     end
 end
 
 set_md5_checking(dd::StreamDecoder) = set_md5_checking(dd,true)
 
+@doc """
+Set the stream decoder to respond to any metadata block.
+
+Must be called before the decoder is initialized.
+"""->
 set_metadata_respond_all(dd::StreamDecoder) =
-    ccall((:FLAC__stream_decoder_set_metadata_respond_all,flac),Bool,(Ptr{Void},),dd)
+    ccall((:FLAC__stream_decoder_set_metadata_respond_all,libflac),Bool,(Ptr{Void},),dd)
 
+@doc """
+Set the stream decoder to skipp all metadata blocks.
+
+Must be called before the decoder is initialized.
+"""->
 set_metadata_ignore_all(dd::StreamDecoder) =
-    ccall((:FLAC__stream_decoder_set_metadata_respond_all,flac),Bool,(Ptr{Void},),dd)
+    ccall((:FLAC__stream_decoder_set_metadata_respond_all,libflac),Bool,(Ptr{Void},),dd)
 
+@doc """
+Returns a character string describing the current state of the decoder
+"""->
 get_state_string(dd::StreamDecoder) =
-    bytestring(ccall((:FLAC__stream_decoder_get_resolved_state_string,flac),Ptr{UInt8},
+    bytestring(ccall((:FLAC__stream_decoder_get_resolved_state_string,libflac),Ptr{UInt8},
                      (Ptr{Void},),dd))
 
-@enum DecoderState MetaDataSearch=0 MetaDataRead=1 FrameSyncSearch=2 FrameRead=3 EndOfStream=4 OggError=5 SeekError=6 Aborted=7 MemoryAllocationError1=8 Uninitialized=9
-
-@enum ChannelAssignment Independent=0 LeftSide=1 RightSide=2 MidSide=3
+@enum(DecoderState,
+      MetaDataSearch=Int32(0),
+      MetaDataRead,
+      FrameSyncSearch,
+      FrameRead,
+      EndOfStream,
+      OggError,
+      SeekError,
+      Aborted,
+      MemoryAllocationError1,  # already have another MemoryAllocationError value
+      Uninitialized)
 
 for (nm,typ) in (("state",:DecoderState),
                  ("md5_checking",:Bool),
@@ -50,12 +71,18 @@ for (nm,typ) in (("state",:DecoderState),
                  ("blocksize",Cint))
     @eval begin
         function $(symbol(string("get_",nm)))(dd::StreamDecoder)
-            ccall(($(string("FLAC__stream_decoder_get_",nm)),flac),$typ,(Ptr{Void},),dd)
+            ccall(($(string("FLAC__stream_decoder_get_",nm)),libflac),$typ,(Ptr{Void},),dd)
         end
     end
 end
 
-@enum DecoderInitStatus DecoderOK=0 UnsupportedContainer=1 InvalidCallbacks=2 MemoryAllocationError2=3 ErrorOpeningFile=4 AlreadyInitialized=5
+@enum(DecoderInitStatus,
+      DecoderOK=Int32(0),
+      UnsupportedContainer,
+      InvalidCallbacks,
+      MemoryAllocationError2,
+      ErrorOpeningFile,
+      AlreadyInitialized)
 
 @doc "standard metadata callback function" ->
 function mcallback(d::Ptr{Void}, mp::Ptr{Void}, client::Ptr{Void})
@@ -67,6 +94,8 @@ function mcallback(d::Ptr{Void}, mp::Ptr{Void}, client::Ptr{Void})
         show(StreamPaddingMetaData(mp))
     elseif typ == VorbisCommentType
         show(StreamVorbisCommentMetaData(mp))
+    elseif typ == SeektableType
+        show(StreamSeekTableMetaData(mp))
     end
     nothing
 end
@@ -82,26 +111,27 @@ const ecallback_c = cfunction(ecallback, Void,
                               (Ptr{Void}, Int32, Ptr{Void}))
 
 @doc "write callback" ->
-function wcallback(d::Ptr{Void}, frame::Ptr{Int32},
+function wcallback(dd::Ptr{Void}, hdr::Ptr{FrameHeader},
                    buffer::Ptr{Ptr{Int32}}, client::Ptr{Void})
-    fr = pointer_to_array(frame,7)
+    fr = unsafe_load(hdr)
     println("Frame")
-    println(" blocksize: ", fr[1])
-    println(" samplerate: ", fr[2])
-    println(" channels: ", fr[3])
-    println(" channel assignment: ", fr[4])
-    println(" bits per sample: ", fr[5])
-    println(" number type: ", fr[6])
-    println(" frame or sample number: ", fr[7])
+    println(" blocksize: ", fr.blocksize)
+    println(" samplerate: ", fr.sample_rate)
+    println(" channels: ", fr.channels)
+    println(" channel assignment: ", fr.channel_assignment)
+    println(" bits per sample: ", fr.bits_per_sample)
+    println(" number type: ", fr.typ)
+    println(" frame or sample number: ", fr.num)
+    println(" crc: ", fr.crc)
     zero(Int32)
 end
 
 const wcallback_c = cfunction(wcallback, Int32, 
-                              (Ptr{Void}, Ptr{Int32},
+                              (Ptr{Void}, Ptr{FrameHeader},
                                Ptr{Ptr{Int32}}, Ptr{Void})) 
 
-function initfile(dd::StreamDecoder,fnm::ByteString)
-    status = ccall((:FLAC__stream_decoder_init_file,flac),DecoderInitStatus,
+function initfile!(dd::StreamDecoder,fnm::ByteString)
+    status = ccall((:FLAC__stream_decoder_init_file,libflac),DecoderInitStatus,
                    (Ptr{Void}, Ptr{UInt8}, Ptr{Void}, Ptr{Void}, Ptr{Void}),
                    dd, fnm, wcallback_c, mcallback_c, ecallback_c)
     if status != DecoderOK
@@ -110,8 +140,8 @@ function initfile(dd::StreamDecoder,fnm::ByteString)
     dd
 end
 
-process_single(dd::StreamDecoder) = ccall((:FLAC__stream_decoder_process_single,flac),Bool,(Ptr{Void},),dd)
+process_single(dd::StreamDecoder) = ccall((:FLAC__stream_decoder_process_single,libflac),Bool,(Ptr{Void},),dd)
 
-process_metadata(dd::StreamDecoder) = ccall((:FLAC__stream_decoder_process_until_end_of_metadata,flac),Bool,(Ptr{Void},),dd)
+process_metadata(dd::StreamDecoder) = ccall((:FLAC__stream_decoder_process_until_end_of_metadata,libflac),Bool,(Ptr{Void},),dd)
 
-process_stream(dd::StreamDecoder) = ccall((:FLAC__stream_decoder_process_until_end_of_stream,flac),Bool,(Ptr{Void},),dd)
+process_stream(dd::StreamDecoder) = ccall((:FLAC__stream_decoder_process_until_end_of_stream,libflac),Bool,(Ptr{Void},),dd)
