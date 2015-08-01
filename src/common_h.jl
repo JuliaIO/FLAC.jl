@@ -1,0 +1,1782 @@
+# Automatically generated using Clang.jl wrap_c, version 0.0.0
+
+const FLAC__MAX_METADATA_TYPE_CODE = 126
+const FLAC__MIN_BLOCK_SIZE = 16
+const FLAC__MAX_BLOCK_SIZE = 65535
+const FLAC__SUBSET_MAX_BLOCK_SIZE_48000HZ = 4608
+const FLAC__MAX_CHANNELS = 8
+const FLAC__MIN_BITS_PER_SAMPLE = 4
+const FLAC__MAX_BITS_PER_SAMPLE = 32
+const FLAC__REFERENCE_CODEC_MAX_BITS_PER_SAMPLE = 24
+const FLAC__MAX_SAMPLE_RATE = 655350
+const FLAC__MAX_LPC_ORDER = 32
+const FLAC__SUBSET_MAX_LPC_ORDER_48000HZ = 12
+const FLAC__MIN_QLP_COEFF_PRECISION = 5
+const FLAC__MAX_QLP_COEFF_PRECISION = 15
+const FLAC__MAX_FIXED_ORDER = 4
+const FLAC__MAX_RICE_PARTITION_ORDER = 15
+const FLAC__SUBSET_MAX_RICE_PARTITION_ORDER = 8
+const FLAC__STREAM_SYNC_LENGTH = 4
+const FLAC__STREAM_METADATA_STREAMINFO_LENGTH = 34
+const FLAC__STREAM_METADATA_SEEKPOINT_LENGTH = 18
+const FLAC__STREAM_METADATA_HEADER_LENGTH = 4
+
+# begin enum ANONYMOUS_1
+typealias ANONYMOUS_1 Uint32
+const FLAC__ENTROPY_CODING_METHOD_PARTITIONED_RICE = (UInt32)(0)
+const FLAC__ENTROPY_CODING_METHOD_PARTITIONED_RICE2 = (UInt32)(1)
+# end enum ANONYMOUS_1
+
+# begin enum FLAC__EntropyCodingMethodType
+typealias FLAC__EntropyCodingMethodType Uint32
+const FLAC__ENTROPY_CODING_METHOD_PARTITIONED_RICE = (UInt32)(0)
+const FLAC__ENTROPY_CODING_METHOD_PARTITIONED_RICE2 = (UInt32)(1)
+# end enum FLAC__EntropyCodingMethodType
+
+type FLAC__EntropyCodingMethod_PartitionedRiceContents
+    parameters::Ptr{Uint32}
+    raw_bits::Ptr{Uint32}
+    capacity_by_order::Uint32
+end
+
+type FLAC__EntropyCodingMethod_PartitionedRice
+    order::Uint32
+    contents::Ptr{FLAC__EntropyCodingMethod_PartitionedRiceContents}
+end
+
+type FLAC__EntropyCodingMethod
+    _type::FLAC__EntropyCodingMethodType
+    data::Void
+end
+
+# begin enum ANONYMOUS_2
+typealias ANONYMOUS_2 Uint32
+const FLAC__SUBFRAME_TYPE_CONSTANT = (UInt32)(0)
+const FLAC__SUBFRAME_TYPE_VERBATIM = (UInt32)(1)
+const FLAC__SUBFRAME_TYPE_FIXED = (UInt32)(2)
+const FLAC__SUBFRAME_TYPE_LPC = (UInt32)(3)
+# end enum ANONYMOUS_2
+
+# begin enum FLAC__SubframeType
+typealias FLAC__SubframeType Uint32
+const FLAC__SUBFRAME_TYPE_CONSTANT = (UInt32)(0)
+const FLAC__SUBFRAME_TYPE_VERBATIM = (UInt32)(1)
+const FLAC__SUBFRAME_TYPE_FIXED = (UInt32)(2)
+const FLAC__SUBFRAME_TYPE_LPC = (UInt32)(3)
+# end enum FLAC__SubframeType
+
+typealias FLAC__bool Bool
+typealias FLAC__byte UInt8
+typealias FLAC__int32 Int32
+typealias FLAC__uint8 UInt8
+typealias FLAC__uint16 UInt16
+typealias FLAC__uint32 UInt32
+typealias FLAC__uint64 UInt64
+
+type FLAC__Subframe_Constant
+    value::FLAC__int32
+end
+
+type FLAC__Subframe_Verbatim
+    data::Ptr{FLAC__int32}
+end
+
+immutable Array_4_FLAC__int32
+    d1::FLAC__int32
+    d2::FLAC__int32
+    d3::FLAC__int32
+    d4::FLAC__int32
+end
+
+zero(::Type{Array_4_FLAC__int32}) = begin  # /home/bates/.julia/v0.4/Clang/src/wrap_c.jl, line 264:
+        Array_4_FLAC__int32(fill(zero(FLAC__int32),4)...)
+    end
+
+type FLAC__Subframe_Fixed
+    entropy_coding_method::FLAC__EntropyCodingMethod
+    order::Uint32
+    warmup::Array_4_FLAC__int32
+    residual::Ptr{FLAC__int32}
+end
+
+immutable Array_32_FLAC__int32
+    d1::FLAC__int32
+    d2::FLAC__int32
+    d3::FLAC__int32
+    d4::FLAC__int32
+    d5::FLAC__int32
+    d6::FLAC__int32
+    d7::FLAC__int32
+    d8::FLAC__int32
+    d9::FLAC__int32
+    d10::FLAC__int32
+    d11::FLAC__int32
+    d12::FLAC__int32
+    d13::FLAC__int32
+    d14::FLAC__int32
+    d15::FLAC__int32
+    d16::FLAC__int32
+    d17::FLAC__int32
+    d18::FLAC__int32
+    d19::FLAC__int32
+    d20::FLAC__int32
+    d21::FLAC__int32
+    d22::FLAC__int32
+    d23::FLAC__int32
+    d24::FLAC__int32
+    d25::FLAC__int32
+    d26::FLAC__int32
+    d27::FLAC__int32
+    d28::FLAC__int32
+    d29::FLAC__int32
+    d30::FLAC__int32
+    d31::FLAC__int32
+    d32::FLAC__int32
+end
+
+zero(::Type{Array_32_FLAC__int32}) = begin  # /home/bates/.julia/v0.4/Clang/src/wrap_c.jl, line 264:
+        Array_32_FLAC__int32(fill(zero(FLAC__int32),32)...)
+    end
+
+type FLAC__Subframe_LPC
+    entropy_coding_method::FLAC__EntropyCodingMethod
+    order::Uint32
+    qlp_coeff_precision::Uint32
+    quantization_level::Cint
+    qlp_coeff::Array_32_FLAC__int32
+    warmup::Array_32_FLAC__int32
+    residual::Ptr{FLAC__int32}
+end
+
+type FLAC__Subframe
+    _type::FLAC__SubframeType
+    data::Void
+    wasted_bits::Uint32
+end
+
+# begin enum ANONYMOUS_3
+typealias ANONYMOUS_3 Uint32
+const FLAC__CHANNEL_ASSIGNMENT_INDEPENDENT = (UInt32)(0)
+const FLAC__CHANNEL_ASSIGNMENT_LEFT_SIDE = (UInt32)(1)
+const FLAC__CHANNEL_ASSIGNMENT_RIGHT_SIDE = (UInt32)(2)
+const FLAC__CHANNEL_ASSIGNMENT_MID_SIDE = (UInt32)(3)
+# end enum ANONYMOUS_3
+
+# begin enum FLAC__ChannelAssignment
+typealias FLAC__ChannelAssignment Uint32
+const FLAC__CHANNEL_ASSIGNMENT_INDEPENDENT = (UInt32)(0)
+const FLAC__CHANNEL_ASSIGNMENT_LEFT_SIDE = (UInt32)(1)
+const FLAC__CHANNEL_ASSIGNMENT_RIGHT_SIDE = (UInt32)(2)
+const FLAC__CHANNEL_ASSIGNMENT_MID_SIDE = (UInt32)(3)
+# end enum FLAC__ChannelAssignment
+
+# begin enum ANONYMOUS_4
+typealias ANONYMOUS_4 Uint32
+const FLAC__FRAME_NUMBER_TYPE_FRAME_NUMBER = (UInt32)(0)
+const FLAC__FRAME_NUMBER_TYPE_SAMPLE_NUMBER = (UInt32)(1)
+# end enum ANONYMOUS_4
+
+# begin enum FLAC__FrameNumberType
+typealias FLAC__FrameNumberType Uint32
+const FLAC__FRAME_NUMBER_TYPE_FRAME_NUMBER = (UInt32)(0)
+const FLAC__FRAME_NUMBER_TYPE_SAMPLE_NUMBER = (UInt32)(1)
+# end enum FLAC__FrameNumberType
+
+type FLAC__FrameHeader
+    blocksize::Uint32
+    sample_rate::Uint32
+    channels::Uint32
+    channel_assignment::FLAC__ChannelAssignment
+    bits_per_sample::Uint32
+    number_type::FLAC__FrameNumberType
+    number::Void
+    crc::FLAC__uint8
+end
+
+type FLAC__FrameFooter
+    crc::FLAC__uint16
+end
+
+immutable Array_8_FLAC__Subframe
+    d1::FLAC__Subframe
+    d2::FLAC__Subframe
+    d3::FLAC__Subframe
+    d4::FLAC__Subframe
+    d5::FLAC__Subframe
+    d6::FLAC__Subframe
+    d7::FLAC__Subframe
+    d8::FLAC__Subframe
+end
+
+zero(::Type{Array_8_FLAC__Subframe}) = begin  # /home/bates/.julia/v0.4/Clang/src/wrap_c.jl, line 264:
+        Array_8_FLAC__Subframe(fill(zero(FLAC__Subframe),8)...)
+    end
+
+type FLAC__Frame
+    header::FLAC__FrameHeader
+    subframes::Array_8_FLAC__Subframe
+    footer::FLAC__FrameFooter
+end
+
+# begin enum ANONYMOUS_5
+typealias ANONYMOUS_5 Uint32
+const FLAC__METADATA_TYPE_STREAMINFO = (UInt32)(0)
+const FLAC__METADATA_TYPE_PADDING = (UInt32)(1)
+const FLAC__METADATA_TYPE_APPLICATION = (UInt32)(2)
+const FLAC__METADATA_TYPE_SEEKTABLE = (UInt32)(3)
+const FLAC__METADATA_TYPE_VORBIS_COMMENT = (UInt32)(4)
+const FLAC__METADATA_TYPE_CUESHEET = (UInt32)(5)
+const FLAC__METADATA_TYPE_PICTURE = (UInt32)(6)
+const FLAC__METADATA_TYPE_UNDEFINED = (UInt32)(7)
+const FLAC__MAX_METADATA_TYPE = (UInt32)(126)
+# end enum ANONYMOUS_5
+
+# begin enum FLAC__MetadataType
+typealias FLAC__MetadataType Uint32
+const FLAC__METADATA_TYPE_STREAMINFO = (UInt32)(0)
+const FLAC__METADATA_TYPE_PADDING = (UInt32)(1)
+const FLAC__METADATA_TYPE_APPLICATION = (UInt32)(2)
+const FLAC__METADATA_TYPE_SEEKTABLE = (UInt32)(3)
+const FLAC__METADATA_TYPE_VORBIS_COMMENT = (UInt32)(4)
+const FLAC__METADATA_TYPE_CUESHEET = (UInt32)(5)
+const FLAC__METADATA_TYPE_PICTURE = (UInt32)(6)
+const FLAC__METADATA_TYPE_UNDEFINED = (UInt32)(7)
+const FLAC__MAX_METADATA_TYPE = (UInt32)(126)
+# end enum FLAC__MetadataType
+
+immutable Array_16_FLAC__byte
+    d1::FLAC__byte
+    d2::FLAC__byte
+    d3::FLAC__byte
+    d4::FLAC__byte
+    d5::FLAC__byte
+    d6::FLAC__byte
+    d7::FLAC__byte
+    d8::FLAC__byte
+    d9::FLAC__byte
+    d10::FLAC__byte
+    d11::FLAC__byte
+    d12::FLAC__byte
+    d13::FLAC__byte
+    d14::FLAC__byte
+    d15::FLAC__byte
+    d16::FLAC__byte
+end
+
+zero(::Type{Array_16_FLAC__byte}) = begin  # /home/bates/.julia/v0.4/Clang/src/wrap_c.jl, line 264:
+        Array_16_FLAC__byte(fill(zero(FLAC__byte),16)...)
+    end
+
+type FLAC__StreamMetadata_StreamInfo
+    min_blocksize::Uint32
+    max_blocksize::Uint32
+    min_framesize::Uint32
+    max_framesize::Uint32
+    sample_rate::Uint32
+    channels::Uint32
+    bits_per_sample::Uint32
+    total_samples::FLAC__uint64
+    md5sum::Array_16_FLAC__byte
+end
+
+type FLAC__StreamMetadata_Padding
+    dummy::Cint
+end
+
+immutable Array_4_FLAC__byte
+    d1::FLAC__byte
+    d2::FLAC__byte
+    d3::FLAC__byte
+    d4::FLAC__byte
+end
+
+zero(::Type{Array_4_FLAC__byte}) = begin  # /home/bates/.julia/v0.4/Clang/src/wrap_c.jl, line 264:
+        Array_4_FLAC__byte(fill(zero(FLAC__byte),4)...)
+    end
+
+type FLAC__StreamMetadata_Application
+    id::Array_4_FLAC__byte
+    data::Ptr{FLAC__byte}
+end
+
+type FLAC__StreamMetadata_SeekPoint
+    sample_number::FLAC__uint64
+    stream_offset::FLAC__uint64
+    frame_samples::Uint32
+end
+
+type FLAC__StreamMetadata_SeekTable
+    num_points::Uint32
+    points::Ptr{FLAC__StreamMetadata_SeekPoint}
+end
+
+type FLAC__StreamMetadata_VorbisComment_Entry
+    length::FLAC__uint32
+    entry::Ptr{FLAC__byte}
+end
+
+type FLAC__StreamMetadata_VorbisComment
+    vendor_string::FLAC__StreamMetadata_VorbisComment_Entry
+    num_comments::FLAC__uint32
+    comments::Ptr{FLAC__StreamMetadata_VorbisComment_Entry}
+end
+
+type FLAC__StreamMetadata_CueSheet_Index
+    offset::FLAC__uint64
+    number::FLAC__byte
+end
+
+immutable Array_13_Uint8
+    d1::Uint8
+    d2::Uint8
+    d3::Uint8
+    d4::Uint8
+    d5::Uint8
+    d6::Uint8
+    d7::Uint8
+    d8::Uint8
+    d9::Uint8
+    d10::Uint8
+    d11::Uint8
+    d12::Uint8
+    d13::Uint8
+end
+
+zero(::Type{Array_13_Uint8}) = begin  # /home/bates/.julia/v0.4/Clang/src/wrap_c.jl, line 264:
+        Array_13_Uint8(fill(zero(Uint8),13)...)
+    end
+
+type FLAC__StreamMetadata_CueSheet_Track
+    offset::FLAC__uint64
+    number::FLAC__byte
+    isrc::Array_13_Uint8
+    _type::Uint32
+    pre_emphasis::Uint32
+    num_indices::FLAC__byte
+    indices::Ptr{FLAC__StreamMetadata_CueSheet_Index}
+end
+
+immutable Array_129_Uint8
+    d1::Uint8
+    d2::Uint8
+    d3::Uint8
+    d4::Uint8
+    d5::Uint8
+    d6::Uint8
+    d7::Uint8
+    d8::Uint8
+    d9::Uint8
+    d10::Uint8
+    d11::Uint8
+    d12::Uint8
+    d13::Uint8
+    d14::Uint8
+    d15::Uint8
+    d16::Uint8
+    d17::Uint8
+    d18::Uint8
+    d19::Uint8
+    d20::Uint8
+    d21::Uint8
+    d22::Uint8
+    d23::Uint8
+    d24::Uint8
+    d25::Uint8
+    d26::Uint8
+    d27::Uint8
+    d28::Uint8
+    d29::Uint8
+    d30::Uint8
+    d31::Uint8
+    d32::Uint8
+    d33::Uint8
+    d34::Uint8
+    d35::Uint8
+    d36::Uint8
+    d37::Uint8
+    d38::Uint8
+    d39::Uint8
+    d40::Uint8
+    d41::Uint8
+    d42::Uint8
+    d43::Uint8
+    d44::Uint8
+    d45::Uint8
+    d46::Uint8
+    d47::Uint8
+    d48::Uint8
+    d49::Uint8
+    d50::Uint8
+    d51::Uint8
+    d52::Uint8
+    d53::Uint8
+    d54::Uint8
+    d55::Uint8
+    d56::Uint8
+    d57::Uint8
+    d58::Uint8
+    d59::Uint8
+    d60::Uint8
+    d61::Uint8
+    d62::Uint8
+    d63::Uint8
+    d64::Uint8
+    d65::Uint8
+    d66::Uint8
+    d67::Uint8
+    d68::Uint8
+    d69::Uint8
+    d70::Uint8
+    d71::Uint8
+    d72::Uint8
+    d73::Uint8
+    d74::Uint8
+    d75::Uint8
+    d76::Uint8
+    d77::Uint8
+    d78::Uint8
+    d79::Uint8
+    d80::Uint8
+    d81::Uint8
+    d82::Uint8
+    d83::Uint8
+    d84::Uint8
+    d85::Uint8
+    d86::Uint8
+    d87::Uint8
+    d88::Uint8
+    d89::Uint8
+    d90::Uint8
+    d91::Uint8
+    d92::Uint8
+    d93::Uint8
+    d94::Uint8
+    d95::Uint8
+    d96::Uint8
+    d97::Uint8
+    d98::Uint8
+    d99::Uint8
+    d100::Uint8
+    d101::Uint8
+    d102::Uint8
+    d103::Uint8
+    d104::Uint8
+    d105::Uint8
+    d106::Uint8
+    d107::Uint8
+    d108::Uint8
+    d109::Uint8
+    d110::Uint8
+    d111::Uint8
+    d112::Uint8
+    d113::Uint8
+    d114::Uint8
+    d115::Uint8
+    d116::Uint8
+    d117::Uint8
+    d118::Uint8
+    d119::Uint8
+    d120::Uint8
+    d121::Uint8
+    d122::Uint8
+    d123::Uint8
+    d124::Uint8
+    d125::Uint8
+    d126::Uint8
+    d127::Uint8
+    d128::Uint8
+    d129::Uint8
+end
+
+zero(::Type{Array_129_Uint8}) = begin  # /home/bates/.julia/v0.4/Clang/src/wrap_c.jl, line 264:
+        Array_129_Uint8(fill(zero(Uint8),129)...)
+    end
+
+type FLAC__StreamMetadata_CueSheet
+    media_catalog_number::Array_129_Uint8
+    lead_in::FLAC__uint64
+    is_cd::FLAC__bool
+    num_tracks::Uint32
+    tracks::Ptr{FLAC__StreamMetadata_CueSheet_Track}
+end
+
+# begin enum ANONYMOUS_6
+typealias ANONYMOUS_6 Uint32
+const FLAC__STREAM_METADATA_PICTURE_TYPE_OTHER = (UInt32)(0)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_FILE_ICON_STANDARD = (UInt32)(1)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_FILE_ICON = (UInt32)(2)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_FRONT_COVER = (UInt32)(3)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_BACK_COVER = (UInt32)(4)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_LEAFLET_PAGE = (UInt32)(5)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_MEDIA = (UInt32)(6)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_LEAD_ARTIST = (UInt32)(7)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_ARTIST = (UInt32)(8)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_CONDUCTOR = (UInt32)(9)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_BAND = (UInt32)(10)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_COMPOSER = (UInt32)(11)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_LYRICIST = (UInt32)(12)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_RECORDING_LOCATION = (UInt32)(13)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_DURING_RECORDING = (UInt32)(14)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_DURING_PERFORMANCE = (UInt32)(15)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_VIDEO_SCREEN_CAPTURE = (UInt32)(16)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_FISH = (UInt32)(17)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_ILLUSTRATION = (UInt32)(18)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_BAND_LOGOTYPE = (UInt32)(19)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_PUBLISHER_LOGOTYPE = (UInt32)(20)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_UNDEFINED = (UInt32)(21)
+# end enum ANONYMOUS_6
+
+# begin enum FLAC__StreamMetadata_Picture_Type
+typealias FLAC__StreamMetadata_Picture_Type Uint32
+const FLAC__STREAM_METADATA_PICTURE_TYPE_OTHER = (UInt32)(0)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_FILE_ICON_STANDARD = (UInt32)(1)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_FILE_ICON = (UInt32)(2)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_FRONT_COVER = (UInt32)(3)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_BACK_COVER = (UInt32)(4)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_LEAFLET_PAGE = (UInt32)(5)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_MEDIA = (UInt32)(6)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_LEAD_ARTIST = (UInt32)(7)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_ARTIST = (UInt32)(8)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_CONDUCTOR = (UInt32)(9)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_BAND = (UInt32)(10)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_COMPOSER = (UInt32)(11)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_LYRICIST = (UInt32)(12)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_RECORDING_LOCATION = (UInt32)(13)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_DURING_RECORDING = (UInt32)(14)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_DURING_PERFORMANCE = (UInt32)(15)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_VIDEO_SCREEN_CAPTURE = (UInt32)(16)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_FISH = (UInt32)(17)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_ILLUSTRATION = (UInt32)(18)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_BAND_LOGOTYPE = (UInt32)(19)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_PUBLISHER_LOGOTYPE = (UInt32)(20)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_UNDEFINED = (UInt32)(21)
+# end enum FLAC__StreamMetadata_Picture_Type
+
+type FLAC__StreamMetadata_Picture
+    _type::FLAC__StreamMetadata_Picture_Type
+    mime_type::Ptr{Uint8}
+    description::Ptr{FLAC__byte}
+    width::FLAC__uint32
+    height::FLAC__uint32
+    depth::FLAC__uint32
+    colors::FLAC__uint32
+    data_length::FLAC__uint32
+    data::Ptr{FLAC__byte}
+end
+
+type FLAC__StreamMetadata_Unknown
+    data::Ptr{FLAC__byte}
+end
+
+type FLAC__StreamMetadata
+    _type::FLAC__MetadataType
+    is_last::FLAC__bool
+    length::Uint32
+    data::Void
+end
+
+# begin enum ANONYMOUS_7
+typealias ANONYMOUS_7 Uint32
+const FLAC__STREAM_DECODER_SEARCH_FOR_METADATA = (UInt32)(0)
+const FLAC__STREAM_DECODER_READ_METADATA = (UInt32)(1)
+const FLAC__STREAM_DECODER_SEARCH_FOR_FRAME_SYNC = (UInt32)(2)
+const FLAC__STREAM_DECODER_READ_FRAME = (UInt32)(3)
+const FLAC__STREAM_DECODER_END_OF_STREAM = (UInt32)(4)
+const FLAC__STREAM_DECODER_OGG_ERROR = (UInt32)(5)
+const FLAC__STREAM_DECODER_SEEK_ERROR = (UInt32)(6)
+const FLAC__STREAM_DECODER_ABORTED = (UInt32)(7)
+const FLAC__STREAM_DECODER_MEMORY_ALLOCATION_ERROR = (UInt32)(8)
+const FLAC__STREAM_DECODER_UNINITIALIZED = (UInt32)(9)
+# end enum ANONYMOUS_7
+
+# begin enum FLAC__StreamDecoderState
+typealias FLAC__StreamDecoderState Uint32
+const FLAC__STREAM_DECODER_SEARCH_FOR_METADATA = (UInt32)(0)
+const FLAC__STREAM_DECODER_READ_METADATA = (UInt32)(1)
+const FLAC__STREAM_DECODER_SEARCH_FOR_FRAME_SYNC = (UInt32)(2)
+const FLAC__STREAM_DECODER_READ_FRAME = (UInt32)(3)
+const FLAC__STREAM_DECODER_END_OF_STREAM = (UInt32)(4)
+const FLAC__STREAM_DECODER_OGG_ERROR = (UInt32)(5)
+const FLAC__STREAM_DECODER_SEEK_ERROR = (UInt32)(6)
+const FLAC__STREAM_DECODER_ABORTED = (UInt32)(7)
+const FLAC__STREAM_DECODER_MEMORY_ALLOCATION_ERROR = (UInt32)(8)
+const FLAC__STREAM_DECODER_UNINITIALIZED = (UInt32)(9)
+# end enum FLAC__StreamDecoderState
+
+# begin enum ANONYMOUS_8
+typealias ANONYMOUS_8 Uint32
+const FLAC__STREAM_DECODER_INIT_STATUS_OK = (UInt32)(0)
+const FLAC__STREAM_DECODER_INIT_STATUS_UNSUPPORTED_CONTAINER = (UInt32)(1)
+const FLAC__STREAM_DECODER_INIT_STATUS_INVALID_CALLBACKS = (UInt32)(2)
+const FLAC__STREAM_DECODER_INIT_STATUS_MEMORY_ALLOCATION_ERROR = (UInt32)(3)
+const FLAC__STREAM_DECODER_INIT_STATUS_ERROR_OPENING_FILE = (UInt32)(4)
+const FLAC__STREAM_DECODER_INIT_STATUS_ALREADY_INITIALIZED = (UInt32)(5)
+# end enum ANONYMOUS_8
+
+# begin enum FLAC__StreamDecoderInitStatus
+typealias FLAC__StreamDecoderInitStatus Uint32
+const FLAC__STREAM_DECODER_INIT_STATUS_OK = (UInt32)(0)
+const FLAC__STREAM_DECODER_INIT_STATUS_UNSUPPORTED_CONTAINER = (UInt32)(1)
+const FLAC__STREAM_DECODER_INIT_STATUS_INVALID_CALLBACKS = (UInt32)(2)
+const FLAC__STREAM_DECODER_INIT_STATUS_MEMORY_ALLOCATION_ERROR = (UInt32)(3)
+const FLAC__STREAM_DECODER_INIT_STATUS_ERROR_OPENING_FILE = (UInt32)(4)
+const FLAC__STREAM_DECODER_INIT_STATUS_ALREADY_INITIALIZED = (UInt32)(5)
+# end enum FLAC__StreamDecoderInitStatus
+
+# begin enum ANONYMOUS_9
+typealias ANONYMOUS_9 Uint32
+const FLAC__STREAM_DECODER_READ_STATUS_CONTINUE = (UInt32)(0)
+const FLAC__STREAM_DECODER_READ_STATUS_END_OF_STREAM = (UInt32)(1)
+const FLAC__STREAM_DECODER_READ_STATUS_ABORT = (UInt32)(2)
+# end enum ANONYMOUS_9
+
+# begin enum FLAC__StreamDecoderReadStatus
+typealias FLAC__StreamDecoderReadStatus Uint32
+const FLAC__STREAM_DECODER_READ_STATUS_CONTINUE = (UInt32)(0)
+const FLAC__STREAM_DECODER_READ_STATUS_END_OF_STREAM = (UInt32)(1)
+const FLAC__STREAM_DECODER_READ_STATUS_ABORT = (UInt32)(2)
+# end enum FLAC__StreamDecoderReadStatus
+
+# begin enum ANONYMOUS_10
+typealias ANONYMOUS_10 Uint32
+const FLAC__STREAM_DECODER_SEEK_STATUS_OK = (UInt32)(0)
+const FLAC__STREAM_DECODER_SEEK_STATUS_ERROR = (UInt32)(1)
+const FLAC__STREAM_DECODER_SEEK_STATUS_UNSUPPORTED = (UInt32)(2)
+# end enum ANONYMOUS_10
+
+# begin enum FLAC__StreamDecoderSeekStatus
+typealias FLAC__StreamDecoderSeekStatus Uint32
+const FLAC__STREAM_DECODER_SEEK_STATUS_OK = (UInt32)(0)
+const FLAC__STREAM_DECODER_SEEK_STATUS_ERROR = (UInt32)(1)
+const FLAC__STREAM_DECODER_SEEK_STATUS_UNSUPPORTED = (UInt32)(2)
+# end enum FLAC__StreamDecoderSeekStatus
+
+# begin enum ANONYMOUS_11
+typealias ANONYMOUS_11 Uint32
+const FLAC__STREAM_DECODER_TELL_STATUS_OK = (UInt32)(0)
+const FLAC__STREAM_DECODER_TELL_STATUS_ERROR = (UInt32)(1)
+const FLAC__STREAM_DECODER_TELL_STATUS_UNSUPPORTED = (UInt32)(2)
+# end enum ANONYMOUS_11
+
+# begin enum FLAC__StreamDecoderTellStatus
+typealias FLAC__StreamDecoderTellStatus Uint32
+const FLAC__STREAM_DECODER_TELL_STATUS_OK = (UInt32)(0)
+const FLAC__STREAM_DECODER_TELL_STATUS_ERROR = (UInt32)(1)
+const FLAC__STREAM_DECODER_TELL_STATUS_UNSUPPORTED = (UInt32)(2)
+# end enum FLAC__StreamDecoderTellStatus
+
+# begin enum ANONYMOUS_12
+typealias ANONYMOUS_12 Uint32
+const FLAC__STREAM_DECODER_LENGTH_STATUS_OK = (UInt32)(0)
+const FLAC__STREAM_DECODER_LENGTH_STATUS_ERROR = (UInt32)(1)
+const FLAC__STREAM_DECODER_LENGTH_STATUS_UNSUPPORTED = (UInt32)(2)
+# end enum ANONYMOUS_12
+
+# begin enum FLAC__StreamDecoderLengthStatus
+typealias FLAC__StreamDecoderLengthStatus Uint32
+const FLAC__STREAM_DECODER_LENGTH_STATUS_OK = (UInt32)(0)
+const FLAC__STREAM_DECODER_LENGTH_STATUS_ERROR = (UInt32)(1)
+const FLAC__STREAM_DECODER_LENGTH_STATUS_UNSUPPORTED = (UInt32)(2)
+# end enum FLAC__StreamDecoderLengthStatus
+
+# begin enum ANONYMOUS_13
+typealias ANONYMOUS_13 Uint32
+const FLAC__STREAM_DECODER_WRITE_STATUS_CONTINUE = (UInt32)(0)
+const FLAC__STREAM_DECODER_WRITE_STATUS_ABORT = (UInt32)(1)
+# end enum ANONYMOUS_13
+
+# begin enum FLAC__StreamDecoderWriteStatus
+typealias FLAC__StreamDecoderWriteStatus Uint32
+const FLAC__STREAM_DECODER_WRITE_STATUS_CONTINUE = (UInt32)(0)
+const FLAC__STREAM_DECODER_WRITE_STATUS_ABORT = (UInt32)(1)
+# end enum FLAC__StreamDecoderWriteStatus
+
+# begin enum ANONYMOUS_14
+typealias ANONYMOUS_14 Uint32
+const FLAC__STREAM_DECODER_ERROR_STATUS_LOST_SYNC = (UInt32)(0)
+const FLAC__STREAM_DECODER_ERROR_STATUS_BAD_HEADER = (UInt32)(1)
+const FLAC__STREAM_DECODER_ERROR_STATUS_FRAME_CRC_MISMATCH = (UInt32)(2)
+const FLAC__STREAM_DECODER_ERROR_STATUS_UNPARSEABLE_STREAM = (UInt32)(3)
+# end enum ANONYMOUS_14
+
+# begin enum FLAC__StreamDecoderErrorStatus
+typealias FLAC__StreamDecoderErrorStatus Uint32
+const FLAC__STREAM_DECODER_ERROR_STATUS_LOST_SYNC = (UInt32)(0)
+const FLAC__STREAM_DECODER_ERROR_STATUS_BAD_HEADER = (UInt32)(1)
+const FLAC__STREAM_DECODER_ERROR_STATUS_FRAME_CRC_MISMATCH = (UInt32)(2)
+const FLAC__STREAM_DECODER_ERROR_STATUS_UNPARSEABLE_STREAM = (UInt32)(3)
+# end enum FLAC__StreamDecoderErrorStatus
+
+type FLAC__StreamDecoderProtected
+end
+
+type FLAC__StreamDecoderPrivate
+end
+
+type FLAC__StreamDecoder
+    protected_::Ptr{FLAC__StreamDecoderProtected}
+    private_::Ptr{FLAC__StreamDecoderPrivate}
+end
+
+typealias FLAC__StreamDecoderReadCallback Ptr{Void}
+typealias FLAC__StreamDecoderSeekCallback Ptr{Void}
+typealias FLAC__StreamDecoderTellCallback Ptr{Void}
+typealias FLAC__StreamDecoderLengthCallback Ptr{Void}
+typealias FLAC__StreamDecoderEofCallback Ptr{Void}
+typealias FLAC__StreamDecoderWriteCallback Ptr{Void}
+typealias FLAC__StreamDecoderMetadataCallback Ptr{Void}
+typealias FLAC__StreamDecoderErrorCallback Ptr{Void}
+
+# begin enum ANONYMOUS_15
+typealias ANONYMOUS_15 Uint32
+const FLAC__STREAM_ENCODER_OK = (UInt32)(0)
+const FLAC__STREAM_ENCODER_UNINITIALIZED = (UInt32)(1)
+const FLAC__STREAM_ENCODER_OGG_ERROR = (UInt32)(2)
+const FLAC__STREAM_ENCODER_VERIFY_DECODER_ERROR = (UInt32)(3)
+const FLAC__STREAM_ENCODER_VERIFY_MISMATCH_IN_AUDIO_DATA = (UInt32)(4)
+const FLAC__STREAM_ENCODER_CLIENT_ERROR = (UInt32)(5)
+const FLAC__STREAM_ENCODER_IO_ERROR = (UInt32)(6)
+const FLAC__STREAM_ENCODER_FRAMING_ERROR = (UInt32)(7)
+const FLAC__STREAM_ENCODER_MEMORY_ALLOCATION_ERROR = (UInt32)(8)
+# end enum ANONYMOUS_15
+
+# begin enum FLAC__StreamEncoderState
+typealias FLAC__StreamEncoderState Uint32
+const FLAC__STREAM_ENCODER_OK = (UInt32)(0)
+const FLAC__STREAM_ENCODER_UNINITIALIZED = (UInt32)(1)
+const FLAC__STREAM_ENCODER_OGG_ERROR = (UInt32)(2)
+const FLAC__STREAM_ENCODER_VERIFY_DECODER_ERROR = (UInt32)(3)
+const FLAC__STREAM_ENCODER_VERIFY_MISMATCH_IN_AUDIO_DATA = (UInt32)(4)
+const FLAC__STREAM_ENCODER_CLIENT_ERROR = (UInt32)(5)
+const FLAC__STREAM_ENCODER_IO_ERROR = (UInt32)(6)
+const FLAC__STREAM_ENCODER_FRAMING_ERROR = (UInt32)(7)
+const FLAC__STREAM_ENCODER_MEMORY_ALLOCATION_ERROR = (UInt32)(8)
+# end enum FLAC__StreamEncoderState
+
+# begin enum ANONYMOUS_16
+typealias ANONYMOUS_16 Uint32
+const FLAC__STREAM_ENCODER_INIT_STATUS_OK = (UInt32)(0)
+const FLAC__STREAM_ENCODER_INIT_STATUS_ENCODER_ERROR = (UInt32)(1)
+const FLAC__STREAM_ENCODER_INIT_STATUS_UNSUPPORTED_CONTAINER = (UInt32)(2)
+const FLAC__STREAM_ENCODER_INIT_STATUS_INVALID_CALLBACKS = (UInt32)(3)
+const FLAC__STREAM_ENCODER_INIT_STATUS_INVALID_NUMBER_OF_CHANNELS = (UInt32)(4)
+const FLAC__STREAM_ENCODER_INIT_STATUS_INVALID_BITS_PER_SAMPLE = (UInt32)(5)
+const FLAC__STREAM_ENCODER_INIT_STATUS_INVALID_SAMPLE_RATE = (UInt32)(6)
+const FLAC__STREAM_ENCODER_INIT_STATUS_INVALID_BLOCK_SIZE = (UInt32)(7)
+const FLAC__STREAM_ENCODER_INIT_STATUS_INVALID_MAX_LPC_ORDER = (UInt32)(8)
+const FLAC__STREAM_ENCODER_INIT_STATUS_INVALID_QLP_COEFF_PRECISION = (UInt32)(9)
+const FLAC__STREAM_ENCODER_INIT_STATUS_BLOCK_SIZE_TOO_SMALL_FOR_LPC_ORDER = (UInt32)(10)
+const FLAC__STREAM_ENCODER_INIT_STATUS_NOT_STREAMABLE = (UInt32)(11)
+const FLAC__STREAM_ENCODER_INIT_STATUS_INVALID_METADATA = (UInt32)(12)
+const FLAC__STREAM_ENCODER_INIT_STATUS_ALREADY_INITIALIZED = (UInt32)(13)
+# end enum ANONYMOUS_16
+
+# begin enum FLAC__StreamEncoderInitStatus
+typealias FLAC__StreamEncoderInitStatus Uint32
+const FLAC__STREAM_ENCODER_INIT_STATUS_OK = (UInt32)(0)
+const FLAC__STREAM_ENCODER_INIT_STATUS_ENCODER_ERROR = (UInt32)(1)
+const FLAC__STREAM_ENCODER_INIT_STATUS_UNSUPPORTED_CONTAINER = (UInt32)(2)
+const FLAC__STREAM_ENCODER_INIT_STATUS_INVALID_CALLBACKS = (UInt32)(3)
+const FLAC__STREAM_ENCODER_INIT_STATUS_INVALID_NUMBER_OF_CHANNELS = (UInt32)(4)
+const FLAC__STREAM_ENCODER_INIT_STATUS_INVALID_BITS_PER_SAMPLE = (UInt32)(5)
+const FLAC__STREAM_ENCODER_INIT_STATUS_INVALID_SAMPLE_RATE = (UInt32)(6)
+const FLAC__STREAM_ENCODER_INIT_STATUS_INVALID_BLOCK_SIZE = (UInt32)(7)
+const FLAC__STREAM_ENCODER_INIT_STATUS_INVALID_MAX_LPC_ORDER = (UInt32)(8)
+const FLAC__STREAM_ENCODER_INIT_STATUS_INVALID_QLP_COEFF_PRECISION = (UInt32)(9)
+const FLAC__STREAM_ENCODER_INIT_STATUS_BLOCK_SIZE_TOO_SMALL_FOR_LPC_ORDER = (UInt32)(10)
+const FLAC__STREAM_ENCODER_INIT_STATUS_NOT_STREAMABLE = (UInt32)(11)
+const FLAC__STREAM_ENCODER_INIT_STATUS_INVALID_METADATA = (UInt32)(12)
+const FLAC__STREAM_ENCODER_INIT_STATUS_ALREADY_INITIALIZED = (UInt32)(13)
+# end enum FLAC__StreamEncoderInitStatus
+
+# begin enum ANONYMOUS_17
+typealias ANONYMOUS_17 Uint32
+const FLAC__STREAM_ENCODER_READ_STATUS_CONTINUE = (UInt32)(0)
+const FLAC__STREAM_ENCODER_READ_STATUS_END_OF_STREAM = (UInt32)(1)
+const FLAC__STREAM_ENCODER_READ_STATUS_ABORT = (UInt32)(2)
+const FLAC__STREAM_ENCODER_READ_STATUS_UNSUPPORTED = (UInt32)(3)
+# end enum ANONYMOUS_17
+
+# begin enum FLAC__StreamEncoderReadStatus
+typealias FLAC__StreamEncoderReadStatus Uint32
+const FLAC__STREAM_ENCODER_READ_STATUS_CONTINUE = (UInt32)(0)
+const FLAC__STREAM_ENCODER_READ_STATUS_END_OF_STREAM = (UInt32)(1)
+const FLAC__STREAM_ENCODER_READ_STATUS_ABORT = (UInt32)(2)
+const FLAC__STREAM_ENCODER_READ_STATUS_UNSUPPORTED = (UInt32)(3)
+# end enum FLAC__StreamEncoderReadStatus
+
+# begin enum ANONYMOUS_18
+typealias ANONYMOUS_18 Uint32
+const FLAC__STREAM_ENCODER_WRITE_STATUS_OK = (UInt32)(0)
+const FLAC__STREAM_ENCODER_WRITE_STATUS_FATAL_ERROR = (UInt32)(1)
+# end enum ANONYMOUS_18
+
+# begin enum FLAC__StreamEncoderWriteStatus
+typealias FLAC__StreamEncoderWriteStatus Uint32
+const FLAC__STREAM_ENCODER_WRITE_STATUS_OK = (UInt32)(0)
+const FLAC__STREAM_ENCODER_WRITE_STATUS_FATAL_ERROR = (UInt32)(1)
+# end enum FLAC__StreamEncoderWriteStatus
+
+# begin enum ANONYMOUS_19
+typealias ANONYMOUS_19 Uint32
+const FLAC__STREAM_ENCODER_SEEK_STATUS_OK = (UInt32)(0)
+const FLAC__STREAM_ENCODER_SEEK_STATUS_ERROR = (UInt32)(1)
+const FLAC__STREAM_ENCODER_SEEK_STATUS_UNSUPPORTED = (UInt32)(2)
+# end enum ANONYMOUS_19
+
+# begin enum FLAC__StreamEncoderSeekStatus
+typealias FLAC__StreamEncoderSeekStatus Uint32
+const FLAC__STREAM_ENCODER_SEEK_STATUS_OK = (UInt32)(0)
+const FLAC__STREAM_ENCODER_SEEK_STATUS_ERROR = (UInt32)(1)
+const FLAC__STREAM_ENCODER_SEEK_STATUS_UNSUPPORTED = (UInt32)(2)
+# end enum FLAC__StreamEncoderSeekStatus
+
+# begin enum ANONYMOUS_20
+typealias ANONYMOUS_20 Uint32
+const FLAC__STREAM_ENCODER_TELL_STATUS_OK = (UInt32)(0)
+const FLAC__STREAM_ENCODER_TELL_STATUS_ERROR = (UInt32)(1)
+const FLAC__STREAM_ENCODER_TELL_STATUS_UNSUPPORTED = (UInt32)(2)
+# end enum ANONYMOUS_20
+
+# begin enum FLAC__StreamEncoderTellStatus
+typealias FLAC__StreamEncoderTellStatus Uint32
+const FLAC__STREAM_ENCODER_TELL_STATUS_OK = (UInt32)(0)
+const FLAC__STREAM_ENCODER_TELL_STATUS_ERROR = (UInt32)(1)
+const FLAC__STREAM_ENCODER_TELL_STATUS_UNSUPPORTED = (UInt32)(2)
+# end enum FLAC__StreamEncoderTellStatus
+
+type FLAC__StreamEncoderProtected
+end
+
+type FLAC__StreamEncoderPrivate
+end
+
+type FLAC__StreamEncoder
+    protected_::Ptr{FLAC__StreamEncoderProtected}
+    private_::Ptr{FLAC__StreamEncoderPrivate}
+end
+
+typealias FLAC__StreamEncoderReadCallback Ptr{Void}
+typealias FLAC__StreamEncoderWriteCallback Ptr{Void}
+typealias FLAC__StreamEncoderSeekCallback Ptr{Void}
+typealias FLAC__StreamEncoderTellCallback Ptr{Void}
+typealias FLAC__StreamEncoderMetadataCallback Ptr{Void}
+typealias FLAC__StreamEncoderProgressCallback Ptr{Void}
+
+# begin enum ANONYMOUS_21
+typealias ANONYMOUS_21 Uint32
+const FLAC__ENTROPY_CODING_METHOD_PARTITIONED_RICE = (UInt32)(0)
+const FLAC__ENTROPY_CODING_METHOD_PARTITIONED_RICE2 = (UInt32)(1)
+# end enum ANONYMOUS_21
+
+# begin enum ANONYMOUS_22
+typealias ANONYMOUS_22 Uint32
+const FLAC__SUBFRAME_TYPE_CONSTANT = (UInt32)(0)
+const FLAC__SUBFRAME_TYPE_VERBATIM = (UInt32)(1)
+const FLAC__SUBFRAME_TYPE_FIXED = (UInt32)(2)
+const FLAC__SUBFRAME_TYPE_LPC = (UInt32)(3)
+# end enum ANONYMOUS_22
+
+# begin enum ANONYMOUS_23
+typealias ANONYMOUS_23 Uint32
+const FLAC__CHANNEL_ASSIGNMENT_INDEPENDENT = (UInt32)(0)
+const FLAC__CHANNEL_ASSIGNMENT_LEFT_SIDE = (UInt32)(1)
+const FLAC__CHANNEL_ASSIGNMENT_RIGHT_SIDE = (UInt32)(2)
+const FLAC__CHANNEL_ASSIGNMENT_MID_SIDE = (UInt32)(3)
+# end enum ANONYMOUS_23
+
+# begin enum ANONYMOUS_24
+typealias ANONYMOUS_24 Uint32
+const FLAC__FRAME_NUMBER_TYPE_FRAME_NUMBER = (UInt32)(0)
+const FLAC__FRAME_NUMBER_TYPE_SAMPLE_NUMBER = (UInt32)(1)
+# end enum ANONYMOUS_24
+
+# begin enum ANONYMOUS_25
+typealias ANONYMOUS_25 Uint32
+const FLAC__METADATA_TYPE_STREAMINFO = (UInt32)(0)
+const FLAC__METADATA_TYPE_PADDING = (UInt32)(1)
+const FLAC__METADATA_TYPE_APPLICATION = (UInt32)(2)
+const FLAC__METADATA_TYPE_SEEKTABLE = (UInt32)(3)
+const FLAC__METADATA_TYPE_VORBIS_COMMENT = (UInt32)(4)
+const FLAC__METADATA_TYPE_CUESHEET = (UInt32)(5)
+const FLAC__METADATA_TYPE_PICTURE = (UInt32)(6)
+const FLAC__METADATA_TYPE_UNDEFINED = (UInt32)(7)
+const FLAC__MAX_METADATA_TYPE = (UInt32)(126)
+# end enum ANONYMOUS_25
+
+# begin enum ANONYMOUS_26
+typealias ANONYMOUS_26 Uint32
+const FLAC__STREAM_METADATA_PICTURE_TYPE_OTHER = (UInt32)(0)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_FILE_ICON_STANDARD = (UInt32)(1)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_FILE_ICON = (UInt32)(2)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_FRONT_COVER = (UInt32)(3)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_BACK_COVER = (UInt32)(4)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_LEAFLET_PAGE = (UInt32)(5)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_MEDIA = (UInt32)(6)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_LEAD_ARTIST = (UInt32)(7)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_ARTIST = (UInt32)(8)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_CONDUCTOR = (UInt32)(9)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_BAND = (UInt32)(10)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_COMPOSER = (UInt32)(11)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_LYRICIST = (UInt32)(12)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_RECORDING_LOCATION = (UInt32)(13)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_DURING_RECORDING = (UInt32)(14)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_DURING_PERFORMANCE = (UInt32)(15)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_VIDEO_SCREEN_CAPTURE = (UInt32)(16)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_FISH = (UInt32)(17)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_ILLUSTRATION = (UInt32)(18)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_BAND_LOGOTYPE = (UInt32)(19)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_PUBLISHER_LOGOTYPE = (UInt32)(20)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_UNDEFINED = (UInt32)(21)
+# end enum ANONYMOUS_26
+
+# begin enum ANONYMOUS_27
+typealias ANONYMOUS_27 Uint32
+const FLAC__STREAM_DECODER_SEARCH_FOR_METADATA = (UInt32)(0)
+const FLAC__STREAM_DECODER_READ_METADATA = (UInt32)(1)
+const FLAC__STREAM_DECODER_SEARCH_FOR_FRAME_SYNC = (UInt32)(2)
+const FLAC__STREAM_DECODER_READ_FRAME = (UInt32)(3)
+const FLAC__STREAM_DECODER_END_OF_STREAM = (UInt32)(4)
+const FLAC__STREAM_DECODER_OGG_ERROR = (UInt32)(5)
+const FLAC__STREAM_DECODER_SEEK_ERROR = (UInt32)(6)
+const FLAC__STREAM_DECODER_ABORTED = (UInt32)(7)
+const FLAC__STREAM_DECODER_MEMORY_ALLOCATION_ERROR = (UInt32)(8)
+const FLAC__STREAM_DECODER_UNINITIALIZED = (UInt32)(9)
+# end enum ANONYMOUS_27
+
+# begin enum ANONYMOUS_28
+typealias ANONYMOUS_28 Uint32
+const FLAC__STREAM_DECODER_INIT_STATUS_OK = (UInt32)(0)
+const FLAC__STREAM_DECODER_INIT_STATUS_UNSUPPORTED_CONTAINER = (UInt32)(1)
+const FLAC__STREAM_DECODER_INIT_STATUS_INVALID_CALLBACKS = (UInt32)(2)
+const FLAC__STREAM_DECODER_INIT_STATUS_MEMORY_ALLOCATION_ERROR = (UInt32)(3)
+const FLAC__STREAM_DECODER_INIT_STATUS_ERROR_OPENING_FILE = (UInt32)(4)
+const FLAC__STREAM_DECODER_INIT_STATUS_ALREADY_INITIALIZED = (UInt32)(5)
+# end enum ANONYMOUS_28
+
+# begin enum ANONYMOUS_29
+typealias ANONYMOUS_29 Uint32
+const FLAC__STREAM_DECODER_READ_STATUS_CONTINUE = (UInt32)(0)
+const FLAC__STREAM_DECODER_READ_STATUS_END_OF_STREAM = (UInt32)(1)
+const FLAC__STREAM_DECODER_READ_STATUS_ABORT = (UInt32)(2)
+# end enum ANONYMOUS_29
+
+# begin enum ANONYMOUS_30
+typealias ANONYMOUS_30 Uint32
+const FLAC__STREAM_DECODER_SEEK_STATUS_OK = (UInt32)(0)
+const FLAC__STREAM_DECODER_SEEK_STATUS_ERROR = (UInt32)(1)
+const FLAC__STREAM_DECODER_SEEK_STATUS_UNSUPPORTED = (UInt32)(2)
+# end enum ANONYMOUS_30
+
+# begin enum ANONYMOUS_31
+typealias ANONYMOUS_31 Uint32
+const FLAC__STREAM_DECODER_TELL_STATUS_OK = (UInt32)(0)
+const FLAC__STREAM_DECODER_TELL_STATUS_ERROR = (UInt32)(1)
+const FLAC__STREAM_DECODER_TELL_STATUS_UNSUPPORTED = (UInt32)(2)
+# end enum ANONYMOUS_31
+
+# begin enum ANONYMOUS_32
+typealias ANONYMOUS_32 Uint32
+const FLAC__STREAM_DECODER_LENGTH_STATUS_OK = (UInt32)(0)
+const FLAC__STREAM_DECODER_LENGTH_STATUS_ERROR = (UInt32)(1)
+const FLAC__STREAM_DECODER_LENGTH_STATUS_UNSUPPORTED = (UInt32)(2)
+# end enum ANONYMOUS_32
+
+# begin enum ANONYMOUS_33
+typealias ANONYMOUS_33 Uint32
+const FLAC__STREAM_DECODER_WRITE_STATUS_CONTINUE = (UInt32)(0)
+const FLAC__STREAM_DECODER_WRITE_STATUS_ABORT = (UInt32)(1)
+# end enum ANONYMOUS_33
+
+# begin enum ANONYMOUS_34
+typealias ANONYMOUS_34 Uint32
+const FLAC__STREAM_DECODER_ERROR_STATUS_LOST_SYNC = (UInt32)(0)
+const FLAC__STREAM_DECODER_ERROR_STATUS_BAD_HEADER = (UInt32)(1)
+const FLAC__STREAM_DECODER_ERROR_STATUS_FRAME_CRC_MISMATCH = (UInt32)(2)
+const FLAC__STREAM_DECODER_ERROR_STATUS_UNPARSEABLE_STREAM = (UInt32)(3)
+# end enum ANONYMOUS_34
+
+typealias ogg_int16_t Int16
+typealias ogg_uint16_t Uint16
+typealias ogg_int32_t Int32
+typealias ogg_uint32_t Uint32
+typealias ogg_int64_t Int64
+
+type ogg_iovec_t
+    iov_base::Ptr{Void}
+    iov_len::Cint
+end
+
+type oggpack_buffer
+    endbyte::Clong
+    endbit::Cint
+    buffer::Ptr{Cuchar}
+    ptr::Ptr{Cuchar}
+    storage::Clong
+end
+
+type ogg_page
+    header::Ptr{Cuchar}
+    header_len::Clong
+    body::Ptr{Cuchar}
+    body_len::Clong
+end
+
+immutable Array_282_Cuchar
+    d1::Cuchar
+    d2::Cuchar
+    d3::Cuchar
+    d4::Cuchar
+    d5::Cuchar
+    d6::Cuchar
+    d7::Cuchar
+    d8::Cuchar
+    d9::Cuchar
+    d10::Cuchar
+    d11::Cuchar
+    d12::Cuchar
+    d13::Cuchar
+    d14::Cuchar
+    d15::Cuchar
+    d16::Cuchar
+    d17::Cuchar
+    d18::Cuchar
+    d19::Cuchar
+    d20::Cuchar
+    d21::Cuchar
+    d22::Cuchar
+    d23::Cuchar
+    d24::Cuchar
+    d25::Cuchar
+    d26::Cuchar
+    d27::Cuchar
+    d28::Cuchar
+    d29::Cuchar
+    d30::Cuchar
+    d31::Cuchar
+    d32::Cuchar
+    d33::Cuchar
+    d34::Cuchar
+    d35::Cuchar
+    d36::Cuchar
+    d37::Cuchar
+    d38::Cuchar
+    d39::Cuchar
+    d40::Cuchar
+    d41::Cuchar
+    d42::Cuchar
+    d43::Cuchar
+    d44::Cuchar
+    d45::Cuchar
+    d46::Cuchar
+    d47::Cuchar
+    d48::Cuchar
+    d49::Cuchar
+    d50::Cuchar
+    d51::Cuchar
+    d52::Cuchar
+    d53::Cuchar
+    d54::Cuchar
+    d55::Cuchar
+    d56::Cuchar
+    d57::Cuchar
+    d58::Cuchar
+    d59::Cuchar
+    d60::Cuchar
+    d61::Cuchar
+    d62::Cuchar
+    d63::Cuchar
+    d64::Cuchar
+    d65::Cuchar
+    d66::Cuchar
+    d67::Cuchar
+    d68::Cuchar
+    d69::Cuchar
+    d70::Cuchar
+    d71::Cuchar
+    d72::Cuchar
+    d73::Cuchar
+    d74::Cuchar
+    d75::Cuchar
+    d76::Cuchar
+    d77::Cuchar
+    d78::Cuchar
+    d79::Cuchar
+    d80::Cuchar
+    d81::Cuchar
+    d82::Cuchar
+    d83::Cuchar
+    d84::Cuchar
+    d85::Cuchar
+    d86::Cuchar
+    d87::Cuchar
+    d88::Cuchar
+    d89::Cuchar
+    d90::Cuchar
+    d91::Cuchar
+    d92::Cuchar
+    d93::Cuchar
+    d94::Cuchar
+    d95::Cuchar
+    d96::Cuchar
+    d97::Cuchar
+    d98::Cuchar
+    d99::Cuchar
+    d100::Cuchar
+    d101::Cuchar
+    d102::Cuchar
+    d103::Cuchar
+    d104::Cuchar
+    d105::Cuchar
+    d106::Cuchar
+    d107::Cuchar
+    d108::Cuchar
+    d109::Cuchar
+    d110::Cuchar
+    d111::Cuchar
+    d112::Cuchar
+    d113::Cuchar
+    d114::Cuchar
+    d115::Cuchar
+    d116::Cuchar
+    d117::Cuchar
+    d118::Cuchar
+    d119::Cuchar
+    d120::Cuchar
+    d121::Cuchar
+    d122::Cuchar
+    d123::Cuchar
+    d124::Cuchar
+    d125::Cuchar
+    d126::Cuchar
+    d127::Cuchar
+    d128::Cuchar
+    d129::Cuchar
+    d130::Cuchar
+    d131::Cuchar
+    d132::Cuchar
+    d133::Cuchar
+    d134::Cuchar
+    d135::Cuchar
+    d136::Cuchar
+    d137::Cuchar
+    d138::Cuchar
+    d139::Cuchar
+    d140::Cuchar
+    d141::Cuchar
+    d142::Cuchar
+    d143::Cuchar
+    d144::Cuchar
+    d145::Cuchar
+    d146::Cuchar
+    d147::Cuchar
+    d148::Cuchar
+    d149::Cuchar
+    d150::Cuchar
+    d151::Cuchar
+    d152::Cuchar
+    d153::Cuchar
+    d154::Cuchar
+    d155::Cuchar
+    d156::Cuchar
+    d157::Cuchar
+    d158::Cuchar
+    d159::Cuchar
+    d160::Cuchar
+    d161::Cuchar
+    d162::Cuchar
+    d163::Cuchar
+    d164::Cuchar
+    d165::Cuchar
+    d166::Cuchar
+    d167::Cuchar
+    d168::Cuchar
+    d169::Cuchar
+    d170::Cuchar
+    d171::Cuchar
+    d172::Cuchar
+    d173::Cuchar
+    d174::Cuchar
+    d175::Cuchar
+    d176::Cuchar
+    d177::Cuchar
+    d178::Cuchar
+    d179::Cuchar
+    d180::Cuchar
+    d181::Cuchar
+    d182::Cuchar
+    d183::Cuchar
+    d184::Cuchar
+    d185::Cuchar
+    d186::Cuchar
+    d187::Cuchar
+    d188::Cuchar
+    d189::Cuchar
+    d190::Cuchar
+    d191::Cuchar
+    d192::Cuchar
+    d193::Cuchar
+    d194::Cuchar
+    d195::Cuchar
+    d196::Cuchar
+    d197::Cuchar
+    d198::Cuchar
+    d199::Cuchar
+    d200::Cuchar
+    d201::Cuchar
+    d202::Cuchar
+    d203::Cuchar
+    d204::Cuchar
+    d205::Cuchar
+    d206::Cuchar
+    d207::Cuchar
+    d208::Cuchar
+    d209::Cuchar
+    d210::Cuchar
+    d211::Cuchar
+    d212::Cuchar
+    d213::Cuchar
+    d214::Cuchar
+    d215::Cuchar
+    d216::Cuchar
+    d217::Cuchar
+    d218::Cuchar
+    d219::Cuchar
+    d220::Cuchar
+    d221::Cuchar
+    d222::Cuchar
+    d223::Cuchar
+    d224::Cuchar
+    d225::Cuchar
+    d226::Cuchar
+    d227::Cuchar
+    d228::Cuchar
+    d229::Cuchar
+    d230::Cuchar
+    d231::Cuchar
+    d232::Cuchar
+    d233::Cuchar
+    d234::Cuchar
+    d235::Cuchar
+    d236::Cuchar
+    d237::Cuchar
+    d238::Cuchar
+    d239::Cuchar
+    d240::Cuchar
+    d241::Cuchar
+    d242::Cuchar
+    d243::Cuchar
+    d244::Cuchar
+    d245::Cuchar
+    d246::Cuchar
+    d247::Cuchar
+    d248::Cuchar
+    d249::Cuchar
+    d250::Cuchar
+    d251::Cuchar
+    d252::Cuchar
+    d253::Cuchar
+    d254::Cuchar
+    d255::Cuchar
+    d256::Cuchar
+    d257::Cuchar
+    d258::Cuchar
+    d259::Cuchar
+    d260::Cuchar
+    d261::Cuchar
+    d262::Cuchar
+    d263::Cuchar
+    d264::Cuchar
+    d265::Cuchar
+    d266::Cuchar
+    d267::Cuchar
+    d268::Cuchar
+    d269::Cuchar
+    d270::Cuchar
+    d271::Cuchar
+    d272::Cuchar
+    d273::Cuchar
+    d274::Cuchar
+    d275::Cuchar
+    d276::Cuchar
+    d277::Cuchar
+    d278::Cuchar
+    d279::Cuchar
+    d280::Cuchar
+    d281::Cuchar
+    d282::Cuchar
+end
+
+zero(::Type{Array_282_Cuchar}) = begin  # /home/bates/.julia/v0.4/Clang/src/wrap_c.jl, line 264:
+        Array_282_Cuchar(fill(zero(Cuchar),282)...)
+    end
+
+type ogg_stream_state
+    body_data::Ptr{Cuchar}
+    body_storage::Clong
+    body_fill::Clong
+    body_returned::Clong
+    lacing_vals::Ptr{Cint}
+    granule_vals::Ptr{ogg_int64_t}
+    lacing_storage::Clong
+    lacing_fill::Clong
+    lacing_packet::Clong
+    lacing_returned::Clong
+    header::Array_282_Cuchar
+    header_fill::Cint
+    e_o_s::Cint
+    b_o_s::Cint
+    serialno::Clong
+    pageno::Clong
+    packetno::ogg_int64_t
+    granulepos::ogg_int64_t
+end
+
+type ogg_packet
+    packet::Ptr{Cuchar}
+    bytes::Clong
+    b_o_s::Clong
+    e_o_s::Clong
+    granulepos::ogg_int64_t
+    packetno::ogg_int64_t
+end
+
+type ogg_sync_state
+    data::Ptr{Cuchar}
+    storage::Cint
+    fill::Cint
+    returned::Cint
+    unsynced::Cint
+    headerbytes::Cint
+    bodybytes::Cint
+end
+
+# begin enum OggzError
+typealias OggzError Cint
+const OGGZ_ERR_OK = (Int32)(0)
+const OGGZ_ERR_GENERIC = (Int32)(-1)
+const OGGZ_ERR_BAD_OGGZ = (Int32)(-2)
+const OGGZ_ERR_INVALID = (Int32)(-3)
+const OGGZ_ERR_NO_STREAMS = (Int32)(-4)
+const OGGZ_ERR_BOS = (Int32)(-5)
+const OGGZ_ERR_EOS = (Int32)(-6)
+const OGGZ_ERR_BAD_METRIC = (Int32)(-7)
+const OGGZ_ERR_SYSTEM = (Int32)(-10)
+const OGGZ_ERR_DISABLED = (Int32)(-11)
+const OGGZ_ERR_NOSEEK = (Int32)(-13)
+const OGGZ_ERR_STOP_OK = (Int32)(-14)
+const OGGZ_ERR_STOP_ERR = (Int32)(-15)
+const OGGZ_ERR_IO_AGAIN = (Int32)(-16)
+const OGGZ_ERR_HOLE_IN_DATA = (Int32)(-17)
+const OGGZ_ERR_OUT_OF_MEMORY = (Int32)(-18)
+const OGGZ_ERR_BAD_SERIALNO = (Int32)(-20)
+const OGGZ_ERR_BAD_BYTES = (Int32)(-21)
+const OGGZ_ERR_BAD_B_O_S = (Int32)(-22)
+const OGGZ_ERR_BAD_E_O_S = (Int32)(-23)
+const OGGZ_ERR_BAD_GRANULEPOS = (Int32)(-24)
+const OGGZ_ERR_BAD_PACKETNO = (Int32)(-25)
+const OGGZ_ERR_COMMENT_INVALID = (Int32)(-129)
+const OGGZ_ERR_BAD_GUARD = (Int32)(-210)
+const OGGZ_ERR_RECURSIVE_WRITE = (Int32)(-266)
+# end enum OggzError
+
+const OGGZ_ERR_USER_STOPPED = OGGZ_ERR_STOP_OK
+const OGGZ_ERR_READ_STOP_OK = OGGZ_ERR_STOP_OK
+const OGGZ_ERR_READ_STOP_ERR = OGGZ_ERR_STOP_ERR
+
+# begin enum OggzFlags
+typealias OggzFlags Uint32
+const OGGZ_READ = (UInt32)(0)
+const OGGZ_WRITE = (UInt32)(1)
+const OGGZ_NONSTRICT = (UInt32)(16)
+const OGGZ_AUTO = (UInt32)(32)
+const OGGZ_PREFIX = (UInt32)(64)
+const OGGZ_SUFFIX = (UInt32)(128)
+# end enum OggzFlags
+
+# begin enum OggzStopCtl
+typealias OggzStopCtl Cint
+const OGGZ_CONTINUE = (Int32)(0)
+const OGGZ_STOP_OK = (Int32)(1)
+const OGGZ_STOP_ERR = (Int32)(-1)
+# end enum OggzStopCtl
+
+# begin enum OggzFlushOpts
+typealias OggzFlushOpts Uint32
+const OGGZ_FLUSH_BEFORE = (UInt32)(1)
+const OGGZ_FLUSH_AFTER = (UInt32)(2)
+# end enum OggzFlushOpts
+
+# begin enum OggzStreamContent
+typealias OggzStreamContent Uint32
+const OGGZ_CONTENT_THEORA = (UInt32)(0)
+const OGGZ_CONTENT_VORBIS = (UInt32)(1)
+const OGGZ_CONTENT_SPEEX = (UInt32)(2)
+const OGGZ_CONTENT_PCM = (UInt32)(3)
+const OGGZ_CONTENT_CMML = (UInt32)(4)
+const OGGZ_CONTENT_ANX2 = (UInt32)(5)
+const OGGZ_CONTENT_SKELETON = (UInt32)(6)
+const OGGZ_CONTENT_FLAC0 = (UInt32)(7)
+const OGGZ_CONTENT_FLAC = (UInt32)(8)
+const OGGZ_CONTENT_ANXDATA = (UInt32)(9)
+const OGGZ_CONTENT_CELT = (UInt32)(10)
+const OGGZ_CONTENT_KATE = (UInt32)(11)
+const OGGZ_CONTENT_DIRAC = (UInt32)(12)
+const OGGZ_CONTENT_UNKNOWN = (UInt32)(13)
+# end enum OggzStreamContent
+
+typealias OggzTable Void
+typealias OGGZ Void
+typealias oggz_off_t Coff_t
+
+type oggz_position
+    calc_granulepos::ogg_int64_t
+    begin_page_offset::oggz_off_t
+    end_page_offset::oggz_off_t
+    pages::Cint
+    begin_segment_index::Cint
+end
+
+type oggz_packet
+    op::ogg_packet
+    pos::oggz_position
+end
+
+typealias OggzReadPacket Ptr{Void}
+typealias OggzReadPage Ptr{Void}
+typealias OggzMetric Ptr{Void}
+typealias OggzWriteHungry Ptr{Void}
+typealias OggzIOWrite Ptr{Void}
+typealias OggzIOSeek Ptr{Void}
+typealias OggzIOTell Ptr{Void}
+typealias OggzIOFlush Ptr{Void}
+
+type OggzComment
+    name::Ptr{Uint8}
+    value::Ptr{Uint8}
+end
+
+typealias FLAC__IOHandle Ptr{Void}
+typealias FLAC__IOCallback_Write Ptr{Void}
+typealias FLAC__IOCallback_Seek Ptr{Void}
+typealias FLAC__IOCallback_Tell Ptr{Void}
+typealias FLAC__IOCallback_Eof Ptr{Void}
+typealias FLAC__IOCallback_Close Ptr{Void}
+
+type FLAC__IOCallbacks
+    read::Cint
+    write::FLAC__IOCallback_Write
+    seek::FLAC__IOCallback_Seek
+    tell::FLAC__IOCallback_Tell
+    eof::FLAC__IOCallback_Eof
+    close::FLAC__IOCallback_Close
+end
+
+# begin enum ANONYMOUS_36
+typealias ANONYMOUS_36 Uint32
+const FLAC__ENTROPY_CODING_METHOD_PARTITIONED_RICE = (UInt32)(0)
+const FLAC__ENTROPY_CODING_METHOD_PARTITIONED_RICE2 = (UInt32)(1)
+# end enum ANONYMOUS_36
+
+# begin enum ANONYMOUS_37
+typealias ANONYMOUS_37 Uint32
+const FLAC__SUBFRAME_TYPE_CONSTANT = (UInt32)(0)
+const FLAC__SUBFRAME_TYPE_VERBATIM = (UInt32)(1)
+const FLAC__SUBFRAME_TYPE_FIXED = (UInt32)(2)
+const FLAC__SUBFRAME_TYPE_LPC = (UInt32)(3)
+# end enum ANONYMOUS_37
+
+# begin enum ANONYMOUS_38
+typealias ANONYMOUS_38 Uint32
+const FLAC__CHANNEL_ASSIGNMENT_INDEPENDENT = (UInt32)(0)
+const FLAC__CHANNEL_ASSIGNMENT_LEFT_SIDE = (UInt32)(1)
+const FLAC__CHANNEL_ASSIGNMENT_RIGHT_SIDE = (UInt32)(2)
+const FLAC__CHANNEL_ASSIGNMENT_MID_SIDE = (UInt32)(3)
+# end enum ANONYMOUS_38
+
+# begin enum ANONYMOUS_39
+typealias ANONYMOUS_39 Uint32
+const FLAC__FRAME_NUMBER_TYPE_FRAME_NUMBER = (UInt32)(0)
+const FLAC__FRAME_NUMBER_TYPE_SAMPLE_NUMBER = (UInt32)(1)
+# end enum ANONYMOUS_39
+
+# begin enum ANONYMOUS_40
+typealias ANONYMOUS_40 Uint32
+const FLAC__METADATA_TYPE_STREAMINFO = (UInt32)(0)
+const FLAC__METADATA_TYPE_PADDING = (UInt32)(1)
+const FLAC__METADATA_TYPE_APPLICATION = (UInt32)(2)
+const FLAC__METADATA_TYPE_SEEKTABLE = (UInt32)(3)
+const FLAC__METADATA_TYPE_VORBIS_COMMENT = (UInt32)(4)
+const FLAC__METADATA_TYPE_CUESHEET = (UInt32)(5)
+const FLAC__METADATA_TYPE_PICTURE = (UInt32)(6)
+const FLAC__METADATA_TYPE_UNDEFINED = (UInt32)(7)
+const FLAC__MAX_METADATA_TYPE = (UInt32)(126)
+# end enum ANONYMOUS_40
+
+# begin enum ANONYMOUS_41
+typealias ANONYMOUS_41 Uint32
+const FLAC__STREAM_METADATA_PICTURE_TYPE_OTHER = (UInt32)(0)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_FILE_ICON_STANDARD = (UInt32)(1)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_FILE_ICON = (UInt32)(2)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_FRONT_COVER = (UInt32)(3)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_BACK_COVER = (UInt32)(4)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_LEAFLET_PAGE = (UInt32)(5)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_MEDIA = (UInt32)(6)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_LEAD_ARTIST = (UInt32)(7)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_ARTIST = (UInt32)(8)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_CONDUCTOR = (UInt32)(9)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_BAND = (UInt32)(10)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_COMPOSER = (UInt32)(11)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_LYRICIST = (UInt32)(12)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_RECORDING_LOCATION = (UInt32)(13)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_DURING_RECORDING = (UInt32)(14)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_DURING_PERFORMANCE = (UInt32)(15)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_VIDEO_SCREEN_CAPTURE = (UInt32)(16)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_FISH = (UInt32)(17)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_ILLUSTRATION = (UInt32)(18)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_BAND_LOGOTYPE = (UInt32)(19)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_PUBLISHER_LOGOTYPE = (UInt32)(20)
+const FLAC__STREAM_METADATA_PICTURE_TYPE_UNDEFINED = (UInt32)(21)
+# end enum ANONYMOUS_41
+
+type FLAC__Metadata_SimpleIterator
+end
+
+# begin enum ANONYMOUS_42
+typealias ANONYMOUS_42 Uint32
+const FLAC__METADATA_SIMPLE_ITERATOR_STATUS_OK = (UInt32)(0)
+const FLAC__METADATA_SIMPLE_ITERATOR_STATUS_ILLEGAL_INPUT = (UInt32)(1)
+const FLAC__METADATA_SIMPLE_ITERATOR_STATUS_ERROR_OPENING_FILE = (UInt32)(2)
+const FLAC__METADATA_SIMPLE_ITERATOR_STATUS_NOT_A_FLAC_FILE = (UInt32)(3)
+const FLAC__METADATA_SIMPLE_ITERATOR_STATUS_NOT_WRITABLE = (UInt32)(4)
+const FLAC__METADATA_SIMPLE_ITERATOR_STATUS_BAD_METADATA = (UInt32)(5)
+const FLAC__METADATA_SIMPLE_ITERATOR_STATUS_READ_ERROR = (UInt32)(6)
+const FLAC__METADATA_SIMPLE_ITERATOR_STATUS_SEEK_ERROR = (UInt32)(7)
+const FLAC__METADATA_SIMPLE_ITERATOR_STATUS_WRITE_ERROR = (UInt32)(8)
+const FLAC__METADATA_SIMPLE_ITERATOR_STATUS_RENAME_ERROR = (UInt32)(9)
+const FLAC__METADATA_SIMPLE_ITERATOR_STATUS_UNLINK_ERROR = (UInt32)(10)
+const FLAC__METADATA_SIMPLE_ITERATOR_STATUS_MEMORY_ALLOCATION_ERROR = (UInt32)(11)
+const FLAC__METADATA_SIMPLE_ITERATOR_STATUS_INTERNAL_ERROR = (UInt32)(12)
+# end enum ANONYMOUS_42
+
+# begin enum FLAC__Metadata_SimpleIteratorStatus
+typealias FLAC__Metadata_SimpleIteratorStatus Uint32
+const FLAC__METADATA_SIMPLE_ITERATOR_STATUS_OK = (UInt32)(0)
+const FLAC__METADATA_SIMPLE_ITERATOR_STATUS_ILLEGAL_INPUT = (UInt32)(1)
+const FLAC__METADATA_SIMPLE_ITERATOR_STATUS_ERROR_OPENING_FILE = (UInt32)(2)
+const FLAC__METADATA_SIMPLE_ITERATOR_STATUS_NOT_A_FLAC_FILE = (UInt32)(3)
+const FLAC__METADATA_SIMPLE_ITERATOR_STATUS_NOT_WRITABLE = (UInt32)(4)
+const FLAC__METADATA_SIMPLE_ITERATOR_STATUS_BAD_METADATA = (UInt32)(5)
+const FLAC__METADATA_SIMPLE_ITERATOR_STATUS_READ_ERROR = (UInt32)(6)
+const FLAC__METADATA_SIMPLE_ITERATOR_STATUS_SEEK_ERROR = (UInt32)(7)
+const FLAC__METADATA_SIMPLE_ITERATOR_STATUS_WRITE_ERROR = (UInt32)(8)
+const FLAC__METADATA_SIMPLE_ITERATOR_STATUS_RENAME_ERROR = (UInt32)(9)
+const FLAC__METADATA_SIMPLE_ITERATOR_STATUS_UNLINK_ERROR = (UInt32)(10)
+const FLAC__METADATA_SIMPLE_ITERATOR_STATUS_MEMORY_ALLOCATION_ERROR = (UInt32)(11)
+const FLAC__METADATA_SIMPLE_ITERATOR_STATUS_INTERNAL_ERROR = (UInt32)(12)
+# end enum FLAC__Metadata_SimpleIteratorStatus
+
+type FLAC__Metadata_Chain
+end
+
+type FLAC__Metadata_Iterator
+end
+
+# begin enum ANONYMOUS_43
+typealias ANONYMOUS_43 Uint32
+const FLAC__METADATA_CHAIN_STATUS_OK = (UInt32)(0)
+const FLAC__METADATA_CHAIN_STATUS_ILLEGAL_INPUT = (UInt32)(1)
+const FLAC__METADATA_CHAIN_STATUS_ERROR_OPENING_FILE = (UInt32)(2)
+const FLAC__METADATA_CHAIN_STATUS_NOT_A_FLAC_FILE = (UInt32)(3)
+const FLAC__METADATA_CHAIN_STATUS_NOT_WRITABLE = (UInt32)(4)
+const FLAC__METADATA_CHAIN_STATUS_BAD_METADATA = (UInt32)(5)
+const FLAC__METADATA_CHAIN_STATUS_READ_ERROR = (UInt32)(6)
+const FLAC__METADATA_CHAIN_STATUS_SEEK_ERROR = (UInt32)(7)
+const FLAC__METADATA_CHAIN_STATUS_WRITE_ERROR = (UInt32)(8)
+const FLAC__METADATA_CHAIN_STATUS_RENAME_ERROR = (UInt32)(9)
+const FLAC__METADATA_CHAIN_STATUS_UNLINK_ERROR = (UInt32)(10)
+const FLAC__METADATA_CHAIN_STATUS_MEMORY_ALLOCATION_ERROR = (UInt32)(11)
+const FLAC__METADATA_CHAIN_STATUS_INTERNAL_ERROR = (UInt32)(12)
+const FLAC__METADATA_CHAIN_STATUS_INVALID_CALLBACKS = (UInt32)(13)
+const FLAC__METADATA_CHAIN_STATUS_READ_WRITE_MISMATCH = (UInt32)(14)
+const FLAC__METADATA_CHAIN_STATUS_WRONG_WRITE_CALL = (UInt32)(15)
+# end enum ANONYMOUS_43
+
+# begin enum FLAC__Metadata_ChainStatus
+typealias FLAC__Metadata_ChainStatus Uint32
+const FLAC__METADATA_CHAIN_STATUS_OK = (UInt32)(0)
+const FLAC__METADATA_CHAIN_STATUS_ILLEGAL_INPUT = (UInt32)(1)
+const FLAC__METADATA_CHAIN_STATUS_ERROR_OPENING_FILE = (UInt32)(2)
+const FLAC__METADATA_CHAIN_STATUS_NOT_A_FLAC_FILE = (UInt32)(3)
+const FLAC__METADATA_CHAIN_STATUS_NOT_WRITABLE = (UInt32)(4)
+const FLAC__METADATA_CHAIN_STATUS_BAD_METADATA = (UInt32)(5)
+const FLAC__METADATA_CHAIN_STATUS_READ_ERROR = (UInt32)(6)
+const FLAC__METADATA_CHAIN_STATUS_SEEK_ERROR = (UInt32)(7)
+const FLAC__METADATA_CHAIN_STATUS_WRITE_ERROR = (UInt32)(8)
+const FLAC__METADATA_CHAIN_STATUS_RENAME_ERROR = (UInt32)(9)
+const FLAC__METADATA_CHAIN_STATUS_UNLINK_ERROR = (UInt32)(10)
+const FLAC__METADATA_CHAIN_STATUS_MEMORY_ALLOCATION_ERROR = (UInt32)(11)
+const FLAC__METADATA_CHAIN_STATUS_INTERNAL_ERROR = (UInt32)(12)
+const FLAC__METADATA_CHAIN_STATUS_INVALID_CALLBACKS = (UInt32)(13)
+const FLAC__METADATA_CHAIN_STATUS_READ_WRITE_MISMATCH = (UInt32)(14)
+const FLAC__METADATA_CHAIN_STATUS_WRONG_WRITE_CALL = (UInt32)(15)
+# end enum FLAC__Metadata_ChainStatus
+
+immutable Array_27_Uint8
+    d1::Uint8
+    d2::Uint8
+    d3::Uint8
+    d4::Uint8
+    d5::Uint8
+    d6::Uint8
+    d7::Uint8
+    d8::Uint8
+    d9::Uint8
+    d10::Uint8
+    d11::Uint8
+    d12::Uint8
+    d13::Uint8
+    d14::Uint8
+    d15::Uint8
+    d16::Uint8
+    d17::Uint8
+    d18::Uint8
+    d19::Uint8
+    d20::Uint8
+    d21::Uint8
+    d22::Uint8
+    d23::Uint8
+    d24::Uint8
+    d25::Uint8
+    d26::Uint8
+    d27::Uint8
+end
+
+zero(::Type{Array_27_Uint8}) = begin  # /home/bates/.julia/v0.4/Clang/src/wrap_c.jl, line 264:
+        Array_27_Uint8(fill(zero(Uint8),27)...)
+    end
+
+# begin enum ANONYMOUS_44
+typealias ANONYMOUS_44 Uint32
+const FLAC__STREAM_DECODER_SEARCH_FOR_METADATA = (UInt32)(0)
+const FLAC__STREAM_DECODER_READ_METADATA = (UInt32)(1)
+const FLAC__STREAM_DECODER_SEARCH_FOR_FRAME_SYNC = (UInt32)(2)
+const FLAC__STREAM_DECODER_READ_FRAME = (UInt32)(3)
+const FLAC__STREAM_DECODER_END_OF_STREAM = (UInt32)(4)
+const FLAC__STREAM_DECODER_OGG_ERROR = (UInt32)(5)
+const FLAC__STREAM_DECODER_SEEK_ERROR = (UInt32)(6)
+const FLAC__STREAM_DECODER_ABORTED = (UInt32)(7)
+const FLAC__STREAM_DECODER_MEMORY_ALLOCATION_ERROR = (UInt32)(8)
+const FLAC__STREAM_DECODER_UNINITIALIZED = (UInt32)(9)
+# end enum ANONYMOUS_44
+
+# begin enum ANONYMOUS_45
+typealias ANONYMOUS_45 Uint32
+const FLAC__STREAM_DECODER_INIT_STATUS_OK = (UInt32)(0)
+const FLAC__STREAM_DECODER_INIT_STATUS_UNSUPPORTED_CONTAINER = (UInt32)(1)
+const FLAC__STREAM_DECODER_INIT_STATUS_INVALID_CALLBACKS = (UInt32)(2)
+const FLAC__STREAM_DECODER_INIT_STATUS_MEMORY_ALLOCATION_ERROR = (UInt32)(3)
+const FLAC__STREAM_DECODER_INIT_STATUS_ERROR_OPENING_FILE = (UInt32)(4)
+const FLAC__STREAM_DECODER_INIT_STATUS_ALREADY_INITIALIZED = (UInt32)(5)
+# end enum ANONYMOUS_45
+
+# begin enum ANONYMOUS_46
+typealias ANONYMOUS_46 Uint32
+const FLAC__STREAM_DECODER_READ_STATUS_CONTINUE = (UInt32)(0)
+const FLAC__STREAM_DECODER_READ_STATUS_END_OF_STREAM = (UInt32)(1)
+const FLAC__STREAM_DECODER_READ_STATUS_ABORT = (UInt32)(2)
+# end enum ANONYMOUS_46
+
+# begin enum ANONYMOUS_47
+typealias ANONYMOUS_47 Uint32
+const FLAC__STREAM_DECODER_SEEK_STATUS_OK = (UInt32)(0)
+const FLAC__STREAM_DECODER_SEEK_STATUS_ERROR = (UInt32)(1)
+const FLAC__STREAM_DECODER_SEEK_STATUS_UNSUPPORTED = (UInt32)(2)
+# end enum ANONYMOUS_47
+
+# begin enum ANONYMOUS_48
+typealias ANONYMOUS_48 Uint32
+const FLAC__STREAM_DECODER_TELL_STATUS_OK = (UInt32)(0)
+const FLAC__STREAM_DECODER_TELL_STATUS_ERROR = (UInt32)(1)
+const FLAC__STREAM_DECODER_TELL_STATUS_UNSUPPORTED = (UInt32)(2)
+# end enum ANONYMOUS_48
+
+# begin enum ANONYMOUS_49
+typealias ANONYMOUS_49 Uint32
+const FLAC__STREAM_DECODER_LENGTH_STATUS_OK = (UInt32)(0)
+const FLAC__STREAM_DECODER_LENGTH_STATUS_ERROR = (UInt32)(1)
+const FLAC__STREAM_DECODER_LENGTH_STATUS_UNSUPPORTED = (UInt32)(2)
+# end enum ANONYMOUS_49
+
+# begin enum ANONYMOUS_50
+typealias ANONYMOUS_50 Uint32
+const FLAC__STREAM_DECODER_WRITE_STATUS_CONTINUE = (UInt32)(0)
+const FLAC__STREAM_DECODER_WRITE_STATUS_ABORT = (UInt32)(1)
+# end enum ANONYMOUS_50
+
+# begin enum ANONYMOUS_51
+typealias ANONYMOUS_51 Uint32
+const FLAC__STREAM_DECODER_ERROR_STATUS_LOST_SYNC = (UInt32)(0)
+const FLAC__STREAM_DECODER_ERROR_STATUS_BAD_HEADER = (UInt32)(1)
+const FLAC__STREAM_DECODER_ERROR_STATUS_FRAME_CRC_MISMATCH = (UInt32)(2)
+const FLAC__STREAM_DECODER_ERROR_STATUS_UNPARSEABLE_STREAM = (UInt32)(3)
+# end enum ANONYMOUS_51
+
+# begin enum ANONYMOUS_52
+typealias ANONYMOUS_52 Uint32
+const FLAC__STREAM_ENCODER_OK = (UInt32)(0)
+const FLAC__STREAM_ENCODER_UNINITIALIZED = (UInt32)(1)
+const FLAC__STREAM_ENCODER_OGG_ERROR = (UInt32)(2)
+const FLAC__STREAM_ENCODER_VERIFY_DECODER_ERROR = (UInt32)(3)
+const FLAC__STREAM_ENCODER_VERIFY_MISMATCH_IN_AUDIO_DATA = (UInt32)(4)
+const FLAC__STREAM_ENCODER_CLIENT_ERROR = (UInt32)(5)
+const FLAC__STREAM_ENCODER_IO_ERROR = (UInt32)(6)
+const FLAC__STREAM_ENCODER_FRAMING_ERROR = (UInt32)(7)
+const FLAC__STREAM_ENCODER_MEMORY_ALLOCATION_ERROR = (UInt32)(8)
+# end enum ANONYMOUS_52
+
+# begin enum ANONYMOUS_53
+typealias ANONYMOUS_53 Uint32
+const FLAC__STREAM_ENCODER_INIT_STATUS_OK = (UInt32)(0)
+const FLAC__STREAM_ENCODER_INIT_STATUS_ENCODER_ERROR = (UInt32)(1)
+const FLAC__STREAM_ENCODER_INIT_STATUS_UNSUPPORTED_CONTAINER = (UInt32)(2)
+const FLAC__STREAM_ENCODER_INIT_STATUS_INVALID_CALLBACKS = (UInt32)(3)
+const FLAC__STREAM_ENCODER_INIT_STATUS_INVALID_NUMBER_OF_CHANNELS = (UInt32)(4)
+const FLAC__STREAM_ENCODER_INIT_STATUS_INVALID_BITS_PER_SAMPLE = (UInt32)(5)
+const FLAC__STREAM_ENCODER_INIT_STATUS_INVALID_SAMPLE_RATE = (UInt32)(6)
+const FLAC__STREAM_ENCODER_INIT_STATUS_INVALID_BLOCK_SIZE = (UInt32)(7)
+const FLAC__STREAM_ENCODER_INIT_STATUS_INVALID_MAX_LPC_ORDER = (UInt32)(8)
+const FLAC__STREAM_ENCODER_INIT_STATUS_INVALID_QLP_COEFF_PRECISION = (UInt32)(9)
+const FLAC__STREAM_ENCODER_INIT_STATUS_BLOCK_SIZE_TOO_SMALL_FOR_LPC_ORDER = (UInt32)(10)
+const FLAC__STREAM_ENCODER_INIT_STATUS_NOT_STREAMABLE = (UInt32)(11)
+const FLAC__STREAM_ENCODER_INIT_STATUS_INVALID_METADATA = (UInt32)(12)
+const FLAC__STREAM_ENCODER_INIT_STATUS_ALREADY_INITIALIZED = (UInt32)(13)
+# end enum ANONYMOUS_53
+
+# begin enum ANONYMOUS_54
+typealias ANONYMOUS_54 Uint32
+const FLAC__STREAM_ENCODER_READ_STATUS_CONTINUE = (UInt32)(0)
+const FLAC__STREAM_ENCODER_READ_STATUS_END_OF_STREAM = (UInt32)(1)
+const FLAC__STREAM_ENCODER_READ_STATUS_ABORT = (UInt32)(2)
+const FLAC__STREAM_ENCODER_READ_STATUS_UNSUPPORTED = (UInt32)(3)
+# end enum ANONYMOUS_54
+
+# begin enum ANONYMOUS_55
+typealias ANONYMOUS_55 Uint32
+const FLAC__STREAM_ENCODER_WRITE_STATUS_OK = (UInt32)(0)
+const FLAC__STREAM_ENCODER_WRITE_STATUS_FATAL_ERROR = (UInt32)(1)
+# end enum ANONYMOUS_55
+
+# begin enum ANONYMOUS_56
+typealias ANONYMOUS_56 Uint32
+const FLAC__STREAM_ENCODER_SEEK_STATUS_OK = (UInt32)(0)
+const FLAC__STREAM_ENCODER_SEEK_STATUS_ERROR = (UInt32)(1)
+const FLAC__STREAM_ENCODER_SEEK_STATUS_UNSUPPORTED = (UInt32)(2)
+# end enum ANONYMOUS_56
+
+# begin enum ANONYMOUS_57
+typealias ANONYMOUS_57 Uint32
+const FLAC__STREAM_ENCODER_TELL_STATUS_OK = (UInt32)(0)
+const FLAC__STREAM_ENCODER_TELL_STATUS_ERROR = (UInt32)(1)
+const FLAC__STREAM_ENCODER_TELL_STATUS_UNSUPPORTED = (UInt32)(2)
+# end enum ANONYMOUS_57
