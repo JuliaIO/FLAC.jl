@@ -1,4 +1,3 @@
-const libflac = "libFLAC.so"
 """
 Metadata in a FLAC stream.
 
@@ -123,7 +122,7 @@ Vorbis comment metadata.  The vendor comment is always present.
 """
 type VorbisCommentMetaData <: StreamMetaData
     typ::MetaDataType
-    is_last::Bool
+    is_last::Cint
     len::Cuint
     vendor::VorbisCommentEntry
     n::UInt32
@@ -164,7 +163,7 @@ An array of `CueSheetTrack`s
 """
 type CueSheetMetaData <: StreamMetaData
     typ::MetaDataType
-    is_last::Bool
+    is_last::Cint
     len::Int64
     media_catalog_number::NTuple{129,UInt8}
     lead_in::Int64
@@ -175,7 +174,7 @@ end
 
 type PictureMetaData <: StreamMetaData
     typ::MetaDataType
-    is_last::Bool
+    is_last::Cint
     len::Int64
     ptyp::PictureType
     mime_type::Ptr{UInt8}
@@ -212,7 +211,8 @@ Factory to construct a subtype of StreamMetaData from an opaque pointer.
 
 Typically this is used in a callback function that is passed a `Ptr{Void}`.
 """
-metadata(pt::Ptr{Void}) = unsafe_load(convert(Ptr{MDTypes[unsafe_load(convert(Ptr{Int32},pt))+1]},pt))
+metadata(pt::Ptr{StreamMetaData}) =
+    unsafe_load(convert(Ptr{MDTypes[unsafe_load(convert(Ptr{Int32},pt))+1]},pt))
 
 ## Specific constructors from file names
 """
@@ -251,12 +251,13 @@ function VorbisCommentMetaData(fnm::ByteString)
 end
 
 """
-Create a VorbisCommentMetaData object from a Dict of key/value pairs.
+Create a Ptr{StreamMetaData} from a Dict of key/value pairs.
 
 Both the key and the value are converted to strings.
 """
-function VorbisCommentMetaData(dd::Dict)
-    cv = VorbisCommentMetaData()
+function Base.convert{K,V}(::Type{Ptr{StreamMetaData}},dd::Dict{K,V})
+    vcp = ccall((:FLAC__metadata_object_new,libflac),
+                Ptr{StreamMetaData},(MetaDataType,),VorbisComment)
     for (k,v) in dd
         kk = string(k)
         vv = string(v)
@@ -272,11 +273,11 @@ function VorbisCommentMetaData(dd::Dict)
               ce,kk,vv) || error(string("failure to create vorbiscomment with key ",
                                         k, " and value ", v))
         ccall((:FLAC__metadata_object_vorbiscomment_append_comment,libflac),Bool,
-              (Ptr{VorbisCommentMetaData},VorbisCommentEntry,Bool),
-              &cv,ce[1],true) || error(string("failure to append vorbiscomment with key ",
+              (Ptr{StreamMetaData},VorbisCommentEntry,Bool),
+              vcp,ce[1],true) || error(string("failure to append vorbiscomment with key ",
                                               k," and value ",v))
     end
-    cv
+    vcp
 end
 
 function Base.convert(::Type{Dict},vc::VorbisCommentMetaData)
@@ -335,7 +336,6 @@ function Base.show(io::IO,c::VorbisCommentMetaData)
     c.typ == VorbisComment || error("VorbisCommentMetaData's typ must be $VorbisComment")
     println(io,"vendor=",string(c.vendor))
     for cc in pointer_to_array(c.comments,c.n)
-        show(io,cc)
+        println(io,string(cc))
     end
-    println(io)
 end

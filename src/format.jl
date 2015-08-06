@@ -1,6 +1,12 @@
-@enum(ChannelAssignment, Independent, Left_Side, Right_Side, Mid_Side)
+@enum(ChannelAssignment,
+      Independent,
+      LeftSide,
+      RightSide,
+      MidSide)
 
-@enum(FrameNumberType, FrameNo, SampleNo)
+@enum(FrameNumberType,
+      FrameNumber,
+      SampleNumber)
 
 immutable FrameHeader
     blocksize::Cuint
@@ -21,7 +27,9 @@ immutable FrameFooter
     crc::UInt16
 end
 
-@enum(EntropyCodingMethodType, Rice, Rice2)
+@enum(EntropyCodingMethodType,
+      PartitionedRice,
+      PartitionedRice2)
 
 immutable PartitionedRiceContents
     parameters::Ptr{Cuint}
@@ -29,17 +37,21 @@ immutable PartitionedRiceContents
     capacity_by_order::Cuint
 end
 
-immutable PartitionedRice
+immutable PartitionedRiceT
     order::Cuint
     contents::Ptr{PartitionedRiceContents}
 end
 
 immutable EntropyCodingMethod
     typ::EntropyCodingMethodType
-    data::PartitionedRice
+    data::PartitionedRiceT
 end
 
-@enum(SubframeType, SFConstant, SFVerbatim, SFFixed, SFLPC)
+@enum(SubframeType,
+      SubframeConstant,
+      SubframeVerbatim,
+      SubframeFixed,
+      SubframeLPC)
 
 abstract Subframe
 
