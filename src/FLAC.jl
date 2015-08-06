@@ -1,6 +1,7 @@
 module FLAC
 
 export
+       StreamMetaData,
        InfoMetaData,
        VorbisCommentMetaData,
        PaddingMetaData,
@@ -19,6 +20,7 @@ else
     error("FLAC not properly installed. Please run Pkg.build(\"FLAC\")")
 end
 
+include("WAV.jl")
 include("metadata.jl")
 include("format.jl")
 include("decoder.jl")
