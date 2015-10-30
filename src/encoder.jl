@@ -113,7 +113,7 @@ must be done **before** initializing the encoder.
 """
 function init_file(en::StreamEncoderPtr,fnm::ByteString)
     ec = ccall((:FLAC__stream_encoder_init_file,libflac),StreamEncoderInitStatus,
-               (Ptr{Void},Ptr{Uint8},Ptr{Void},Ptr{Void}),
+               (Ptr{Void},Ptr{UInt8},Ptr{Void},Ptr{Void}),
                en,fnm,pcallback_c,C_NULL)
     ec == EncoderInitOK || error("Error code $ec from stream_encoder_init_file")
     en
@@ -122,7 +122,7 @@ end
 function process_interleaved(en::StreamEncoderPtr,buf::Vector{Int32})
     nsamp = div(length(buf),get_channels(en))
     ccall((:FLAC__stream_encoder_process_interleaved,libflac),Bool,
-          (Ptr{Void},Ptr{Int32},Uint32),en,buf,nsamp) ||
+          (Ptr{Void},Ptr{Int32},UInt32),en,buf,nsamp) ||
          error("process_interleaved failed: encoder_state is $(get_state(en))")
     nothing
 end   

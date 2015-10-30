@@ -5,7 +5,7 @@ immutable WAVHeader
     fmt::NTuple{4,UInt8}
     hlen::UInt32
     typ::UInt16
-    channels::Uint16
+    channels::UInt16
     rate::UInt32
     chunk::UInt32
     ttyp::UInt16
@@ -28,7 +28,7 @@ end
 type InvalidWAVHeader <: Exception
 end
 
-function WAVheader(bb::Vector{Uint8})
+function WAVheader(bb::Vector{UInt8})
     length(bb) == 44 || error("WAV header must be 44 bytes")
     h = unsafe_load(convert(Ptr{WAVHeader},pointer(bb)))
     ok = h.RIFF == ('R','I','F','F')

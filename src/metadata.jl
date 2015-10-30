@@ -103,7 +103,7 @@ type SeekTableMetaData <: StreamMetaData
     points::Ptr{SeekPoint}
 end
 
-    
+
 """
 A single Vorbis comment.
 
@@ -140,7 +140,7 @@ end
 """
 A single track annotation in a CueSheet.
 
-I'm not sure about the offsets here.  In the C struct the `type` and `pre_emphasis` fields
+I'm not sure about the offsets here.  In the C struct the `typ` and `pre_emphasis` fields
 are single bits.
 """
 immutable CueSheetTrack
@@ -155,7 +155,7 @@ end
 
 CueSheetTrack() = unsafe_load((:FLAC__StreamMetadata_CueSheet_Track,libflac),
                               Ptr{CueSheetTrack},(Void,))
-                              
+
 """
 Cue sheet meta data.
 
@@ -219,7 +219,7 @@ metadata(pt::Ptr{StreamMetaData}) =
 Open the file, `fnm`, check that it is a flac stream and return any cue sheets, closing the file.
 """
 function CueSheetMetaData(fnm::ByteString)
-    isreadable(fnm) || throw(ArgumentError(string("\"",fnm, "\" is not a path to a readable file"))) 
+    isreadable(fnm) || throw(ArgumentError(string("\"",fnm, "\" is not a path to a readable file")))
     cue = Ptr{CueSheetMetaData}[C_NULL]
     ccall((:FLAC__metadata_get_cuesheet,libflac),Bool,
           (Ptr{UInt8},Ptr{Ptr{CueSheetMetaData}}),
@@ -234,7 +234,7 @@ function InfoMetaData(fnm::ByteString)
     isreadable(fnm) || throw(ArgumentError(string("\"",fnm, "\" is not a path to a readable file")))
     strinf = InfoMetaData()
     ccall((:FLAC__metadata_get_streaminfo,libflac),Bool,
-          (Ptr{Uint8},Ref{InfoMetaData}),fnm,strinf) || error("call to get_streaminfo failed")
+          (Ptr{UInt8},Ref{InfoMetaData}),fnm,strinf) || error("call to get_streaminfo failed")
     strinf
 end
 
@@ -242,7 +242,7 @@ end
 Open the file, `fnm`, check that it is a flac stream and return any Vorbis tags, closing the file.
 """
 function VorbisCommentMetaData(fnm::ByteString)
-    isreadable(fnm) || throw(ArgumentError(string("\"",fnm, "\" is not a path to a readable file"))) 
+    isreadable(fnm) || throw(ArgumentError(string("\"",fnm, "\" is not a path to a readable file")))
     vorb = Ptr{VorbisCommentMetaData}[C_NULL]
     ccall((:FLAC__metadata_get_tags,libflac),Bool,
           (Ptr{UInt8},Ptr{Ptr{VorbisCommentMetaData}}),
@@ -329,7 +329,7 @@ function Base.show(io::IO, st::SeekTableMetaData)
 end
 
 Base.string(e::VorbisCommentEntry) = bytestring(e.entry,e.len)
-                       
+
 Base.show(io::IO,e::VorbisCommentEntry) = println(io, string(e.entry))
 
 function Base.show(io::IO,c::VorbisCommentMetaData)

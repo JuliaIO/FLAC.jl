@@ -7,28 +7,28 @@ const libogg = "/usr/lib/x86_64-linux-gnu/libogg.so";
 const liboggz = "/usr/lib/x86_64-linux-gnu/liboggz.so";
 const FILE = Void;
 
-function FLAC__format_sample_rate_is_valid(sample_rate::Uint32)
-    ccall((:FLAC__format_sample_rate_is_valid,libFLAC),FLAC__bool,(Uint32,),sample_rate)
+function FLAC__format_sample_rate_is_valid(sample_rate::UInt32)
+    ccall((:FLAC__format_sample_rate_is_valid,libFLAC),FLAC__bool,(UInt32,),sample_rate)
 end
 
-function FLAC__format_blocksize_is_subset(blocksize::Uint32,sample_rate::Uint32)
-    ccall((:FLAC__format_blocksize_is_subset,libFLAC),FLAC__bool,(Uint32,Uint32),blocksize,sample_rate)
+function FLAC__format_blocksize_is_subset(blocksize::UInt32,sample_rate::UInt32)
+    ccall((:FLAC__format_blocksize_is_subset,libFLAC),FLAC__bool,(UInt32,UInt32),blocksize,sample_rate)
 end
 
-function FLAC__format_sample_rate_is_subset(sample_rate::Uint32)
-    ccall((:FLAC__format_sample_rate_is_subset,libFLAC),FLAC__bool,(Uint32,),sample_rate)
+function FLAC__format_sample_rate_is_subset(sample_rate::UInt32)
+    ccall((:FLAC__format_sample_rate_is_subset,libFLAC),FLAC__bool,(UInt32,),sample_rate)
 end
 
-function FLAC__format_vorbiscomment_entry_name_is_legal(name::Ptr{Uint8})
-    ccall((:FLAC__format_vorbiscomment_entry_name_is_legal,libFLAC),FLAC__bool,(Ptr{Uint8},),name)
+function FLAC__format_vorbiscomment_entry_name_is_legal(name::Ptr{UInt8})
+    ccall((:FLAC__format_vorbiscomment_entry_name_is_legal,libFLAC),FLAC__bool,(Ptr{UInt8},),name)
 end
 
-function FLAC__format_vorbiscomment_entry_value_is_legal(value::Ptr{FLAC__byte},length::Uint32)
-    ccall((:FLAC__format_vorbiscomment_entry_value_is_legal,libFLAC),FLAC__bool,(Ptr{FLAC__byte},Uint32),value,length)
+function FLAC__format_vorbiscomment_entry_value_is_legal(value::Ptr{FLAC__byte},length::UInt32)
+    ccall((:FLAC__format_vorbiscomment_entry_value_is_legal,libFLAC),FLAC__bool,(Ptr{FLAC__byte},UInt32),value,length)
 end
 
-function FLAC__format_vorbiscomment_entry_is_legal(entry::Ptr{FLAC__byte},length::Uint32)
-    ccall((:FLAC__format_vorbiscomment_entry_is_legal,libFLAC),FLAC__bool,(Ptr{FLAC__byte},Uint32),entry,length)
+function FLAC__format_vorbiscomment_entry_is_legal(entry::Ptr{FLAC__byte},length::UInt32)
+    ccall((:FLAC__format_vorbiscomment_entry_is_legal,libFLAC),FLAC__bool,(Ptr{FLAC__byte},UInt32),entry,length)
 end
 
 function FLAC__format_seektable_is_legal(seek_table::Ptr{FLAC__StreamMetadata_SeekTable})
@@ -36,15 +36,15 @@ function FLAC__format_seektable_is_legal(seek_table::Ptr{FLAC__StreamMetadata_Se
 end
 
 function FLAC__format_seektable_sort(seek_table::Ptr{FLAC__StreamMetadata_SeekTable})
-    ccall((:FLAC__format_seektable_sort,libFLAC),Uint32,(Ptr{FLAC__StreamMetadata_SeekTable},),seek_table)
+    ccall((:FLAC__format_seektable_sort,libFLAC),UInt32,(Ptr{FLAC__StreamMetadata_SeekTable},),seek_table)
 end
 
-function FLAC__format_cuesheet_is_legal(cue_sheet::Ptr{FLAC__StreamMetadata_CueSheet},check_cd_da_subset::FLAC__bool,violation::Ptr{Ptr{Uint8}})
-    ccall((:FLAC__format_cuesheet_is_legal,libFLAC),FLAC__bool,(Ptr{FLAC__StreamMetadata_CueSheet},FLAC__bool,Ptr{Ptr{Uint8}}),cue_sheet,check_cd_da_subset,violation)
+function FLAC__format_cuesheet_is_legal(cue_sheet::Ptr{FLAC__StreamMetadata_CueSheet},check_cd_da_subset::FLAC__bool,violation::Ptr{Ptr{UInt8}})
+    ccall((:FLAC__format_cuesheet_is_legal,libFLAC),FLAC__bool,(Ptr{FLAC__StreamMetadata_CueSheet},FLAC__bool,Ptr{Ptr{UInt8}}),cue_sheet,check_cd_da_subset,violation)
 end
 
-function FLAC__format_picture_is_legal(picture::Ptr{FLAC__StreamMetadata_Picture},violation::Ptr{Ptr{Uint8}})
-    ccall((:FLAC__format_picture_is_legal,libFLAC),FLAC__bool,(Ptr{FLAC__StreamMetadata_Picture},Ptr{Ptr{Uint8}}),picture,violation)
+function FLAC__format_picture_is_legal(picture::Ptr{FLAC__StreamMetadata_Picture},violation::Ptr{Ptr{UInt8}})
+    ccall((:FLAC__format_picture_is_legal,libFLAC),FLAC__bool,(Ptr{FLAC__StreamMetadata_Picture},Ptr{Ptr{UInt8}}),picture,violation)
 end
 
 function FLAC__stream_decoder_new()
@@ -92,7 +92,7 @@ function FLAC__stream_decoder_get_state(decoder::Ptr{FLAC__StreamDecoder})
 end
 
 function FLAC__stream_decoder_get_resolved_state_string(decoder::Ptr{FLAC__StreamDecoder})
-    ccall((:FLAC__stream_decoder_get_resolved_state_string,libFLAC),Ptr{Uint8},(Ptr{FLAC__StreamDecoder},),decoder)
+    ccall((:FLAC__stream_decoder_get_resolved_state_string,libFLAC),Ptr{UInt8},(Ptr{FLAC__StreamDecoder},),decoder)
 end
 
 function FLAC__stream_decoder_get_md5_checking(decoder::Ptr{FLAC__StreamDecoder})
@@ -104,7 +104,7 @@ function FLAC__stream_decoder_get_total_samples(decoder::Ptr{FLAC__StreamDecoder
 end
 
 function FLAC__stream_decoder_get_channels(decoder::Ptr{FLAC__StreamDecoder})
-    ccall((:FLAC__stream_decoder_get_channels,libFLAC),Uint32,(Ptr{FLAC__StreamDecoder},),decoder)
+    ccall((:FLAC__stream_decoder_get_channels,libFLAC),UInt32,(Ptr{FLAC__StreamDecoder},),decoder)
 end
 
 function FLAC__stream_decoder_get_channel_assignment(decoder::Ptr{FLAC__StreamDecoder})
@@ -112,15 +112,15 @@ function FLAC__stream_decoder_get_channel_assignment(decoder::Ptr{FLAC__StreamDe
 end
 
 function FLAC__stream_decoder_get_bits_per_sample(decoder::Ptr{FLAC__StreamDecoder})
-    ccall((:FLAC__stream_decoder_get_bits_per_sample,libFLAC),Uint32,(Ptr{FLAC__StreamDecoder},),decoder)
+    ccall((:FLAC__stream_decoder_get_bits_per_sample,libFLAC),UInt32,(Ptr{FLAC__StreamDecoder},),decoder)
 end
 
 function FLAC__stream_decoder_get_sample_rate(decoder::Ptr{FLAC__StreamDecoder})
-    ccall((:FLAC__stream_decoder_get_sample_rate,libFLAC),Uint32,(Ptr{FLAC__StreamDecoder},),decoder)
+    ccall((:FLAC__stream_decoder_get_sample_rate,libFLAC),UInt32,(Ptr{FLAC__StreamDecoder},),decoder)
 end
 
 function FLAC__stream_decoder_get_blocksize(decoder::Ptr{FLAC__StreamDecoder})
-    ccall((:FLAC__stream_decoder_get_blocksize,libFLAC),Uint32,(Ptr{FLAC__StreamDecoder},),decoder)
+    ccall((:FLAC__stream_decoder_get_blocksize,libFLAC),UInt32,(Ptr{FLAC__StreamDecoder},),decoder)
 end
 
 function FLAC__stream_decoder_get_decode_position(decoder::Ptr{FLAC__StreamDecoder},position::Ptr{FLAC__uint64})
@@ -143,12 +143,12 @@ function FLAC__stream_decoder_init_ogg_FILE(decoder::Ptr{FLAC__StreamDecoder},fi
     ccall((:FLAC__stream_decoder_init_ogg_FILE,libFLAC),FLAC__StreamDecoderInitStatus,(Ptr{FLAC__StreamDecoder},Ptr{FILE},FLAC__StreamDecoderWriteCallback,FLAC__StreamDecoderMetadataCallback,FLAC__StreamDecoderErrorCallback,Ptr{Void}),decoder,file,write_callback,metadata_callback,error_callback,client_data)
 end
 
-function FLAC__stream_decoder_init_file(decoder::Ptr{FLAC__StreamDecoder},filename::Ptr{Uint8},write_callback::FLAC__StreamDecoderWriteCallback,metadata_callback::FLAC__StreamDecoderMetadataCallback,error_callback::FLAC__StreamDecoderErrorCallback,client_data::Ptr{Void})
-    ccall((:FLAC__stream_decoder_init_file,libFLAC),FLAC__StreamDecoderInitStatus,(Ptr{FLAC__StreamDecoder},Ptr{Uint8},FLAC__StreamDecoderWriteCallback,FLAC__StreamDecoderMetadataCallback,FLAC__StreamDecoderErrorCallback,Ptr{Void}),decoder,filename,write_callback,metadata_callback,error_callback,client_data)
+function FLAC__stream_decoder_init_file(decoder::Ptr{FLAC__StreamDecoder},filename::Ptr{UInt8},write_callback::FLAC__StreamDecoderWriteCallback,metadata_callback::FLAC__StreamDecoderMetadataCallback,error_callback::FLAC__StreamDecoderErrorCallback,client_data::Ptr{Void})
+    ccall((:FLAC__stream_decoder_init_file,libFLAC),FLAC__StreamDecoderInitStatus,(Ptr{FLAC__StreamDecoder},Ptr{UInt8},FLAC__StreamDecoderWriteCallback,FLAC__StreamDecoderMetadataCallback,FLAC__StreamDecoderErrorCallback,Ptr{Void}),decoder,filename,write_callback,metadata_callback,error_callback,client_data)
 end
 
-function FLAC__stream_decoder_init_ogg_file(decoder::Ptr{FLAC__StreamDecoder},filename::Ptr{Uint8},write_callback::FLAC__StreamDecoderWriteCallback,metadata_callback::FLAC__StreamDecoderMetadataCallback,error_callback::FLAC__StreamDecoderErrorCallback,client_data::Ptr{Void})
-    ccall((:FLAC__stream_decoder_init_ogg_file,libFLAC),FLAC__StreamDecoderInitStatus,(Ptr{FLAC__StreamDecoder},Ptr{Uint8},FLAC__StreamDecoderWriteCallback,FLAC__StreamDecoderMetadataCallback,FLAC__StreamDecoderErrorCallback,Ptr{Void}),decoder,filename,write_callback,metadata_callback,error_callback,client_data)
+function FLAC__stream_decoder_init_ogg_file(decoder::Ptr{FLAC__StreamDecoder},filename::Ptr{UInt8},write_callback::FLAC__StreamDecoderWriteCallback,metadata_callback::FLAC__StreamDecoderMetadataCallback,error_callback::FLAC__StreamDecoderErrorCallback,client_data::Ptr{Void})
+    ccall((:FLAC__stream_decoder_init_ogg_file,libFLAC),FLAC__StreamDecoderInitStatus,(Ptr{FLAC__StreamDecoder},Ptr{UInt8},FLAC__StreamDecoderWriteCallback,FLAC__StreamDecoderMetadataCallback,FLAC__StreamDecoderErrorCallback,Ptr{Void}),decoder,filename,write_callback,metadata_callback,error_callback,client_data)
 end
 
 function FLAC__stream_decoder_finish(decoder::Ptr{FLAC__StreamDecoder})
@@ -203,24 +203,24 @@ function FLAC__stream_encoder_set_streamable_subset(encoder::Ptr{FLAC__StreamEnc
     ccall((:FLAC__stream_encoder_set_streamable_subset,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},FLAC__bool),encoder,value)
 end
 
-function FLAC__stream_encoder_set_channels(encoder::Ptr{FLAC__StreamEncoder},value::Uint32)
-    ccall((:FLAC__stream_encoder_set_channels,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},Uint32),encoder,value)
+function FLAC__stream_encoder_set_channels(encoder::Ptr{FLAC__StreamEncoder},value::UInt32)
+    ccall((:FLAC__stream_encoder_set_channels,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},UInt32),encoder,value)
 end
 
-function FLAC__stream_encoder_set_bits_per_sample(encoder::Ptr{FLAC__StreamEncoder},value::Uint32)
-    ccall((:FLAC__stream_encoder_set_bits_per_sample,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},Uint32),encoder,value)
+function FLAC__stream_encoder_set_bits_per_sample(encoder::Ptr{FLAC__StreamEncoder},value::UInt32)
+    ccall((:FLAC__stream_encoder_set_bits_per_sample,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},UInt32),encoder,value)
 end
 
-function FLAC__stream_encoder_set_sample_rate(encoder::Ptr{FLAC__StreamEncoder},value::Uint32)
-    ccall((:FLAC__stream_encoder_set_sample_rate,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},Uint32),encoder,value)
+function FLAC__stream_encoder_set_sample_rate(encoder::Ptr{FLAC__StreamEncoder},value::UInt32)
+    ccall((:FLAC__stream_encoder_set_sample_rate,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},UInt32),encoder,value)
 end
 
-function FLAC__stream_encoder_set_compression_level(encoder::Ptr{FLAC__StreamEncoder},value::Uint32)
-    ccall((:FLAC__stream_encoder_set_compression_level,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},Uint32),encoder,value)
+function FLAC__stream_encoder_set_compression_level(encoder::Ptr{FLAC__StreamEncoder},value::UInt32)
+    ccall((:FLAC__stream_encoder_set_compression_level,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},UInt32),encoder,value)
 end
 
-function FLAC__stream_encoder_set_blocksize(encoder::Ptr{FLAC__StreamEncoder},value::Uint32)
-    ccall((:FLAC__stream_encoder_set_blocksize,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},Uint32),encoder,value)
+function FLAC__stream_encoder_set_blocksize(encoder::Ptr{FLAC__StreamEncoder},value::UInt32)
+    ccall((:FLAC__stream_encoder_set_blocksize,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},UInt32),encoder,value)
 end
 
 function FLAC__stream_encoder_set_do_mid_side_stereo(encoder::Ptr{FLAC__StreamEncoder},value::FLAC__bool)
@@ -231,16 +231,16 @@ function FLAC__stream_encoder_set_loose_mid_side_stereo(encoder::Ptr{FLAC__Strea
     ccall((:FLAC__stream_encoder_set_loose_mid_side_stereo,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},FLAC__bool),encoder,value)
 end
 
-function FLAC__stream_encoder_set_apodization(encoder::Ptr{FLAC__StreamEncoder},specification::Ptr{Uint8})
-    ccall((:FLAC__stream_encoder_set_apodization,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},Ptr{Uint8}),encoder,specification)
+function FLAC__stream_encoder_set_apodization(encoder::Ptr{FLAC__StreamEncoder},specification::Ptr{UInt8})
+    ccall((:FLAC__stream_encoder_set_apodization,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},Ptr{UInt8}),encoder,specification)
 end
 
-function FLAC__stream_encoder_set_max_lpc_order(encoder::Ptr{FLAC__StreamEncoder},value::Uint32)
-    ccall((:FLAC__stream_encoder_set_max_lpc_order,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},Uint32),encoder,value)
+function FLAC__stream_encoder_set_max_lpc_order(encoder::Ptr{FLAC__StreamEncoder},value::UInt32)
+    ccall((:FLAC__stream_encoder_set_max_lpc_order,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},UInt32),encoder,value)
 end
 
-function FLAC__stream_encoder_set_qlp_coeff_precision(encoder::Ptr{FLAC__StreamEncoder},value::Uint32)
-    ccall((:FLAC__stream_encoder_set_qlp_coeff_precision,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},Uint32),encoder,value)
+function FLAC__stream_encoder_set_qlp_coeff_precision(encoder::Ptr{FLAC__StreamEncoder},value::UInt32)
+    ccall((:FLAC__stream_encoder_set_qlp_coeff_precision,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},UInt32),encoder,value)
 end
 
 function FLAC__stream_encoder_set_do_qlp_coeff_prec_search(encoder::Ptr{FLAC__StreamEncoder},value::FLAC__bool)
@@ -255,24 +255,24 @@ function FLAC__stream_encoder_set_do_exhaustive_model_search(encoder::Ptr{FLAC__
     ccall((:FLAC__stream_encoder_set_do_exhaustive_model_search,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},FLAC__bool),encoder,value)
 end
 
-function FLAC__stream_encoder_set_min_residual_partition_order(encoder::Ptr{FLAC__StreamEncoder},value::Uint32)
-    ccall((:FLAC__stream_encoder_set_min_residual_partition_order,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},Uint32),encoder,value)
+function FLAC__stream_encoder_set_min_residual_partition_order(encoder::Ptr{FLAC__StreamEncoder},value::UInt32)
+    ccall((:FLAC__stream_encoder_set_min_residual_partition_order,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},UInt32),encoder,value)
 end
 
-function FLAC__stream_encoder_set_max_residual_partition_order(encoder::Ptr{FLAC__StreamEncoder},value::Uint32)
-    ccall((:FLAC__stream_encoder_set_max_residual_partition_order,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},Uint32),encoder,value)
+function FLAC__stream_encoder_set_max_residual_partition_order(encoder::Ptr{FLAC__StreamEncoder},value::UInt32)
+    ccall((:FLAC__stream_encoder_set_max_residual_partition_order,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},UInt32),encoder,value)
 end
 
-function FLAC__stream_encoder_set_rice_parameter_search_dist(encoder::Ptr{FLAC__StreamEncoder},value::Uint32)
-    ccall((:FLAC__stream_encoder_set_rice_parameter_search_dist,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},Uint32),encoder,value)
+function FLAC__stream_encoder_set_rice_parameter_search_dist(encoder::Ptr{FLAC__StreamEncoder},value::UInt32)
+    ccall((:FLAC__stream_encoder_set_rice_parameter_search_dist,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},UInt32),encoder,value)
 end
 
 function FLAC__stream_encoder_set_total_samples_estimate(encoder::Ptr{FLAC__StreamEncoder},value::FLAC__uint64)
     ccall((:FLAC__stream_encoder_set_total_samples_estimate,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},FLAC__uint64),encoder,value)
 end
 
-function FLAC__stream_encoder_set_metadata(encoder::Ptr{FLAC__StreamEncoder},metadata::Ptr{Ptr{FLAC__StreamMetadata}},num_blocks::Uint32)
-    ccall((:FLAC__stream_encoder_set_metadata,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},Ptr{Ptr{FLAC__StreamMetadata}},Uint32),encoder,metadata,num_blocks)
+function FLAC__stream_encoder_set_metadata(encoder::Ptr{FLAC__StreamEncoder},metadata::Ptr{Ptr{FLAC__StreamMetadata}},num_blocks::UInt32)
+    ccall((:FLAC__stream_encoder_set_metadata,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},Ptr{Ptr{FLAC__StreamMetadata}},UInt32),encoder,metadata,num_blocks)
 end
 
 function FLAC__stream_encoder_get_state(encoder::Ptr{FLAC__StreamEncoder})
@@ -284,11 +284,11 @@ function FLAC__stream_encoder_get_verify_decoder_state(encoder::Ptr{FLAC__Stream
 end
 
 function FLAC__stream_encoder_get_resolved_state_string(encoder::Ptr{FLAC__StreamEncoder})
-    ccall((:FLAC__stream_encoder_get_resolved_state_string,libFLAC),Ptr{Uint8},(Ptr{FLAC__StreamEncoder},),encoder)
+    ccall((:FLAC__stream_encoder_get_resolved_state_string,libFLAC),Ptr{UInt8},(Ptr{FLAC__StreamEncoder},),encoder)
 end
 
-function FLAC__stream_encoder_get_verify_decoder_error_stats(encoder::Ptr{FLAC__StreamEncoder},absolute_sample::Ptr{FLAC__uint64},frame_number::Ptr{Uint32},channel::Ptr{Uint32},sample::Ptr{Uint32},expected::Ptr{FLAC__int32},got::Ptr{FLAC__int32})
-    ccall((:FLAC__stream_encoder_get_verify_decoder_error_stats,libFLAC),Void,(Ptr{FLAC__StreamEncoder},Ptr{FLAC__uint64},Ptr{Uint32},Ptr{Uint32},Ptr{Uint32},Ptr{FLAC__int32},Ptr{FLAC__int32}),encoder,absolute_sample,frame_number,channel,sample,expected,got)
+function FLAC__stream_encoder_get_verify_decoder_error_stats(encoder::Ptr{FLAC__StreamEncoder},absolute_sample::Ptr{FLAC__uint64},frame_number::Ptr{UInt32},channel::Ptr{UInt32},sample::Ptr{UInt32},expected::Ptr{FLAC__int32},got::Ptr{FLAC__int32})
+    ccall((:FLAC__stream_encoder_get_verify_decoder_error_stats,libFLAC),Void,(Ptr{FLAC__StreamEncoder},Ptr{FLAC__uint64},Ptr{UInt32},Ptr{UInt32},Ptr{UInt32},Ptr{FLAC__int32},Ptr{FLAC__int32}),encoder,absolute_sample,frame_number,channel,sample,expected,got)
 end
 
 function FLAC__stream_encoder_get_verify(encoder::Ptr{FLAC__StreamEncoder})
@@ -300,19 +300,19 @@ function FLAC__stream_encoder_get_streamable_subset(encoder::Ptr{FLAC__StreamEnc
 end
 
 function FLAC__stream_encoder_get_channels(encoder::Ptr{FLAC__StreamEncoder})
-    ccall((:FLAC__stream_encoder_get_channels,libFLAC),Uint32,(Ptr{FLAC__StreamEncoder},),encoder)
+    ccall((:FLAC__stream_encoder_get_channels,libFLAC),UInt32,(Ptr{FLAC__StreamEncoder},),encoder)
 end
 
 function FLAC__stream_encoder_get_bits_per_sample(encoder::Ptr{FLAC__StreamEncoder})
-    ccall((:FLAC__stream_encoder_get_bits_per_sample,libFLAC),Uint32,(Ptr{FLAC__StreamEncoder},),encoder)
+    ccall((:FLAC__stream_encoder_get_bits_per_sample,libFLAC),UInt32,(Ptr{FLAC__StreamEncoder},),encoder)
 end
 
 function FLAC__stream_encoder_get_sample_rate(encoder::Ptr{FLAC__StreamEncoder})
-    ccall((:FLAC__stream_encoder_get_sample_rate,libFLAC),Uint32,(Ptr{FLAC__StreamEncoder},),encoder)
+    ccall((:FLAC__stream_encoder_get_sample_rate,libFLAC),UInt32,(Ptr{FLAC__StreamEncoder},),encoder)
 end
 
 function FLAC__stream_encoder_get_blocksize(encoder::Ptr{FLAC__StreamEncoder})
-    ccall((:FLAC__stream_encoder_get_blocksize,libFLAC),Uint32,(Ptr{FLAC__StreamEncoder},),encoder)
+    ccall((:FLAC__stream_encoder_get_blocksize,libFLAC),UInt32,(Ptr{FLAC__StreamEncoder},),encoder)
 end
 
 function FLAC__stream_encoder_get_do_mid_side_stereo(encoder::Ptr{FLAC__StreamEncoder})
@@ -324,11 +324,11 @@ function FLAC__stream_encoder_get_loose_mid_side_stereo(encoder::Ptr{FLAC__Strea
 end
 
 function FLAC__stream_encoder_get_max_lpc_order(encoder::Ptr{FLAC__StreamEncoder})
-    ccall((:FLAC__stream_encoder_get_max_lpc_order,libFLAC),Uint32,(Ptr{FLAC__StreamEncoder},),encoder)
+    ccall((:FLAC__stream_encoder_get_max_lpc_order,libFLAC),UInt32,(Ptr{FLAC__StreamEncoder},),encoder)
 end
 
 function FLAC__stream_encoder_get_qlp_coeff_precision(encoder::Ptr{FLAC__StreamEncoder})
-    ccall((:FLAC__stream_encoder_get_qlp_coeff_precision,libFLAC),Uint32,(Ptr{FLAC__StreamEncoder},),encoder)
+    ccall((:FLAC__stream_encoder_get_qlp_coeff_precision,libFLAC),UInt32,(Ptr{FLAC__StreamEncoder},),encoder)
 end
 
 function FLAC__stream_encoder_get_do_qlp_coeff_prec_search(encoder::Ptr{FLAC__StreamEncoder})
@@ -344,15 +344,15 @@ function FLAC__stream_encoder_get_do_exhaustive_model_search(encoder::Ptr{FLAC__
 end
 
 function FLAC__stream_encoder_get_min_residual_partition_order(encoder::Ptr{FLAC__StreamEncoder})
-    ccall((:FLAC__stream_encoder_get_min_residual_partition_order,libFLAC),Uint32,(Ptr{FLAC__StreamEncoder},),encoder)
+    ccall((:FLAC__stream_encoder_get_min_residual_partition_order,libFLAC),UInt32,(Ptr{FLAC__StreamEncoder},),encoder)
 end
 
 function FLAC__stream_encoder_get_max_residual_partition_order(encoder::Ptr{FLAC__StreamEncoder})
-    ccall((:FLAC__stream_encoder_get_max_residual_partition_order,libFLAC),Uint32,(Ptr{FLAC__StreamEncoder},),encoder)
+    ccall((:FLAC__stream_encoder_get_max_residual_partition_order,libFLAC),UInt32,(Ptr{FLAC__StreamEncoder},),encoder)
 end
 
 function FLAC__stream_encoder_get_rice_parameter_search_dist(encoder::Ptr{FLAC__StreamEncoder})
-    ccall((:FLAC__stream_encoder_get_rice_parameter_search_dist,libFLAC),Uint32,(Ptr{FLAC__StreamEncoder},),encoder)
+    ccall((:FLAC__stream_encoder_get_rice_parameter_search_dist,libFLAC),UInt32,(Ptr{FLAC__StreamEncoder},),encoder)
 end
 
 function FLAC__stream_encoder_get_total_samples_estimate(encoder::Ptr{FLAC__StreamEncoder})
@@ -375,48 +375,48 @@ function FLAC__stream_encoder_init_ogg_FILE(encoder::Ptr{FLAC__StreamEncoder},fi
     ccall((:FLAC__stream_encoder_init_ogg_FILE,libFLAC),FLAC__StreamEncoderInitStatus,(Ptr{FLAC__StreamEncoder},Ptr{FILE},FLAC__StreamEncoderProgressCallback,Ptr{Void}),encoder,file,progress_callback,client_data)
 end
 
-function FLAC__stream_encoder_init_file(encoder::Ptr{FLAC__StreamEncoder},filename::Ptr{Uint8},progress_callback::FLAC__StreamEncoderProgressCallback,client_data::Ptr{Void})
-    ccall((:FLAC__stream_encoder_init_file,libFLAC),FLAC__StreamEncoderInitStatus,(Ptr{FLAC__StreamEncoder},Ptr{Uint8},FLAC__StreamEncoderProgressCallback,Ptr{Void}),encoder,filename,progress_callback,client_data)
+function FLAC__stream_encoder_init_file(encoder::Ptr{FLAC__StreamEncoder},filename::Ptr{UInt8},progress_callback::FLAC__StreamEncoderProgressCallback,client_data::Ptr{Void})
+    ccall((:FLAC__stream_encoder_init_file,libFLAC),FLAC__StreamEncoderInitStatus,(Ptr{FLAC__StreamEncoder},Ptr{UInt8},FLAC__StreamEncoderProgressCallback,Ptr{Void}),encoder,filename,progress_callback,client_data)
 end
 
-function FLAC__stream_encoder_init_ogg_file(encoder::Ptr{FLAC__StreamEncoder},filename::Ptr{Uint8},progress_callback::FLAC__StreamEncoderProgressCallback,client_data::Ptr{Void})
-    ccall((:FLAC__stream_encoder_init_ogg_file,libFLAC),FLAC__StreamEncoderInitStatus,(Ptr{FLAC__StreamEncoder},Ptr{Uint8},FLAC__StreamEncoderProgressCallback,Ptr{Void}),encoder,filename,progress_callback,client_data)
+function FLAC__stream_encoder_init_ogg_file(encoder::Ptr{FLAC__StreamEncoder},filename::Ptr{UInt8},progress_callback::FLAC__StreamEncoderProgressCallback,client_data::Ptr{Void})
+    ccall((:FLAC__stream_encoder_init_ogg_file,libFLAC),FLAC__StreamEncoderInitStatus,(Ptr{FLAC__StreamEncoder},Ptr{UInt8},FLAC__StreamEncoderProgressCallback,Ptr{Void}),encoder,filename,progress_callback,client_data)
 end
 
 function FLAC__stream_encoder_finish(encoder::Ptr{FLAC__StreamEncoder})
     ccall((:FLAC__stream_encoder_finish,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},),encoder)
 end
 
-function FLAC__stream_encoder_process(encoder::Ptr{FLAC__StreamEncoder},buffer::Ptr{Ptr{FLAC__int32}},samples::Uint32)
-    ccall((:FLAC__stream_encoder_process,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},Ptr{Ptr{FLAC__int32}},Uint32),encoder,buffer,samples)
+function FLAC__stream_encoder_process(encoder::Ptr{FLAC__StreamEncoder},buffer::Ptr{Ptr{FLAC__int32}},samples::UInt32)
+    ccall((:FLAC__stream_encoder_process,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},Ptr{Ptr{FLAC__int32}},UInt32),encoder,buffer,samples)
 end
 
-function FLAC__stream_encoder_process_interleaved(encoder::Ptr{FLAC__StreamEncoder},buffer::Ptr{FLAC__int32},samples::Uint32)
-    ccall((:FLAC__stream_encoder_process_interleaved,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},Ptr{FLAC__int32},Uint32),encoder,buffer,samples)
+function FLAC__stream_encoder_process_interleaved(encoder::Ptr{FLAC__StreamEncoder},buffer::Ptr{FLAC__int32},samples::UInt32)
+    ccall((:FLAC__stream_encoder_process_interleaved,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},Ptr{FLAC__int32},UInt32),encoder,buffer,samples)
 end
 
-function FLAC__format_sample_rate_is_valid(sample_rate::Uint32)
-    ccall((:FLAC__format_sample_rate_is_valid,libFLAC),FLAC__bool,(Uint32,),sample_rate)
+function FLAC__format_sample_rate_is_valid(sample_rate::UInt32)
+    ccall((:FLAC__format_sample_rate_is_valid,libFLAC),FLAC__bool,(UInt32,),sample_rate)
 end
 
-function FLAC__format_blocksize_is_subset(blocksize::Uint32,sample_rate::Uint32)
-    ccall((:FLAC__format_blocksize_is_subset,libFLAC),FLAC__bool,(Uint32,Uint32),blocksize,sample_rate)
+function FLAC__format_blocksize_is_subset(blocksize::UInt32,sample_rate::UInt32)
+    ccall((:FLAC__format_blocksize_is_subset,libFLAC),FLAC__bool,(UInt32,UInt32),blocksize,sample_rate)
 end
 
-function FLAC__format_sample_rate_is_subset(sample_rate::Uint32)
-    ccall((:FLAC__format_sample_rate_is_subset,libFLAC),FLAC__bool,(Uint32,),sample_rate)
+function FLAC__format_sample_rate_is_subset(sample_rate::UInt32)
+    ccall((:FLAC__format_sample_rate_is_subset,libFLAC),FLAC__bool,(UInt32,),sample_rate)
 end
 
-function FLAC__format_vorbiscomment_entry_name_is_legal(name::Ptr{Uint8})
-    ccall((:FLAC__format_vorbiscomment_entry_name_is_legal,libFLAC),FLAC__bool,(Ptr{Uint8},),name)
+function FLAC__format_vorbiscomment_entry_name_is_legal(name::Ptr{UInt8})
+    ccall((:FLAC__format_vorbiscomment_entry_name_is_legal,libFLAC),FLAC__bool,(Ptr{UInt8},),name)
 end
 
-function FLAC__format_vorbiscomment_entry_value_is_legal(value::Ptr{FLAC__byte},length::Uint32)
-    ccall((:FLAC__format_vorbiscomment_entry_value_is_legal,libFLAC),FLAC__bool,(Ptr{FLAC__byte},Uint32),value,length)
+function FLAC__format_vorbiscomment_entry_value_is_legal(value::Ptr{FLAC__byte},length::UInt32)
+    ccall((:FLAC__format_vorbiscomment_entry_value_is_legal,libFLAC),FLAC__bool,(Ptr{FLAC__byte},UInt32),value,length)
 end
 
-function FLAC__format_vorbiscomment_entry_is_legal(entry::Ptr{FLAC__byte},length::Uint32)
-    ccall((:FLAC__format_vorbiscomment_entry_is_legal,libFLAC),FLAC__bool,(Ptr{FLAC__byte},Uint32),entry,length)
+function FLAC__format_vorbiscomment_entry_is_legal(entry::Ptr{FLAC__byte},length::UInt32)
+    ccall((:FLAC__format_vorbiscomment_entry_is_legal,libFLAC),FLAC__bool,(Ptr{FLAC__byte},UInt32),entry,length)
 end
 
 function FLAC__format_seektable_is_legal(seek_table::Ptr{FLAC__StreamMetadata_SeekTable})
@@ -424,15 +424,15 @@ function FLAC__format_seektable_is_legal(seek_table::Ptr{FLAC__StreamMetadata_Se
 end
 
 function FLAC__format_seektable_sort(seek_table::Ptr{FLAC__StreamMetadata_SeekTable})
-    ccall((:FLAC__format_seektable_sort,libFLAC),Uint32,(Ptr{FLAC__StreamMetadata_SeekTable},),seek_table)
+    ccall((:FLAC__format_seektable_sort,libFLAC),UInt32,(Ptr{FLAC__StreamMetadata_SeekTable},),seek_table)
 end
 
-function FLAC__format_cuesheet_is_legal(cue_sheet::Ptr{FLAC__StreamMetadata_CueSheet},check_cd_da_subset::FLAC__bool,violation::Ptr{Ptr{Uint8}})
-    ccall((:FLAC__format_cuesheet_is_legal,libFLAC),FLAC__bool,(Ptr{FLAC__StreamMetadata_CueSheet},FLAC__bool,Ptr{Ptr{Uint8}}),cue_sheet,check_cd_da_subset,violation)
+function FLAC__format_cuesheet_is_legal(cue_sheet::Ptr{FLAC__StreamMetadata_CueSheet},check_cd_da_subset::FLAC__bool,violation::Ptr{Ptr{UInt8}})
+    ccall((:FLAC__format_cuesheet_is_legal,libFLAC),FLAC__bool,(Ptr{FLAC__StreamMetadata_CueSheet},FLAC__bool,Ptr{Ptr{UInt8}}),cue_sheet,check_cd_da_subset,violation)
 end
 
-function FLAC__format_picture_is_legal(picture::Ptr{FLAC__StreamMetadata_Picture},violation::Ptr{Ptr{Uint8}})
-    ccall((:FLAC__format_picture_is_legal,libFLAC),FLAC__bool,(Ptr{FLAC__StreamMetadata_Picture},Ptr{Ptr{Uint8}}),picture,violation)
+function FLAC__format_picture_is_legal(picture::Ptr{FLAC__StreamMetadata_Picture},violation::Ptr{Ptr{UInt8}})
+    ccall((:FLAC__format_picture_is_legal,libFLAC),FLAC__bool,(Ptr{FLAC__StreamMetadata_Picture},Ptr{Ptr{UInt8}}),picture,violation)
 end
 
 function FLAC__stream_decoder_new()
@@ -480,7 +480,7 @@ function FLAC__stream_decoder_get_state(decoder::Ptr{FLAC__StreamDecoder})
 end
 
 function FLAC__stream_decoder_get_resolved_state_string(decoder::Ptr{FLAC__StreamDecoder})
-    ccall((:FLAC__stream_decoder_get_resolved_state_string,libFLAC),Ptr{Uint8},(Ptr{FLAC__StreamDecoder},),decoder)
+    ccall((:FLAC__stream_decoder_get_resolved_state_string,libFLAC),Ptr{UInt8},(Ptr{FLAC__StreamDecoder},),decoder)
 end
 
 function FLAC__stream_decoder_get_md5_checking(decoder::Ptr{FLAC__StreamDecoder})
@@ -492,7 +492,7 @@ function FLAC__stream_decoder_get_total_samples(decoder::Ptr{FLAC__StreamDecoder
 end
 
 function FLAC__stream_decoder_get_channels(decoder::Ptr{FLAC__StreamDecoder})
-    ccall((:FLAC__stream_decoder_get_channels,libFLAC),Uint32,(Ptr{FLAC__StreamDecoder},),decoder)
+    ccall((:FLAC__stream_decoder_get_channels,libFLAC),UInt32,(Ptr{FLAC__StreamDecoder},),decoder)
 end
 
 function FLAC__stream_decoder_get_channel_assignment(decoder::Ptr{FLAC__StreamDecoder})
@@ -500,15 +500,15 @@ function FLAC__stream_decoder_get_channel_assignment(decoder::Ptr{FLAC__StreamDe
 end
 
 function FLAC__stream_decoder_get_bits_per_sample(decoder::Ptr{FLAC__StreamDecoder})
-    ccall((:FLAC__stream_decoder_get_bits_per_sample,libFLAC),Uint32,(Ptr{FLAC__StreamDecoder},),decoder)
+    ccall((:FLAC__stream_decoder_get_bits_per_sample,libFLAC),UInt32,(Ptr{FLAC__StreamDecoder},),decoder)
 end
 
 function FLAC__stream_decoder_get_sample_rate(decoder::Ptr{FLAC__StreamDecoder})
-    ccall((:FLAC__stream_decoder_get_sample_rate,libFLAC),Uint32,(Ptr{FLAC__StreamDecoder},),decoder)
+    ccall((:FLAC__stream_decoder_get_sample_rate,libFLAC),UInt32,(Ptr{FLAC__StreamDecoder},),decoder)
 end
 
 function FLAC__stream_decoder_get_blocksize(decoder::Ptr{FLAC__StreamDecoder})
-    ccall((:FLAC__stream_decoder_get_blocksize,libFLAC),Uint32,(Ptr{FLAC__StreamDecoder},),decoder)
+    ccall((:FLAC__stream_decoder_get_blocksize,libFLAC),UInt32,(Ptr{FLAC__StreamDecoder},),decoder)
 end
 
 function FLAC__stream_decoder_get_decode_position(decoder::Ptr{FLAC__StreamDecoder},position::Ptr{FLAC__uint64})
@@ -531,12 +531,12 @@ function FLAC__stream_decoder_init_ogg_FILE(decoder::Ptr{FLAC__StreamDecoder},fi
     ccall((:FLAC__stream_decoder_init_ogg_FILE,libFLAC),FLAC__StreamDecoderInitStatus,(Ptr{FLAC__StreamDecoder},Ptr{FILE},FLAC__StreamDecoderWriteCallback,FLAC__StreamDecoderMetadataCallback,FLAC__StreamDecoderErrorCallback,Ptr{Void}),decoder,file,write_callback,metadata_callback,error_callback,client_data)
 end
 
-function FLAC__stream_decoder_init_file(decoder::Ptr{FLAC__StreamDecoder},filename::Ptr{Uint8},write_callback::FLAC__StreamDecoderWriteCallback,metadata_callback::FLAC__StreamDecoderMetadataCallback,error_callback::FLAC__StreamDecoderErrorCallback,client_data::Ptr{Void})
-    ccall((:FLAC__stream_decoder_init_file,libFLAC),FLAC__StreamDecoderInitStatus,(Ptr{FLAC__StreamDecoder},Ptr{Uint8},FLAC__StreamDecoderWriteCallback,FLAC__StreamDecoderMetadataCallback,FLAC__StreamDecoderErrorCallback,Ptr{Void}),decoder,filename,write_callback,metadata_callback,error_callback,client_data)
+function FLAC__stream_decoder_init_file(decoder::Ptr{FLAC__StreamDecoder},filename::Ptr{UInt8},write_callback::FLAC__StreamDecoderWriteCallback,metadata_callback::FLAC__StreamDecoderMetadataCallback,error_callback::FLAC__StreamDecoderErrorCallback,client_data::Ptr{Void})
+    ccall((:FLAC__stream_decoder_init_file,libFLAC),FLAC__StreamDecoderInitStatus,(Ptr{FLAC__StreamDecoder},Ptr{UInt8},FLAC__StreamDecoderWriteCallback,FLAC__StreamDecoderMetadataCallback,FLAC__StreamDecoderErrorCallback,Ptr{Void}),decoder,filename,write_callback,metadata_callback,error_callback,client_data)
 end
 
-function FLAC__stream_decoder_init_ogg_file(decoder::Ptr{FLAC__StreamDecoder},filename::Ptr{Uint8},write_callback::FLAC__StreamDecoderWriteCallback,metadata_callback::FLAC__StreamDecoderMetadataCallback,error_callback::FLAC__StreamDecoderErrorCallback,client_data::Ptr{Void})
-    ccall((:FLAC__stream_decoder_init_ogg_file,libFLAC),FLAC__StreamDecoderInitStatus,(Ptr{FLAC__StreamDecoder},Ptr{Uint8},FLAC__StreamDecoderWriteCallback,FLAC__StreamDecoderMetadataCallback,FLAC__StreamDecoderErrorCallback,Ptr{Void}),decoder,filename,write_callback,metadata_callback,error_callback,client_data)
+function FLAC__stream_decoder_init_ogg_file(decoder::Ptr{FLAC__StreamDecoder},filename::Ptr{UInt8},write_callback::FLAC__StreamDecoderWriteCallback,metadata_callback::FLAC__StreamDecoderMetadataCallback,error_callback::FLAC__StreamDecoderErrorCallback,client_data::Ptr{Void})
+    ccall((:FLAC__stream_decoder_init_ogg_file,libFLAC),FLAC__StreamDecoderInitStatus,(Ptr{FLAC__StreamDecoder},Ptr{UInt8},FLAC__StreamDecoderWriteCallback,FLAC__StreamDecoderMetadataCallback,FLAC__StreamDecoderErrorCallback,Ptr{Void}),decoder,filename,write_callback,metadata_callback,error_callback,client_data)
 end
 
 function FLAC__stream_decoder_finish(decoder::Ptr{FLAC__StreamDecoder})
@@ -760,7 +760,7 @@ function ogg_sync_check(oy::Ptr{ogg_sync_state})
 end
 
 function ogg_sync_buffer(oy::Ptr{ogg_sync_state},size::Clong)
-    ccall((:ogg_sync_buffer,libogg),Ptr{Uint8},(Ptr{ogg_sync_state},Clong),oy,size)
+    ccall((:ogg_sync_buffer,libogg),Ptr{UInt8},(Ptr{ogg_sync_state},Clong),oy,size)
 end
 
 function ogg_sync_wrote(oy::Ptr{ogg_sync_state},bytes::Clong)
@@ -887,8 +887,8 @@ function oggz_new(flags::Cint)
     ccall((:oggz_new,liboggz),Ptr{OGGZ},(Cint,),flags)
 end
 
-function oggz_open(filename::Ptr{Uint8},flags::Cint)
-    ccall((:oggz_open,liboggz),Ptr{OGGZ},(Ptr{Uint8},Cint),filename,flags)
+function oggz_open(filename::Ptr{UInt8},flags::Cint)
+    ccall((:oggz_open,liboggz),Ptr{OGGZ},(Ptr{UInt8},Cint),filename,flags)
 end
 
 function oggz_open_stdio(file::Ptr{FILE},flags::Cint)
@@ -928,7 +928,7 @@ function oggz_serialno_new(oggz::Ptr{OGGZ})
 end
 
 function oggz_content_type(content::OggzStreamContent)
-    ccall((:oggz_content_type,liboggz),Ptr{Uint8},(OggzStreamContent,),content)
+    ccall((:oggz_content_type,liboggz),Ptr{UInt8},(OggzStreamContent,),content)
 end
 
 function oggz_set_read_callback(oggz::Ptr{OGGZ},serialno::Clong,read_packet::OggzReadPacket,user_data::Ptr{Void})
@@ -956,7 +956,7 @@ function oggz_stream_get_content(oggz::Ptr{OGGZ},serialno::Clong)
 end
 
 function oggz_stream_get_content_type(oggz::Ptr{OGGZ},serialno::Clong)
-    ccall((:oggz_stream_get_content_type,liboggz),Ptr{Uint8},(Ptr{OGGZ},Clong),oggz,serialno)
+    ccall((:oggz_stream_get_content_type,liboggz),Ptr{UInt8},(Ptr{OGGZ},Clong),oggz,serialno)
 end
 
 function oggz_stream_get_numheaders(oggz::Ptr{OGGZ},serialno::Clong)
@@ -968,7 +968,7 @@ function oggz_stream_get_content(oggz::Ptr{OGGZ},serialno::Clong)
 end
 
 function oggz_stream_get_content_type(oggz::Ptr{OGGZ},serialno::Clong)
-    ccall((:oggz_stream_get_content_type,liboggz),Ptr{Uint8},(Ptr{OGGZ},Clong),oggz,serialno)
+    ccall((:oggz_stream_get_content_type,liboggz),Ptr{UInt8},(Ptr{OGGZ},Clong),oggz,serialno)
 end
 
 function oggz_stream_get_numheaders(oggz::Ptr{OGGZ},serialno::Clong)
@@ -1092,11 +1092,11 @@ function oggz_io_get_flush_user_handle(oggz::Ptr{OGGZ})
 end
 
 function oggz_comment_get_vendor(oggz::Ptr{OGGZ},serialno::Clong)
-    ccall((:oggz_comment_get_vendor,liboggz),Ptr{Uint8},(Ptr{OGGZ},Clong),oggz,serialno)
+    ccall((:oggz_comment_get_vendor,liboggz),Ptr{UInt8},(Ptr{OGGZ},Clong),oggz,serialno)
 end
 
-function oggz_comment_set_vendor(oggz::Ptr{OGGZ},serialno::Clong,vendor_string::Ptr{Uint8})
-    ccall((:oggz_comment_set_vendor,liboggz),Cint,(Ptr{OGGZ},Clong,Ptr{Uint8}),oggz,serialno,vendor_string)
+function oggz_comment_set_vendor(oggz::Ptr{OGGZ},serialno::Clong,vendor_string::Ptr{UInt8})
+    ccall((:oggz_comment_set_vendor,liboggz),Cint,(Ptr{OGGZ},Clong,Ptr{UInt8}),oggz,serialno,vendor_string)
 end
 
 function oggz_comment_first(oggz::Ptr{OGGZ},serialno::Clong)
@@ -1107,8 +1107,8 @@ function oggz_comment_next(oggz::Ptr{OGGZ},serialno::Clong,comment::Ptr{OggzComm
     ccall((:oggz_comment_next,liboggz),Ptr{OggzComment},(Ptr{OGGZ},Clong,Ptr{OggzComment}),oggz,serialno,comment)
 end
 
-function oggz_comment_first_byname(oggz::Ptr{OGGZ},serialno::Clong,name::Ptr{Uint8})
-    ccall((:oggz_comment_first_byname,liboggz),Ptr{OggzComment},(Ptr{OGGZ},Clong,Ptr{Uint8}),oggz,serialno,name)
+function oggz_comment_first_byname(oggz::Ptr{OGGZ},serialno::Clong,name::Ptr{UInt8})
+    ccall((:oggz_comment_first_byname,liboggz),Ptr{OggzComment},(Ptr{OGGZ},Clong,Ptr{UInt8}),oggz,serialno,name)
 end
 
 function oggz_comment_next_byname(oggz::Ptr{OGGZ},serialno::Clong,comment::Ptr{OggzComment})
@@ -1119,16 +1119,16 @@ function oggz_comment_add(oggz::Ptr{OGGZ},serialno::Clong,comment::Ptr{OggzComme
     ccall((:oggz_comment_add,liboggz),Cint,(Ptr{OGGZ},Clong,Ptr{OggzComment}),oggz,serialno,comment)
 end
 
-function oggz_comment_add_byname(oggz::Ptr{OGGZ},serialno::Clong,name::Ptr{Uint8},value::Ptr{Uint8})
-    ccall((:oggz_comment_add_byname,liboggz),Cint,(Ptr{OGGZ},Clong,Ptr{Uint8},Ptr{Uint8}),oggz,serialno,name,value)
+function oggz_comment_add_byname(oggz::Ptr{OGGZ},serialno::Clong,name::Ptr{UInt8},value::Ptr{UInt8})
+    ccall((:oggz_comment_add_byname,liboggz),Cint,(Ptr{OGGZ},Clong,Ptr{UInt8},Ptr{UInt8}),oggz,serialno,name,value)
 end
 
 function oggz_comment_remove(oggz::Ptr{OGGZ},serialno::Clong,comment::Ptr{OggzComment})
     ccall((:oggz_comment_remove,liboggz),Cint,(Ptr{OGGZ},Clong,Ptr{OggzComment}),oggz,serialno,comment)
 end
 
-function oggz_comment_remove_byname(oggz::Ptr{OGGZ},serialno::Clong,name::Ptr{Uint8})
-    ccall((:oggz_comment_remove_byname,liboggz),Cint,(Ptr{OGGZ},Clong,Ptr{Uint8}),oggz,serialno,name)
+function oggz_comment_remove_byname(oggz::Ptr{OGGZ},serialno::Clong,name::Ptr{UInt8})
+    ccall((:oggz_comment_remove_byname,liboggz),Cint,(Ptr{OGGZ},Clong,Ptr{UInt8}),oggz,serialno,name)
 end
 
 function oggz_comments_generate(oggz::Ptr{OGGZ},serialno::Clong,FLAC_final_metadata_block::Cint)
@@ -1151,28 +1151,28 @@ function oggz_comment_generate(oggz::Ptr{OGGZ},serialno::Clong,packet_type::Oggz
     ccall((:oggz_comment_generate,oggz_deprecated),Ptr{ogg_packet},(Ptr{OGGZ},Clong,OggzStreamContent,Cint),oggz,serialno,packet_type,FLAC_final_metadata_block)
 end
 
-function FLAC__format_sample_rate_is_valid(sample_rate::Uint32)
-    ccall((:FLAC__format_sample_rate_is_valid,libFLAC),FLAC__bool,(Uint32,),sample_rate)
+function FLAC__format_sample_rate_is_valid(sample_rate::UInt32)
+    ccall((:FLAC__format_sample_rate_is_valid,libFLAC),FLAC__bool,(UInt32,),sample_rate)
 end
 
-function FLAC__format_blocksize_is_subset(blocksize::Uint32,sample_rate::Uint32)
-    ccall((:FLAC__format_blocksize_is_subset,libFLAC),FLAC__bool,(Uint32,Uint32),blocksize,sample_rate)
+function FLAC__format_blocksize_is_subset(blocksize::UInt32,sample_rate::UInt32)
+    ccall((:FLAC__format_blocksize_is_subset,libFLAC),FLAC__bool,(UInt32,UInt32),blocksize,sample_rate)
 end
 
-function FLAC__format_sample_rate_is_subset(sample_rate::Uint32)
-    ccall((:FLAC__format_sample_rate_is_subset,libFLAC),FLAC__bool,(Uint32,),sample_rate)
+function FLAC__format_sample_rate_is_subset(sample_rate::UInt32)
+    ccall((:FLAC__format_sample_rate_is_subset,libFLAC),FLAC__bool,(UInt32,),sample_rate)
 end
 
-function FLAC__format_vorbiscomment_entry_name_is_legal(name::Ptr{Uint8})
-    ccall((:FLAC__format_vorbiscomment_entry_name_is_legal,libFLAC),FLAC__bool,(Ptr{Uint8},),name)
+function FLAC__format_vorbiscomment_entry_name_is_legal(name::Ptr{UInt8})
+    ccall((:FLAC__format_vorbiscomment_entry_name_is_legal,libFLAC),FLAC__bool,(Ptr{UInt8},),name)
 end
 
-function FLAC__format_vorbiscomment_entry_value_is_legal(value::Ptr{FLAC__byte},length::Uint32)
-    ccall((:FLAC__format_vorbiscomment_entry_value_is_legal,libFLAC),FLAC__bool,(Ptr{FLAC__byte},Uint32),value,length)
+function FLAC__format_vorbiscomment_entry_value_is_legal(value::Ptr{FLAC__byte},length::UInt32)
+    ccall((:FLAC__format_vorbiscomment_entry_value_is_legal,libFLAC),FLAC__bool,(Ptr{FLAC__byte},UInt32),value,length)
 end
 
-function FLAC__format_vorbiscomment_entry_is_legal(entry::Ptr{FLAC__byte},length::Uint32)
-    ccall((:FLAC__format_vorbiscomment_entry_is_legal,libFLAC),FLAC__bool,(Ptr{FLAC__byte},Uint32),entry,length)
+function FLAC__format_vorbiscomment_entry_is_legal(entry::Ptr{FLAC__byte},length::UInt32)
+    ccall((:FLAC__format_vorbiscomment_entry_is_legal,libFLAC),FLAC__bool,(Ptr{FLAC__byte},UInt32),entry,length)
 end
 
 function FLAC__format_seektable_is_legal(seek_table::Ptr{FLAC__StreamMetadata_SeekTable})
@@ -1180,31 +1180,31 @@ function FLAC__format_seektable_is_legal(seek_table::Ptr{FLAC__StreamMetadata_Se
 end
 
 function FLAC__format_seektable_sort(seek_table::Ptr{FLAC__StreamMetadata_SeekTable})
-    ccall((:FLAC__format_seektable_sort,libFLAC),Uint32,(Ptr{FLAC__StreamMetadata_SeekTable},),seek_table)
+    ccall((:FLAC__format_seektable_sort,libFLAC),UInt32,(Ptr{FLAC__StreamMetadata_SeekTable},),seek_table)
 end
 
-function FLAC__format_cuesheet_is_legal(cue_sheet::Ptr{FLAC__StreamMetadata_CueSheet},check_cd_da_subset::FLAC__bool,violation::Ptr{Ptr{Uint8}})
-    ccall((:FLAC__format_cuesheet_is_legal,libFLAC),FLAC__bool,(Ptr{FLAC__StreamMetadata_CueSheet},FLAC__bool,Ptr{Ptr{Uint8}}),cue_sheet,check_cd_da_subset,violation)
+function FLAC__format_cuesheet_is_legal(cue_sheet::Ptr{FLAC__StreamMetadata_CueSheet},check_cd_da_subset::FLAC__bool,violation::Ptr{Ptr{UInt8}})
+    ccall((:FLAC__format_cuesheet_is_legal,libFLAC),FLAC__bool,(Ptr{FLAC__StreamMetadata_CueSheet},FLAC__bool,Ptr{Ptr{UInt8}}),cue_sheet,check_cd_da_subset,violation)
 end
 
-function FLAC__format_picture_is_legal(picture::Ptr{FLAC__StreamMetadata_Picture},violation::Ptr{Ptr{Uint8}})
-    ccall((:FLAC__format_picture_is_legal,libFLAC),FLAC__bool,(Ptr{FLAC__StreamMetadata_Picture},Ptr{Ptr{Uint8}}),picture,violation)
+function FLAC__format_picture_is_legal(picture::Ptr{FLAC__StreamMetadata_Picture},violation::Ptr{Ptr{UInt8}})
+    ccall((:FLAC__format_picture_is_legal,libFLAC),FLAC__bool,(Ptr{FLAC__StreamMetadata_Picture},Ptr{Ptr{UInt8}}),picture,violation)
 end
 
-function FLAC__metadata_get_streaminfo(filename::Ptr{Uint8},streaminfo::Ptr{FLAC__StreamMetadata})
-    ccall((:FLAC__metadata_get_streaminfo,metadata),FLAC__bool,(Ptr{Uint8},Ptr{FLAC__StreamMetadata}),filename,streaminfo)
+function FLAC__metadata_get_streaminfo(filename::Ptr{UInt8},streaminfo::Ptr{FLAC__StreamMetadata})
+    ccall((:FLAC__metadata_get_streaminfo,metadata),FLAC__bool,(Ptr{UInt8},Ptr{FLAC__StreamMetadata}),filename,streaminfo)
 end
 
-function FLAC__metadata_get_tags(filename::Ptr{Uint8},tags::Ptr{Ptr{FLAC__StreamMetadata}})
-    ccall((:FLAC__metadata_get_tags,metadata),FLAC__bool,(Ptr{Uint8},Ptr{Ptr{FLAC__StreamMetadata}}),filename,tags)
+function FLAC__metadata_get_tags(filename::Ptr{UInt8},tags::Ptr{Ptr{FLAC__StreamMetadata}})
+    ccall((:FLAC__metadata_get_tags,metadata),FLAC__bool,(Ptr{UInt8},Ptr{Ptr{FLAC__StreamMetadata}}),filename,tags)
 end
 
-function FLAC__metadata_get_cuesheet(filename::Ptr{Uint8},cuesheet::Ptr{Ptr{FLAC__StreamMetadata}})
-    ccall((:FLAC__metadata_get_cuesheet,metadata),FLAC__bool,(Ptr{Uint8},Ptr{Ptr{FLAC__StreamMetadata}}),filename,cuesheet)
+function FLAC__metadata_get_cuesheet(filename::Ptr{UInt8},cuesheet::Ptr{Ptr{FLAC__StreamMetadata}})
+    ccall((:FLAC__metadata_get_cuesheet,metadata),FLAC__bool,(Ptr{UInt8},Ptr{Ptr{FLAC__StreamMetadata}}),filename,cuesheet)
 end
 
-function FLAC__metadata_get_picture(filename::Ptr{Uint8},picture::Ptr{Ptr{FLAC__StreamMetadata}},_type::FLAC__StreamMetadata_Picture_Type,mime_type::Ptr{Uint8},description::Ptr{FLAC__byte},max_width::Uint32,max_height::Uint32,max_depth::Uint32,max_colors::Uint32)
-    ccall((:FLAC__metadata_get_picture,metadata),FLAC__bool,(Ptr{Uint8},Ptr{Ptr{FLAC__StreamMetadata}},FLAC__StreamMetadata_Picture_Type,Ptr{Uint8},Ptr{FLAC__byte},Uint32,Uint32,Uint32,Uint32),filename,picture,_type,mime_type,description,max_width,max_height,max_depth,max_colors)
+function FLAC__metadata_get_picture(filename::Ptr{UInt8},picture::Ptr{Ptr{FLAC__StreamMetadata}},_type::FLAC__StreamMetadata_Picture_Type,mime_type::Ptr{UInt8},description::Ptr{FLAC__byte},max_width::UInt32,max_height::UInt32,max_depth::UInt32,max_colors::UInt32)
+    ccall((:FLAC__metadata_get_picture,metadata),FLAC__bool,(Ptr{UInt8},Ptr{Ptr{FLAC__StreamMetadata}},FLAC__StreamMetadata_Picture_Type,Ptr{UInt8},Ptr{FLAC__byte},UInt32,UInt32,UInt32,UInt32),filename,picture,_type,mime_type,description,max_width,max_height,max_depth,max_colors)
 end
 
 function FLAC__metadata_simple_iterator_new()
@@ -1219,8 +1219,8 @@ function FLAC__metadata_simple_iterator_status(iterator::Ptr{FLAC__Metadata_Simp
     ccall((:FLAC__metadata_simple_iterator_status,metadata),FLAC__Metadata_SimpleIteratorStatus,(Ptr{FLAC__Metadata_SimpleIterator},),iterator)
 end
 
-function FLAC__metadata_simple_iterator_init(iterator::Ptr{FLAC__Metadata_SimpleIterator},filename::Ptr{Uint8},read_only::FLAC__bool,preserve_file_stats::FLAC__bool)
-    ccall((:FLAC__metadata_simple_iterator_init,metadata),FLAC__bool,(Ptr{FLAC__Metadata_SimpleIterator},Ptr{Uint8},FLAC__bool,FLAC__bool),iterator,filename,read_only,preserve_file_stats)
+function FLAC__metadata_simple_iterator_init(iterator::Ptr{FLAC__Metadata_SimpleIterator},filename::Ptr{UInt8},read_only::FLAC__bool,preserve_file_stats::FLAC__bool)
+    ccall((:FLAC__metadata_simple_iterator_init,metadata),FLAC__bool,(Ptr{FLAC__Metadata_SimpleIterator},Ptr{UInt8},FLAC__bool,FLAC__bool),iterator,filename,read_only,preserve_file_stats)
 end
 
 function FLAC__metadata_simple_iterator_is_writable(iterator::Ptr{FLAC__Metadata_SimpleIterator})
@@ -1248,7 +1248,7 @@ function FLAC__metadata_simple_iterator_get_block_type(iterator::Ptr{FLAC__Metad
 end
 
 function FLAC__metadata_simple_iterator_get_block_length(iterator::Ptr{FLAC__Metadata_SimpleIterator})
-    ccall((:FLAC__metadata_simple_iterator_get_block_length,metadata),Uint32,(Ptr{FLAC__Metadata_SimpleIterator},),iterator)
+    ccall((:FLAC__metadata_simple_iterator_get_block_length,metadata),UInt32,(Ptr{FLAC__Metadata_SimpleIterator},),iterator)
 end
 
 function FLAC__metadata_simple_iterator_get_application_id(iterator::Ptr{FLAC__Metadata_SimpleIterator},id::Ptr{FLAC__byte})
@@ -1283,12 +1283,12 @@ function FLAC__metadata_chain_status(chain::Ptr{FLAC__Metadata_Chain})
     ccall((:FLAC__metadata_chain_status,metadata),FLAC__Metadata_ChainStatus,(Ptr{FLAC__Metadata_Chain},),chain)
 end
 
-function FLAC__metadata_chain_read(chain::Ptr{FLAC__Metadata_Chain},filename::Ptr{Uint8})
-    ccall((:FLAC__metadata_chain_read,metadata),FLAC__bool,(Ptr{FLAC__Metadata_Chain},Ptr{Uint8}),chain,filename)
+function FLAC__metadata_chain_read(chain::Ptr{FLAC__Metadata_Chain},filename::Ptr{UInt8})
+    ccall((:FLAC__metadata_chain_read,metadata),FLAC__bool,(Ptr{FLAC__Metadata_Chain},Ptr{UInt8}),chain,filename)
 end
 
-function FLAC__metadata_chain_read_ogg(chain::Ptr{FLAC__Metadata_Chain},filename::Ptr{Uint8})
-    ccall((:FLAC__metadata_chain_read_ogg,metadata),FLAC__bool,(Ptr{FLAC__Metadata_Chain},Ptr{Uint8}),chain,filename)
+function FLAC__metadata_chain_read_ogg(chain::Ptr{FLAC__Metadata_Chain},filename::Ptr{UInt8})
+    ccall((:FLAC__metadata_chain_read_ogg,metadata),FLAC__bool,(Ptr{FLAC__Metadata_Chain},Ptr{UInt8}),chain,filename)
 end
 
 function FLAC__metadata_chain_read_with_callbacks(chain::Ptr{FLAC__Metadata_Chain},handle::FLAC__IOHandle,callbacks::FLAC__IOCallbacks)
@@ -1383,48 +1383,48 @@ function FLAC__metadata_object_is_equal(block1::Ptr{FLAC__StreamMetadata},block2
     ccall((:FLAC__metadata_object_is_equal,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},Ptr{FLAC__StreamMetadata}),block1,block2)
 end
 
-function FLAC__metadata_object_application_set_data(object::Ptr{FLAC__StreamMetadata},data::Ptr{FLAC__byte},length::Uint32,copy::FLAC__bool)
-    ccall((:FLAC__metadata_object_application_set_data,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},Ptr{FLAC__byte},Uint32,FLAC__bool),object,data,length,copy)
+function FLAC__metadata_object_application_set_data(object::Ptr{FLAC__StreamMetadata},data::Ptr{FLAC__byte},length::UInt32,copy::FLAC__bool)
+    ccall((:FLAC__metadata_object_application_set_data,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},Ptr{FLAC__byte},UInt32,FLAC__bool),object,data,length,copy)
 end
 
-function FLAC__metadata_object_seektable_resize_points(object::Ptr{FLAC__StreamMetadata},new_num_points::Uint32)
-    ccall((:FLAC__metadata_object_seektable_resize_points,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},Uint32),object,new_num_points)
+function FLAC__metadata_object_seektable_resize_points(object::Ptr{FLAC__StreamMetadata},new_num_points::UInt32)
+    ccall((:FLAC__metadata_object_seektable_resize_points,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},UInt32),object,new_num_points)
 end
 
-function FLAC__metadata_object_seektable_set_point(object::Ptr{FLAC__StreamMetadata},point_num::Uint32,point::FLAC__StreamMetadata_SeekPoint)
-    ccall((:FLAC__metadata_object_seektable_set_point,metadata),Void,(Ptr{FLAC__StreamMetadata},Uint32,FLAC__StreamMetadata_SeekPoint),object,point_num,point)
+function FLAC__metadata_object_seektable_set_point(object::Ptr{FLAC__StreamMetadata},point_num::UInt32,point::FLAC__StreamMetadata_SeekPoint)
+    ccall((:FLAC__metadata_object_seektable_set_point,metadata),Void,(Ptr{FLAC__StreamMetadata},UInt32,FLAC__StreamMetadata_SeekPoint),object,point_num,point)
 end
 
-function FLAC__metadata_object_seektable_insert_point(object::Ptr{FLAC__StreamMetadata},point_num::Uint32,point::FLAC__StreamMetadata_SeekPoint)
-    ccall((:FLAC__metadata_object_seektable_insert_point,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},Uint32,FLAC__StreamMetadata_SeekPoint),object,point_num,point)
+function FLAC__metadata_object_seektable_insert_point(object::Ptr{FLAC__StreamMetadata},point_num::UInt32,point::FLAC__StreamMetadata_SeekPoint)
+    ccall((:FLAC__metadata_object_seektable_insert_point,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},UInt32,FLAC__StreamMetadata_SeekPoint),object,point_num,point)
 end
 
-function FLAC__metadata_object_seektable_delete_point(object::Ptr{FLAC__StreamMetadata},point_num::Uint32)
-    ccall((:FLAC__metadata_object_seektable_delete_point,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},Uint32),object,point_num)
+function FLAC__metadata_object_seektable_delete_point(object::Ptr{FLAC__StreamMetadata},point_num::UInt32)
+    ccall((:FLAC__metadata_object_seektable_delete_point,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},UInt32),object,point_num)
 end
 
 function FLAC__metadata_object_seektable_is_legal(object::Ptr{FLAC__StreamMetadata})
     ccall((:FLAC__metadata_object_seektable_is_legal,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},),object)
 end
 
-function FLAC__metadata_object_seektable_template_append_placeholders(object::Ptr{FLAC__StreamMetadata},num::Uint32)
-    ccall((:FLAC__metadata_object_seektable_template_append_placeholders,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},Uint32),object,num)
+function FLAC__metadata_object_seektable_template_append_placeholders(object::Ptr{FLAC__StreamMetadata},num::UInt32)
+    ccall((:FLAC__metadata_object_seektable_template_append_placeholders,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},UInt32),object,num)
 end
 
 function FLAC__metadata_object_seektable_template_append_point(object::Ptr{FLAC__StreamMetadata},sample_number::FLAC__uint64)
     ccall((:FLAC__metadata_object_seektable_template_append_point,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},FLAC__uint64),object,sample_number)
 end
 
-function FLAC__metadata_object_seektable_template_append_points(object::Ptr{FLAC__StreamMetadata},sample_numbers::Ptr{FLAC__uint64},num::Uint32)
-    ccall((:FLAC__metadata_object_seektable_template_append_points,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},Ptr{FLAC__uint64},Uint32),object,sample_numbers,num)
+function FLAC__metadata_object_seektable_template_append_points(object::Ptr{FLAC__StreamMetadata},sample_numbers::Ptr{FLAC__uint64},num::UInt32)
+    ccall((:FLAC__metadata_object_seektable_template_append_points,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},Ptr{FLAC__uint64},UInt32),object,sample_numbers,num)
 end
 
-function FLAC__metadata_object_seektable_template_append_spaced_points(object::Ptr{FLAC__StreamMetadata},num::Uint32,total_samples::FLAC__uint64)
-    ccall((:FLAC__metadata_object_seektable_template_append_spaced_points,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},Uint32,FLAC__uint64),object,num,total_samples)
+function FLAC__metadata_object_seektable_template_append_spaced_points(object::Ptr{FLAC__StreamMetadata},num::UInt32,total_samples::FLAC__uint64)
+    ccall((:FLAC__metadata_object_seektable_template_append_spaced_points,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},UInt32,FLAC__uint64),object,num,total_samples)
 end
 
-function FLAC__metadata_object_seektable_template_append_spaced_points_by_samples(object::Ptr{FLAC__StreamMetadata},samples::Uint32,total_samples::FLAC__uint64)
-    ccall((:FLAC__metadata_object_seektable_template_append_spaced_points_by_samples,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},Uint32,FLAC__uint64),object,samples,total_samples)
+function FLAC__metadata_object_seektable_template_append_spaced_points_by_samples(object::Ptr{FLAC__StreamMetadata},samples::UInt32,total_samples::FLAC__uint64)
+    ccall((:FLAC__metadata_object_seektable_template_append_spaced_points_by_samples,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},UInt32,FLAC__uint64),object,samples,total_samples)
 end
 
 function FLAC__metadata_object_seektable_template_sort(object::Ptr{FLAC__StreamMetadata},compact::FLAC__bool)
@@ -1435,16 +1435,16 @@ function FLAC__metadata_object_vorbiscomment_set_vendor_string(object::Ptr{FLAC_
     ccall((:FLAC__metadata_object_vorbiscomment_set_vendor_string,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},FLAC__StreamMetadata_VorbisComment_Entry,FLAC__bool),object,entry,copy)
 end
 
-function FLAC__metadata_object_vorbiscomment_resize_comments(object::Ptr{FLAC__StreamMetadata},new_num_comments::Uint32)
-    ccall((:FLAC__metadata_object_vorbiscomment_resize_comments,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},Uint32),object,new_num_comments)
+function FLAC__metadata_object_vorbiscomment_resize_comments(object::Ptr{FLAC__StreamMetadata},new_num_comments::UInt32)
+    ccall((:FLAC__metadata_object_vorbiscomment_resize_comments,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},UInt32),object,new_num_comments)
 end
 
-function FLAC__metadata_object_vorbiscomment_set_comment(object::Ptr{FLAC__StreamMetadata},comment_num::Uint32,entry::FLAC__StreamMetadata_VorbisComment_Entry,copy::FLAC__bool)
-    ccall((:FLAC__metadata_object_vorbiscomment_set_comment,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},Uint32,FLAC__StreamMetadata_VorbisComment_Entry,FLAC__bool),object,comment_num,entry,copy)
+function FLAC__metadata_object_vorbiscomment_set_comment(object::Ptr{FLAC__StreamMetadata},comment_num::UInt32,entry::FLAC__StreamMetadata_VorbisComment_Entry,copy::FLAC__bool)
+    ccall((:FLAC__metadata_object_vorbiscomment_set_comment,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},UInt32,FLAC__StreamMetadata_VorbisComment_Entry,FLAC__bool),object,comment_num,entry,copy)
 end
 
-function FLAC__metadata_object_vorbiscomment_insert_comment(object::Ptr{FLAC__StreamMetadata},comment_num::Uint32,entry::FLAC__StreamMetadata_VorbisComment_Entry,copy::FLAC__bool)
-    ccall((:FLAC__metadata_object_vorbiscomment_insert_comment,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},Uint32,FLAC__StreamMetadata_VorbisComment_Entry,FLAC__bool),object,comment_num,entry,copy)
+function FLAC__metadata_object_vorbiscomment_insert_comment(object::Ptr{FLAC__StreamMetadata},comment_num::UInt32,entry::FLAC__StreamMetadata_VorbisComment_Entry,copy::FLAC__bool)
+    ccall((:FLAC__metadata_object_vorbiscomment_insert_comment,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},UInt32,FLAC__StreamMetadata_VorbisComment_Entry,FLAC__bool),object,comment_num,entry,copy)
 end
 
 function FLAC__metadata_object_vorbiscomment_append_comment(object::Ptr{FLAC__StreamMetadata},entry::FLAC__StreamMetadata_VorbisComment_Entry,copy::FLAC__bool)
@@ -1455,32 +1455,32 @@ function FLAC__metadata_object_vorbiscomment_replace_comment(object::Ptr{FLAC__S
     ccall((:FLAC__metadata_object_vorbiscomment_replace_comment,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},FLAC__StreamMetadata_VorbisComment_Entry,FLAC__bool,FLAC__bool),object,entry,all,copy)
 end
 
-function FLAC__metadata_object_vorbiscomment_delete_comment(object::Ptr{FLAC__StreamMetadata},comment_num::Uint32)
-    ccall((:FLAC__metadata_object_vorbiscomment_delete_comment,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},Uint32),object,comment_num)
+function FLAC__metadata_object_vorbiscomment_delete_comment(object::Ptr{FLAC__StreamMetadata},comment_num::UInt32)
+    ccall((:FLAC__metadata_object_vorbiscomment_delete_comment,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},UInt32),object,comment_num)
 end
 
-function FLAC__metadata_object_vorbiscomment_entry_from_name_value_pair(entry::Ptr{FLAC__StreamMetadata_VorbisComment_Entry},field_name::Ptr{Uint8},field_value::Ptr{Uint8})
-    ccall((:FLAC__metadata_object_vorbiscomment_entry_from_name_value_pair,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata_VorbisComment_Entry},Ptr{Uint8},Ptr{Uint8}),entry,field_name,field_value)
+function FLAC__metadata_object_vorbiscomment_entry_from_name_value_pair(entry::Ptr{FLAC__StreamMetadata_VorbisComment_Entry},field_name::Ptr{UInt8},field_value::Ptr{UInt8})
+    ccall((:FLAC__metadata_object_vorbiscomment_entry_from_name_value_pair,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata_VorbisComment_Entry},Ptr{UInt8},Ptr{UInt8}),entry,field_name,field_value)
 end
 
-function FLAC__metadata_object_vorbiscomment_entry_to_name_value_pair(entry::FLAC__StreamMetadata_VorbisComment_Entry,field_name::Ptr{Ptr{Uint8}},field_value::Ptr{Ptr{Uint8}})
-    ccall((:FLAC__metadata_object_vorbiscomment_entry_to_name_value_pair,metadata),FLAC__bool,(FLAC__StreamMetadata_VorbisComment_Entry,Ptr{Ptr{Uint8}},Ptr{Ptr{Uint8}}),entry,field_name,field_value)
+function FLAC__metadata_object_vorbiscomment_entry_to_name_value_pair(entry::FLAC__StreamMetadata_VorbisComment_Entry,field_name::Ptr{Ptr{UInt8}},field_value::Ptr{Ptr{UInt8}})
+    ccall((:FLAC__metadata_object_vorbiscomment_entry_to_name_value_pair,metadata),FLAC__bool,(FLAC__StreamMetadata_VorbisComment_Entry,Ptr{Ptr{UInt8}},Ptr{Ptr{UInt8}}),entry,field_name,field_value)
 end
 
-function FLAC__metadata_object_vorbiscomment_entry_matches(entry::FLAC__StreamMetadata_VorbisComment_Entry,field_name::Ptr{Uint8},field_name_length::Uint32)
-    ccall((:FLAC__metadata_object_vorbiscomment_entry_matches,metadata),FLAC__bool,(FLAC__StreamMetadata_VorbisComment_Entry,Ptr{Uint8},Uint32),entry,field_name,field_name_length)
+function FLAC__metadata_object_vorbiscomment_entry_matches(entry::FLAC__StreamMetadata_VorbisComment_Entry,field_name::Ptr{UInt8},field_name_length::UInt32)
+    ccall((:FLAC__metadata_object_vorbiscomment_entry_matches,metadata),FLAC__bool,(FLAC__StreamMetadata_VorbisComment_Entry,Ptr{UInt8},UInt32),entry,field_name,field_name_length)
 end
 
-function FLAC__metadata_object_vorbiscomment_find_entry_from(object::Ptr{FLAC__StreamMetadata},offset::Uint32,field_name::Ptr{Uint8})
-    ccall((:FLAC__metadata_object_vorbiscomment_find_entry_from,metadata),Cint,(Ptr{FLAC__StreamMetadata},Uint32,Ptr{Uint8}),object,offset,field_name)
+function FLAC__metadata_object_vorbiscomment_find_entry_from(object::Ptr{FLAC__StreamMetadata},offset::UInt32,field_name::Ptr{UInt8})
+    ccall((:FLAC__metadata_object_vorbiscomment_find_entry_from,metadata),Cint,(Ptr{FLAC__StreamMetadata},UInt32,Ptr{UInt8}),object,offset,field_name)
 end
 
-function FLAC__metadata_object_vorbiscomment_remove_entry_matching(object::Ptr{FLAC__StreamMetadata},field_name::Ptr{Uint8})
-    ccall((:FLAC__metadata_object_vorbiscomment_remove_entry_matching,metadata),Cint,(Ptr{FLAC__StreamMetadata},Ptr{Uint8}),object,field_name)
+function FLAC__metadata_object_vorbiscomment_remove_entry_matching(object::Ptr{FLAC__StreamMetadata},field_name::Ptr{UInt8})
+    ccall((:FLAC__metadata_object_vorbiscomment_remove_entry_matching,metadata),Cint,(Ptr{FLAC__StreamMetadata},Ptr{UInt8}),object,field_name)
 end
 
-function FLAC__metadata_object_vorbiscomment_remove_entries_matching(object::Ptr{FLAC__StreamMetadata},field_name::Ptr{Uint8})
-    ccall((:FLAC__metadata_object_vorbiscomment_remove_entries_matching,metadata),Cint,(Ptr{FLAC__StreamMetadata},Ptr{Uint8}),object,field_name)
+function FLAC__metadata_object_vorbiscomment_remove_entries_matching(object::Ptr{FLAC__StreamMetadata},field_name::Ptr{UInt8})
+    ccall((:FLAC__metadata_object_vorbiscomment_remove_entries_matching,metadata),Cint,(Ptr{FLAC__StreamMetadata},Ptr{UInt8}),object,field_name)
 end
 
 function FLAC__metadata_object_cuesheet_track_new()
@@ -1495,64 +1495,64 @@ function FLAC__metadata_object_cuesheet_track_delete(object::Ptr{FLAC__StreamMet
     ccall((:FLAC__metadata_object_cuesheet_track_delete,metadata),Void,(Ptr{FLAC__StreamMetadata_CueSheet_Track},),object)
 end
 
-function FLAC__metadata_object_cuesheet_track_resize_indices(object::Ptr{FLAC__StreamMetadata},track_num::Uint32,new_num_indices::Uint32)
-    ccall((:FLAC__metadata_object_cuesheet_track_resize_indices,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},Uint32,Uint32),object,track_num,new_num_indices)
+function FLAC__metadata_object_cuesheet_track_resize_indices(object::Ptr{FLAC__StreamMetadata},track_num::UInt32,new_num_indices::UInt32)
+    ccall((:FLAC__metadata_object_cuesheet_track_resize_indices,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},UInt32,UInt32),object,track_num,new_num_indices)
 end
 
-function FLAC__metadata_object_cuesheet_track_insert_index(object::Ptr{FLAC__StreamMetadata},track_num::Uint32,index_num::Uint32,index::FLAC__StreamMetadata_CueSheet_Index)
-    ccall((:FLAC__metadata_object_cuesheet_track_insert_index,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},Uint32,Uint32,FLAC__StreamMetadata_CueSheet_Index),object,track_num,index_num,index)
+function FLAC__metadata_object_cuesheet_track_insert_index(object::Ptr{FLAC__StreamMetadata},track_num::UInt32,index_num::UInt32,index::FLAC__StreamMetadata_CueSheet_Index)
+    ccall((:FLAC__metadata_object_cuesheet_track_insert_index,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},UInt32,UInt32,FLAC__StreamMetadata_CueSheet_Index),object,track_num,index_num,index)
 end
 
-function FLAC__metadata_object_cuesheet_track_insert_blank_index(object::Ptr{FLAC__StreamMetadata},track_num::Uint32,index_num::Uint32)
-    ccall((:FLAC__metadata_object_cuesheet_track_insert_blank_index,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},Uint32,Uint32),object,track_num,index_num)
+function FLAC__metadata_object_cuesheet_track_insert_blank_index(object::Ptr{FLAC__StreamMetadata},track_num::UInt32,index_num::UInt32)
+    ccall((:FLAC__metadata_object_cuesheet_track_insert_blank_index,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},UInt32,UInt32),object,track_num,index_num)
 end
 
-function FLAC__metadata_object_cuesheet_track_delete_index(object::Ptr{FLAC__StreamMetadata},track_num::Uint32,index_num::Uint32)
-    ccall((:FLAC__metadata_object_cuesheet_track_delete_index,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},Uint32,Uint32),object,track_num,index_num)
+function FLAC__metadata_object_cuesheet_track_delete_index(object::Ptr{FLAC__StreamMetadata},track_num::UInt32,index_num::UInt32)
+    ccall((:FLAC__metadata_object_cuesheet_track_delete_index,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},UInt32,UInt32),object,track_num,index_num)
 end
 
-function FLAC__metadata_object_cuesheet_resize_tracks(object::Ptr{FLAC__StreamMetadata},new_num_tracks::Uint32)
-    ccall((:FLAC__metadata_object_cuesheet_resize_tracks,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},Uint32),object,new_num_tracks)
+function FLAC__metadata_object_cuesheet_resize_tracks(object::Ptr{FLAC__StreamMetadata},new_num_tracks::UInt32)
+    ccall((:FLAC__metadata_object_cuesheet_resize_tracks,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},UInt32),object,new_num_tracks)
 end
 
-function FLAC__metadata_object_cuesheet_set_track(object::Ptr{FLAC__StreamMetadata},track_num::Uint32,track::Ptr{FLAC__StreamMetadata_CueSheet_Track},copy::FLAC__bool)
-    ccall((:FLAC__metadata_object_cuesheet_set_track,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},Uint32,Ptr{FLAC__StreamMetadata_CueSheet_Track},FLAC__bool),object,track_num,track,copy)
+function FLAC__metadata_object_cuesheet_set_track(object::Ptr{FLAC__StreamMetadata},track_num::UInt32,track::Ptr{FLAC__StreamMetadata_CueSheet_Track},copy::FLAC__bool)
+    ccall((:FLAC__metadata_object_cuesheet_set_track,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},UInt32,Ptr{FLAC__StreamMetadata_CueSheet_Track},FLAC__bool),object,track_num,track,copy)
 end
 
-function FLAC__metadata_object_cuesheet_insert_track(object::Ptr{FLAC__StreamMetadata},track_num::Uint32,track::Ptr{FLAC__StreamMetadata_CueSheet_Track},copy::FLAC__bool)
-    ccall((:FLAC__metadata_object_cuesheet_insert_track,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},Uint32,Ptr{FLAC__StreamMetadata_CueSheet_Track},FLAC__bool),object,track_num,track,copy)
+function FLAC__metadata_object_cuesheet_insert_track(object::Ptr{FLAC__StreamMetadata},track_num::UInt32,track::Ptr{FLAC__StreamMetadata_CueSheet_Track},copy::FLAC__bool)
+    ccall((:FLAC__metadata_object_cuesheet_insert_track,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},UInt32,Ptr{FLAC__StreamMetadata_CueSheet_Track},FLAC__bool),object,track_num,track,copy)
 end
 
-function FLAC__metadata_object_cuesheet_insert_blank_track(object::Ptr{FLAC__StreamMetadata},track_num::Uint32)
-    ccall((:FLAC__metadata_object_cuesheet_insert_blank_track,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},Uint32),object,track_num)
+function FLAC__metadata_object_cuesheet_insert_blank_track(object::Ptr{FLAC__StreamMetadata},track_num::UInt32)
+    ccall((:FLAC__metadata_object_cuesheet_insert_blank_track,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},UInt32),object,track_num)
 end
 
-function FLAC__metadata_object_cuesheet_delete_track(object::Ptr{FLAC__StreamMetadata},track_num::Uint32)
-    ccall((:FLAC__metadata_object_cuesheet_delete_track,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},Uint32),object,track_num)
+function FLAC__metadata_object_cuesheet_delete_track(object::Ptr{FLAC__StreamMetadata},track_num::UInt32)
+    ccall((:FLAC__metadata_object_cuesheet_delete_track,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},UInt32),object,track_num)
 end
 
-function FLAC__metadata_object_cuesheet_is_legal(object::Ptr{FLAC__StreamMetadata},check_cd_da_subset::FLAC__bool,violation::Ptr{Ptr{Uint8}})
-    ccall((:FLAC__metadata_object_cuesheet_is_legal,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},FLAC__bool,Ptr{Ptr{Uint8}}),object,check_cd_da_subset,violation)
+function FLAC__metadata_object_cuesheet_is_legal(object::Ptr{FLAC__StreamMetadata},check_cd_da_subset::FLAC__bool,violation::Ptr{Ptr{UInt8}})
+    ccall((:FLAC__metadata_object_cuesheet_is_legal,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},FLAC__bool,Ptr{Ptr{UInt8}}),object,check_cd_da_subset,violation)
 end
 
 function FLAC__metadata_object_cuesheet_calculate_cddb_id(object::Ptr{FLAC__StreamMetadata})
-    ccall((:FLAC__metadata_object_cuesheet_calculate_cddb_id,metadata),FLAC__uint32,(Ptr{FLAC__StreamMetadata},),object)
+    ccall((:FLAC__metadata_object_cuesheet_calculate_cddb_id,metadata),FLAC__UInt32,(Ptr{FLAC__StreamMetadata},),object)
 end
 
-function FLAC__metadata_object_picture_set_mime_type(object::Ptr{FLAC__StreamMetadata},mime_type::Ptr{Uint8},copy::FLAC__bool)
-    ccall((:FLAC__metadata_object_picture_set_mime_type,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},Ptr{Uint8},FLAC__bool),object,mime_type,copy)
+function FLAC__metadata_object_picture_set_mime_type(object::Ptr{FLAC__StreamMetadata},mime_type::Ptr{UInt8},copy::FLAC__bool)
+    ccall((:FLAC__metadata_object_picture_set_mime_type,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},Ptr{UInt8},FLAC__bool),object,mime_type,copy)
 end
 
 function FLAC__metadata_object_picture_set_description(object::Ptr{FLAC__StreamMetadata},description::Ptr{FLAC__byte},copy::FLAC__bool)
     ccall((:FLAC__metadata_object_picture_set_description,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},Ptr{FLAC__byte},FLAC__bool),object,description,copy)
 end
 
-function FLAC__metadata_object_picture_set_data(object::Ptr{FLAC__StreamMetadata},data::Ptr{FLAC__byte},length::FLAC__uint32,copy::FLAC__bool)
-    ccall((:FLAC__metadata_object_picture_set_data,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},Ptr{FLAC__byte},FLAC__uint32,FLAC__bool),object,data,length,copy)
+function FLAC__metadata_object_picture_set_data(object::Ptr{FLAC__StreamMetadata},data::Ptr{FLAC__byte},length::FLAC__UInt32,copy::FLAC__bool)
+    ccall((:FLAC__metadata_object_picture_set_data,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},Ptr{FLAC__byte},FLAC__UInt32,FLAC__bool),object,data,length,copy)
 end
 
-function FLAC__metadata_object_picture_is_legal(object::Ptr{FLAC__StreamMetadata},violation::Ptr{Ptr{Uint8}})
-    ccall((:FLAC__metadata_object_picture_is_legal,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},Ptr{Ptr{Uint8}}),object,violation)
+function FLAC__metadata_object_picture_is_legal(object::Ptr{FLAC__StreamMetadata},violation::Ptr{Ptr{UInt8}})
+    ccall((:FLAC__metadata_object_picture_is_legal,metadata),FLAC__bool,(Ptr{FLAC__StreamMetadata},Ptr{Ptr{UInt8}}),object,violation)
 end
 
 function FLAC__stream_decoder_new()
@@ -1601,7 +1601,7 @@ function FLAC__stream_decoder_get_state(decoder::Ptr{FLAC__StreamDecoder})
 end
 
 function FLAC__stream_decoder_get_resolved_state_string(decoder::Ptr{FLAC__StreamDecoder})
-    ccall((:FLAC__stream_decoder_get_resolved_state_string,libFLAC),Ptr{Uint8},(Ptr{FLAC__StreamDecoder},),decoder)
+    ccall((:FLAC__stream_decoder_get_resolved_state_string,libFLAC),Ptr{UInt8},(Ptr{FLAC__StreamDecoder},),decoder)
 end
 
 function FLAC__stream_decoder_get_md5_checking(decoder::Ptr{FLAC__StreamDecoder})
@@ -1613,7 +1613,7 @@ function FLAC__stream_decoder_get_total_samples(decoder::Ptr{FLAC__StreamDecoder
 end
 
 function FLAC__stream_decoder_get_channels(decoder::Ptr{FLAC__StreamDecoder})
-    ccall((:FLAC__stream_decoder_get_channels,libFLAC),Uint32,(Ptr{FLAC__StreamDecoder},),decoder)
+    ccall((:FLAC__stream_decoder_get_channels,libFLAC),UInt32,(Ptr{FLAC__StreamDecoder},),decoder)
 end
 
 function FLAC__stream_decoder_get_channel_assignment(decoder::Ptr{FLAC__StreamDecoder})
@@ -1621,15 +1621,15 @@ function FLAC__stream_decoder_get_channel_assignment(decoder::Ptr{FLAC__StreamDe
 end
 
 function FLAC__stream_decoder_get_bits_per_sample(decoder::Ptr{FLAC__StreamDecoder})
-    ccall((:FLAC__stream_decoder_get_bits_per_sample,libFLAC),Uint32,(Ptr{FLAC__StreamDecoder},),decoder)
+    ccall((:FLAC__stream_decoder_get_bits_per_sample,libFLAC),UInt32,(Ptr{FLAC__StreamDecoder},),decoder)
 end
 
 function FLAC__stream_decoder_get_sample_rate(decoder::Ptr{FLAC__StreamDecoder})
-    ccall((:FLAC__stream_decoder_get_sample_rate,libFLAC),Uint32,(Ptr{FLAC__StreamDecoder},),decoder)
+    ccall((:FLAC__stream_decoder_get_sample_rate,libFLAC),UInt32,(Ptr{FLAC__StreamDecoder},),decoder)
 end
 
 function FLAC__stream_decoder_get_blocksize(decoder::Ptr{FLAC__StreamDecoder})
-    ccall((:FLAC__stream_decoder_get_blocksize,libFLAC),Uint32,(Ptr{FLAC__StreamDecoder},),decoder)
+    ccall((:FLAC__stream_decoder_get_blocksize,libFLAC),UInt32,(Ptr{FLAC__StreamDecoder},),decoder)
 end
 
 function FLAC__stream_decoder_get_decode_position(decoder::Ptr{FLAC__StreamDecoder},position::Ptr{FLAC__uint64})
@@ -1652,12 +1652,12 @@ function FLAC__stream_decoder_init_ogg_FILE(decoder::Ptr{FLAC__StreamDecoder},fi
     ccall((:FLAC__stream_decoder_init_ogg_FILE,libFLAC),FLAC__StreamDecoderInitStatus,(Ptr{FLAC__StreamDecoder},Ptr{FILE},FLAC__StreamDecoderWriteCallback,FLAC__StreamDecoderMetadataCallback,FLAC__StreamDecoderErrorCallback,Ptr{Void}),decoder,file,write_callback,metadata_callback,error_callback,client_data)
 end
 
-function FLAC__stream_decoder_init_file(decoder::Ptr{FLAC__StreamDecoder},filename::Ptr{Uint8},write_callback::FLAC__StreamDecoderWriteCallback,metadata_callback::FLAC__StreamDecoderMetadataCallback,error_callback::FLAC__StreamDecoderErrorCallback,client_data::Ptr{Void})
-    ccall((:FLAC__stream_decoder_init_file,libFLAC),FLAC__StreamDecoderInitStatus,(Ptr{FLAC__StreamDecoder},Ptr{Uint8},FLAC__StreamDecoderWriteCallback,FLAC__StreamDecoderMetadataCallback,FLAC__StreamDecoderErrorCallback,Ptr{Void}),decoder,filename,write_callback,metadata_callback,error_callback,client_data)
+function FLAC__stream_decoder_init_file(decoder::Ptr{FLAC__StreamDecoder},filename::Ptr{UInt8},write_callback::FLAC__StreamDecoderWriteCallback,metadata_callback::FLAC__StreamDecoderMetadataCallback,error_callback::FLAC__StreamDecoderErrorCallback,client_data::Ptr{Void})
+    ccall((:FLAC__stream_decoder_init_file,libFLAC),FLAC__StreamDecoderInitStatus,(Ptr{FLAC__StreamDecoder},Ptr{UInt8},FLAC__StreamDecoderWriteCallback,FLAC__StreamDecoderMetadataCallback,FLAC__StreamDecoderErrorCallback,Ptr{Void}),decoder,filename,write_callback,metadata_callback,error_callback,client_data)
 end
 
-function FLAC__stream_decoder_init_ogg_file(decoder::Ptr{FLAC__StreamDecoder},filename::Ptr{Uint8},write_callback::FLAC__StreamDecoderWriteCallback,metadata_callback::FLAC__StreamDecoderMetadataCallback,error_callback::FLAC__StreamDecoderErrorCallback,client_data::Ptr{Void})
-    ccall((:FLAC__stream_decoder_init_ogg_file,libFLAC),FLAC__StreamDecoderInitStatus,(Ptr{FLAC__StreamDecoder},Ptr{Uint8},FLAC__StreamDecoderWriteCallback,FLAC__StreamDecoderMetadataCallback,FLAC__StreamDecoderErrorCallback,Ptr{Void}),decoder,filename,write_callback,metadata_callback,error_callback,client_data)
+function FLAC__stream_decoder_init_ogg_file(decoder::Ptr{FLAC__StreamDecoder},filename::Ptr{UInt8},write_callback::FLAC__StreamDecoderWriteCallback,metadata_callback::FLAC__StreamDecoderMetadataCallback,error_callback::FLAC__StreamDecoderErrorCallback,client_data::Ptr{Void})
+    ccall((:FLAC__stream_decoder_init_ogg_file,libFLAC),FLAC__StreamDecoderInitStatus,(Ptr{FLAC__StreamDecoder},Ptr{UInt8},FLAC__StreamDecoderWriteCallback,FLAC__StreamDecoderMetadataCallback,FLAC__StreamDecoderErrorCallback,Ptr{Void}),decoder,filename,write_callback,metadata_callback,error_callback,client_data)
 end
 
 function FLAC__stream_decoder_finish(decoder::Ptr{FLAC__StreamDecoder})
@@ -1712,24 +1712,24 @@ function FLAC__stream_encoder_set_streamable_subset(encoder::Ptr{FLAC__StreamEnc
     ccall((:FLAC__stream_encoder_set_streamable_subset,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},FLAC__bool),encoder,value)
 end
 
-function FLAC__stream_encoder_set_channels(encoder::Ptr{FLAC__StreamEncoder},value::Uint32)
-    ccall((:FLAC__stream_encoder_set_channels,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},Uint32),encoder,value)
+function FLAC__stream_encoder_set_channels(encoder::Ptr{FLAC__StreamEncoder},value::UInt32)
+    ccall((:FLAC__stream_encoder_set_channels,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},UInt32),encoder,value)
 end
 
-function FLAC__stream_encoder_set_bits_per_sample(encoder::Ptr{FLAC__StreamEncoder},value::Uint32)
-    ccall((:FLAC__stream_encoder_set_bits_per_sample,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},Uint32),encoder,value)
+function FLAC__stream_encoder_set_bits_per_sample(encoder::Ptr{FLAC__StreamEncoder},value::UInt32)
+    ccall((:FLAC__stream_encoder_set_bits_per_sample,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},UInt32),encoder,value)
 end
 
-function FLAC__stream_encoder_set_sample_rate(encoder::Ptr{FLAC__StreamEncoder},value::Uint32)
-    ccall((:FLAC__stream_encoder_set_sample_rate,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},Uint32),encoder,value)
+function FLAC__stream_encoder_set_sample_rate(encoder::Ptr{FLAC__StreamEncoder},value::UInt32)
+    ccall((:FLAC__stream_encoder_set_sample_rate,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},UInt32),encoder,value)
 end
 
-function FLAC__stream_encoder_set_compression_level(encoder::Ptr{FLAC__StreamEncoder},value::Uint32)
-    ccall((:FLAC__stream_encoder_set_compression_level,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},Uint32),encoder,value)
+function FLAC__stream_encoder_set_compression_level(encoder::Ptr{FLAC__StreamEncoder},value::UInt32)
+    ccall((:FLAC__stream_encoder_set_compression_level,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},UInt32),encoder,value)
 end
 
-function FLAC__stream_encoder_set_blocksize(encoder::Ptr{FLAC__StreamEncoder},value::Uint32)
-    ccall((:FLAC__stream_encoder_set_blocksize,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},Uint32),encoder,value)
+function FLAC__stream_encoder_set_blocksize(encoder::Ptr{FLAC__StreamEncoder},value::UInt32)
+    ccall((:FLAC__stream_encoder_set_blocksize,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},UInt32),encoder,value)
 end
 
 function FLAC__stream_encoder_set_do_mid_side_stereo(encoder::Ptr{FLAC__StreamEncoder},value::FLAC__bool)
@@ -1740,16 +1740,16 @@ function FLAC__stream_encoder_set_loose_mid_side_stereo(encoder::Ptr{FLAC__Strea
     ccall((:FLAC__stream_encoder_set_loose_mid_side_stereo,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},FLAC__bool),encoder,value)
 end
 
-function FLAC__stream_encoder_set_apodization(encoder::Ptr{FLAC__StreamEncoder},specification::Ptr{Uint8})
-    ccall((:FLAC__stream_encoder_set_apodization,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},Ptr{Uint8}),encoder,specification)
+function FLAC__stream_encoder_set_apodization(encoder::Ptr{FLAC__StreamEncoder},specification::Ptr{UInt8})
+    ccall((:FLAC__stream_encoder_set_apodization,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},Ptr{UInt8}),encoder,specification)
 end
 
-function FLAC__stream_encoder_set_max_lpc_order(encoder::Ptr{FLAC__StreamEncoder},value::Uint32)
-    ccall((:FLAC__stream_encoder_set_max_lpc_order,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},Uint32),encoder,value)
+function FLAC__stream_encoder_set_max_lpc_order(encoder::Ptr{FLAC__StreamEncoder},value::UInt32)
+    ccall((:FLAC__stream_encoder_set_max_lpc_order,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},UInt32),encoder,value)
 end
 
-function FLAC__stream_encoder_set_qlp_coeff_precision(encoder::Ptr{FLAC__StreamEncoder},value::Uint32)
-    ccall((:FLAC__stream_encoder_set_qlp_coeff_precision,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},Uint32),encoder,value)
+function FLAC__stream_encoder_set_qlp_coeff_precision(encoder::Ptr{FLAC__StreamEncoder},value::UInt32)
+    ccall((:FLAC__stream_encoder_set_qlp_coeff_precision,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},UInt32),encoder,value)
 end
 
 function FLAC__stream_encoder_set_do_qlp_coeff_prec_search(encoder::Ptr{FLAC__StreamEncoder},value::FLAC__bool)
@@ -1764,24 +1764,24 @@ function FLAC__stream_encoder_set_do_exhaustive_model_search(encoder::Ptr{FLAC__
     ccall((:FLAC__stream_encoder_set_do_exhaustive_model_search,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},FLAC__bool),encoder,value)
 end
 
-function FLAC__stream_encoder_set_min_residual_partition_order(encoder::Ptr{FLAC__StreamEncoder},value::Uint32)
-    ccall((:FLAC__stream_encoder_set_min_residual_partition_order,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},Uint32),encoder,value)
+function FLAC__stream_encoder_set_min_residual_partition_order(encoder::Ptr{FLAC__StreamEncoder},value::UInt32)
+    ccall((:FLAC__stream_encoder_set_min_residual_partition_order,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},UInt32),encoder,value)
 end
 
-function FLAC__stream_encoder_set_max_residual_partition_order(encoder::Ptr{FLAC__StreamEncoder},value::Uint32)
-    ccall((:FLAC__stream_encoder_set_max_residual_partition_order,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},Uint32),encoder,value)
+function FLAC__stream_encoder_set_max_residual_partition_order(encoder::Ptr{FLAC__StreamEncoder},value::UInt32)
+    ccall((:FLAC__stream_encoder_set_max_residual_partition_order,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},UInt32),encoder,value)
 end
 
-function FLAC__stream_encoder_set_rice_parameter_search_dist(encoder::Ptr{FLAC__StreamEncoder},value::Uint32)
-    ccall((:FLAC__stream_encoder_set_rice_parameter_search_dist,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},Uint32),encoder,value)
+function FLAC__stream_encoder_set_rice_parameter_search_dist(encoder::Ptr{FLAC__StreamEncoder},value::UInt32)
+    ccall((:FLAC__stream_encoder_set_rice_parameter_search_dist,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},UInt32),encoder,value)
 end
 
 function FLAC__stream_encoder_set_total_samples_estimate(encoder::Ptr{FLAC__StreamEncoder},value::FLAC__uint64)
     ccall((:FLAC__stream_encoder_set_total_samples_estimate,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},FLAC__uint64),encoder,value)
 end
 
-function FLAC__stream_encoder_set_metadata(encoder::Ptr{FLAC__StreamEncoder},metadata::Ptr{Ptr{FLAC__StreamMetadata}},num_blocks::Uint32)
-    ccall((:FLAC__stream_encoder_set_metadata,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},Ptr{Ptr{FLAC__StreamMetadata}},Uint32),encoder,metadata,num_blocks)
+function FLAC__stream_encoder_set_metadata(encoder::Ptr{FLAC__StreamEncoder},metadata::Ptr{Ptr{FLAC__StreamMetadata}},num_blocks::UInt32)
+    ccall((:FLAC__stream_encoder_set_metadata,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},Ptr{Ptr{FLAC__StreamMetadata}},UInt32),encoder,metadata,num_blocks)
 end
 
 function FLAC__stream_encoder_get_state(encoder::Ptr{FLAC__StreamEncoder})
@@ -1793,11 +1793,11 @@ function FLAC__stream_encoder_get_verify_decoder_state(encoder::Ptr{FLAC__Stream
 end
 
 function FLAC__stream_encoder_get_resolved_state_string(encoder::Ptr{FLAC__StreamEncoder})
-    ccall((:FLAC__stream_encoder_get_resolved_state_string,libFLAC),Ptr{Uint8},(Ptr{FLAC__StreamEncoder},),encoder)
+    ccall((:FLAC__stream_encoder_get_resolved_state_string,libFLAC),Ptr{UInt8},(Ptr{FLAC__StreamEncoder},),encoder)
 end
 
-function FLAC__stream_encoder_get_verify_decoder_error_stats(encoder::Ptr{FLAC__StreamEncoder},absolute_sample::Ptr{FLAC__uint64},frame_number::Ptr{Uint32},channel::Ptr{Uint32},sample::Ptr{Uint32},expected::Ptr{FLAC__int32},got::Ptr{FLAC__int32})
-    ccall((:FLAC__stream_encoder_get_verify_decoder_error_stats,libFLAC),Void,(Ptr{FLAC__StreamEncoder},Ptr{FLAC__uint64},Ptr{Uint32},Ptr{Uint32},Ptr{Uint32},Ptr{FLAC__int32},Ptr{FLAC__int32}),encoder,absolute_sample,frame_number,channel,sample,expected,got)
+function FLAC__stream_encoder_get_verify_decoder_error_stats(encoder::Ptr{FLAC__StreamEncoder},absolute_sample::Ptr{FLAC__uint64},frame_number::Ptr{UInt32},channel::Ptr{UInt32},sample::Ptr{UInt32},expected::Ptr{FLAC__int32},got::Ptr{FLAC__int32})
+    ccall((:FLAC__stream_encoder_get_verify_decoder_error_stats,libFLAC),Void,(Ptr{FLAC__StreamEncoder},Ptr{FLAC__uint64},Ptr{UInt32},Ptr{UInt32},Ptr{UInt32},Ptr{FLAC__int32},Ptr{FLAC__int32}),encoder,absolute_sample,frame_number,channel,sample,expected,got)
 end
 
 function FLAC__stream_encoder_get_verify(encoder::Ptr{FLAC__StreamEncoder})
@@ -1809,19 +1809,19 @@ function FLAC__stream_encoder_get_streamable_subset(encoder::Ptr{FLAC__StreamEnc
 end
 
 function FLAC__stream_encoder_get_channels(encoder::Ptr{FLAC__StreamEncoder})
-    ccall((:FLAC__stream_encoder_get_channels,libFLAC),Uint32,(Ptr{FLAC__StreamEncoder},),encoder)
+    ccall((:FLAC__stream_encoder_get_channels,libFLAC),UInt32,(Ptr{FLAC__StreamEncoder},),encoder)
 end
 
 function FLAC__stream_encoder_get_bits_per_sample(encoder::Ptr{FLAC__StreamEncoder})
-    ccall((:FLAC__stream_encoder_get_bits_per_sample,libFLAC),Uint32,(Ptr{FLAC__StreamEncoder},),encoder)
+    ccall((:FLAC__stream_encoder_get_bits_per_sample,libFLAC),UInt32,(Ptr{FLAC__StreamEncoder},),encoder)
 end
 
 function FLAC__stream_encoder_get_sample_rate(encoder::Ptr{FLAC__StreamEncoder})
-    ccall((:FLAC__stream_encoder_get_sample_rate,libFLAC),Uint32,(Ptr{FLAC__StreamEncoder},),encoder)
+    ccall((:FLAC__stream_encoder_get_sample_rate,libFLAC),UInt32,(Ptr{FLAC__StreamEncoder},),encoder)
 end
 
 function FLAC__stream_encoder_get_blocksize(encoder::Ptr{FLAC__StreamEncoder})
-    ccall((:FLAC__stream_encoder_get_blocksize,libFLAC),Uint32,(Ptr{FLAC__StreamEncoder},),encoder)
+    ccall((:FLAC__stream_encoder_get_blocksize,libFLAC),UInt32,(Ptr{FLAC__StreamEncoder},),encoder)
 end
 
 function FLAC__stream_encoder_get_do_mid_side_stereo(encoder::Ptr{FLAC__StreamEncoder})
@@ -1833,11 +1833,11 @@ function FLAC__stream_encoder_get_loose_mid_side_stereo(encoder::Ptr{FLAC__Strea
 end
 
 function FLAC__stream_encoder_get_max_lpc_order(encoder::Ptr{FLAC__StreamEncoder})
-    ccall((:FLAC__stream_encoder_get_max_lpc_order,libFLAC),Uint32,(Ptr{FLAC__StreamEncoder},),encoder)
+    ccall((:FLAC__stream_encoder_get_max_lpc_order,libFLAC),UInt32,(Ptr{FLAC__StreamEncoder},),encoder)
 end
 
 function FLAC__stream_encoder_get_qlp_coeff_precision(encoder::Ptr{FLAC__StreamEncoder})
-    ccall((:FLAC__stream_encoder_get_qlp_coeff_precision,libFLAC),Uint32,(Ptr{FLAC__StreamEncoder},),encoder)
+    ccall((:FLAC__stream_encoder_get_qlp_coeff_precision,libFLAC),UInt32,(Ptr{FLAC__StreamEncoder},),encoder)
 end
 
 function FLAC__stream_encoder_get_do_qlp_coeff_prec_search(encoder::Ptr{FLAC__StreamEncoder})
@@ -1853,15 +1853,15 @@ function FLAC__stream_encoder_get_do_exhaustive_model_search(encoder::Ptr{FLAC__
 end
 
 function FLAC__stream_encoder_get_min_residual_partition_order(encoder::Ptr{FLAC__StreamEncoder})
-    ccall((:FLAC__stream_encoder_get_min_residual_partition_order,libFLAC),Uint32,(Ptr{FLAC__StreamEncoder},),encoder)
+    ccall((:FLAC__stream_encoder_get_min_residual_partition_order,libFLAC),UInt32,(Ptr{FLAC__StreamEncoder},),encoder)
 end
 
 function FLAC__stream_encoder_get_max_residual_partition_order(encoder::Ptr{FLAC__StreamEncoder})
-    ccall((:FLAC__stream_encoder_get_max_residual_partition_order,libFLAC),Uint32,(Ptr{FLAC__StreamEncoder},),encoder)
+    ccall((:FLAC__stream_encoder_get_max_residual_partition_order,libFLAC),UInt32,(Ptr{FLAC__StreamEncoder},),encoder)
 end
 
 function FLAC__stream_encoder_get_rice_parameter_search_dist(encoder::Ptr{FLAC__StreamEncoder})
-    ccall((:FLAC__stream_encoder_get_rice_parameter_search_dist,libFLAC),Uint32,(Ptr{FLAC__StreamEncoder},),encoder)
+    ccall((:FLAC__stream_encoder_get_rice_parameter_search_dist,libFLAC),UInt32,(Ptr{FLAC__StreamEncoder},),encoder)
 end
 
 function FLAC__stream_encoder_get_total_samples_estimate(encoder::Ptr{FLAC__StreamEncoder})
@@ -1884,22 +1884,22 @@ function FLAC__stream_encoder_init_ogg_FILE(encoder::Ptr{FLAC__StreamEncoder},fi
     ccall((:FLAC__stream_encoder_init_ogg_FILE,libFLAC),FLAC__StreamEncoderInitStatus,(Ptr{FLAC__StreamEncoder},Ptr{FILE},FLAC__StreamEncoderProgressCallback,Ptr{Void}),encoder,file,progress_callback,client_data)
 end
 
-function FLAC__stream_encoder_init_file(encoder::Ptr{FLAC__StreamEncoder},filename::Ptr{Uint8},progress_callback::FLAC__StreamEncoderProgressCallback,client_data::Ptr{Void})
-    ccall((:FLAC__stream_encoder_init_file,libFLAC),FLAC__StreamEncoderInitStatus,(Ptr{FLAC__StreamEncoder},Ptr{Uint8},FLAC__StreamEncoderProgressCallback,Ptr{Void}),encoder,filename,progress_callback,client_data)
+function FLAC__stream_encoder_init_file(encoder::Ptr{FLAC__StreamEncoder},filename::Ptr{UInt8},progress_callback::FLAC__StreamEncoderProgressCallback,client_data::Ptr{Void})
+    ccall((:FLAC__stream_encoder_init_file,libFLAC),FLAC__StreamEncoderInitStatus,(Ptr{FLAC__StreamEncoder},Ptr{UInt8},FLAC__StreamEncoderProgressCallback,Ptr{Void}),encoder,filename,progress_callback,client_data)
 end
 
-function FLAC__stream_encoder_init_ogg_file(encoder::Ptr{FLAC__StreamEncoder},filename::Ptr{Uint8},progress_callback::FLAC__StreamEncoderProgressCallback,client_data::Ptr{Void})
-    ccall((:FLAC__stream_encoder_init_ogg_file,libFLAC),FLAC__StreamEncoderInitStatus,(Ptr{FLAC__StreamEncoder},Ptr{Uint8},FLAC__StreamEncoderProgressCallback,Ptr{Void}),encoder,filename,progress_callback,client_data)
+function FLAC__stream_encoder_init_ogg_file(encoder::Ptr{FLAC__StreamEncoder},filename::Ptr{UInt8},progress_callback::FLAC__StreamEncoderProgressCallback,client_data::Ptr{Void})
+    ccall((:FLAC__stream_encoder_init_ogg_file,libFLAC),FLAC__StreamEncoderInitStatus,(Ptr{FLAC__StreamEncoder},Ptr{UInt8},FLAC__StreamEncoderProgressCallback,Ptr{Void}),encoder,filename,progress_callback,client_data)
 end
 
 function FLAC__stream_encoder_finish(encoder::Ptr{FLAC__StreamEncoder})
     ccall((:FLAC__stream_encoder_finish,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},),encoder)
 end
 
-function FLAC__stream_encoder_process(encoder::Ptr{FLAC__StreamEncoder},buffer::Ptr{Ptr{FLAC__int32}},samples::Uint32)
-    ccall((:FLAC__stream_encoder_process,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},Ptr{Ptr{FLAC__int32}},Uint32),encoder,buffer,samples)
+function FLAC__stream_encoder_process(encoder::Ptr{FLAC__StreamEncoder},buffer::Ptr{Ptr{FLAC__int32}},samples::UInt32)
+    ccall((:FLAC__stream_encoder_process,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},Ptr{Ptr{FLAC__int32}},UInt32),encoder,buffer,samples)
 end
 
-function FLAC__stream_encoder_process_interleaved(encoder::Ptr{FLAC__StreamEncoder},buffer::Ptr{FLAC__int32},samples::Uint32)
-    ccall((:FLAC__stream_encoder_process_interleaved,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},Ptr{FLAC__int32},Uint32),encoder,buffer,samples)
+function FLAC__stream_encoder_process_interleaved(encoder::Ptr{FLAC__StreamEncoder},buffer::Ptr{FLAC__int32},samples::UInt32)
+    ccall((:FLAC__stream_encoder_process_interleaved,libFLAC),FLAC__bool,(Ptr{FLAC__StreamEncoder},Ptr{FLAC__int32},UInt32),encoder,buffer,samples)
 end

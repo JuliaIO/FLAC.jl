@@ -27,7 +27,7 @@ end
 set_md5_checking(dd::StreamDecoderPtr) = set_md5_checking(dd,true)
 
 """
-Set the stream decoder to respond to any metadata block.
+Set the stream decoder to respond to all metadata blocks.
 
 Must be called before the decoder is initialized.
 """
@@ -35,7 +35,7 @@ set_metadata_respond_all(dd::StreamDecoderPtr) =
     ccall((:FLAC__stream_decoder_set_metadata_respond_all,libflac),Bool,(Ptr{Void},),dd)
 
 """
-Set the stream decoder to skipp all metadata blocks.
+Set the stream decoder to ignore all metadata blocks.
 
 Must be called before the decoder is initialized.
 """
@@ -84,7 +84,7 @@ end
       DecoderInitErrorOpeningFile,
       DecoderInitAlreadyInitialized)
 
-"standard metadata callback function" 
+"standard metadata callback function"
 function mcallback(d::Ptr{Void}, mp::Ptr{Void}, client::Ptr{Void})
     typ = pointer_to_array(reinterpret(Ptr{MetadataType},mp),1)[1]
     println("Metadata callback on typ = ", typ)
@@ -126,9 +126,9 @@ function wcallback(dd::Ptr{Void}, hdr::Ptr{FrameHeader},
     zero(Int32)
 end
 
-const wcallback_c = cfunction(wcallback, Int32, 
+const wcallback_c = cfunction(wcallback, Int32,
                               (Ptr{Void}, Ptr{FrameHeader},
-                               Ptr{Ptr{Int32}}, Ptr{Void})) 
+                               Ptr{Ptr{Int32}}, Ptr{Void}))
 
 function initfile!(dd::StreamDecoderPtr,fnm::ByteString)
     status = ccall((:FLAC__stream_decoder_init_file,libflac),DecoderInitStatus,
