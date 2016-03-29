@@ -265,7 +265,7 @@ function Base.convert{K,V}(::Type{Ptr{StreamMetaData}},dd::Dict{K,V})
               (Ptr{UInt8},Cuint),kk,length(kk)) ||
               error(string("\"",k, "\" is not a legal Vorbis comment name"))
         ccall((:FLAC__format_vorbiscomment_entry_value_is_legal,libflac),Bool,
-              (Ptr{UInt8},Cuint),vv,length(vv)) ||
+              (Ptr{UInt8},Cuint), vv, -one(Cuint))||
               error(string("\"",v,"\" is not a legal Vorbis comment value"))
         ce = [VorbisCommentEntry(0,C_NULL)]
         ccall((:FLAC__metadata_object_vorbiscomment_entry_from_name_value_pair,libflac),
