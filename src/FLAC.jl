@@ -1,4 +1,10 @@
+__precompile__()
+
 module FLAC
+
+using FileIO
+
+import FileIO: load, save
 
 export
        StreamMetaData,
@@ -11,7 +17,10 @@ export
 
        StreamDecoder,
        StreamEncoder,
-       initfile!
+       initfile!,
+       load,
+       query,
+       save
 
 const depfile = joinpath(dirname(@__FILE__), "..", "deps", "deps.jl")
 if isfile(depfile)
@@ -25,6 +34,6 @@ include("metadata.jl")
 include("format.jl")
 include("decoder.jl")
 include("encoder.jl")
-
+include("fileio.jl")
 
 end # module
