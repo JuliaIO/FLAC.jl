@@ -1,4 +1,4 @@
-__precompile__()
+#__precompile__()
 
 module FLAC
 
@@ -15,11 +15,10 @@ export
        SeekTableMetaData,
        CueSheetMetaData,
 
-       StreamDecoder,
-       StreamEncoder,
+       StreamDecoderPtr,
+       StreamEncoderPtr,
        initfile!,
        load,
-       query,
        save
 
 const depfile = joinpath(dirname(@__FILE__), "..", "deps", "deps.jl")
@@ -29,11 +28,9 @@ else
     error("FLAC not properly installed. Please run Pkg.build(\"FLAC\")")
 end
 
-include("WAV.jl")
 include("metadata.jl")
 include("format.jl")
 include("decoder.jl")
 include("encoder.jl")
-include("fileio.jl")
 
 end # module

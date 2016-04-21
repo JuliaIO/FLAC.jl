@@ -125,7 +125,7 @@ function process_interleaved(en::StreamEncoderPtr,buf::Vector{Int32})
           (Ptr{Void},Ptr{Int32},UInt32),en,buf,nsamp) ||
          error("process_interleaved failed: encoder_state is $(get_state(en))")
     nothing
-end   
+end
 
 function Base.show(io::IO,en::StreamEncoderPtr)
     println("FLAC Stream Encoder")
@@ -137,13 +137,13 @@ function Base.show(io::IO,en::StreamEncoderPtr)
     println()
 end
 
-function flacwrite(fnm::AbstractString,hdr::WAVHeader,mm::Vector{Int16},mdpv::Vector=[])
+function flacwrite(fnm::AbstractString,num_channels::Cuint,samplerate::Cuint,bits_per_sample::Cuint,mm::Vector{Int16},mdpv::Vector=[])
     en = StreamEncoderPtr()
     set_compression_level(en,8)
     set_total_samples_estimate(en, hdr.dsiz >> 2)
-    set_channels(en,hdr.channels)
-    set_sample_rate(en,hdr.rate)
-    set_bits_per_sample(en,hdr.samplebits)
+    set_channels(en,num_channels)
+    set_sample_rate(en,samplerate)
+    set_bits_per_sample(en,bits_per_sample)
     if isa(mdpv,Vector{Ptr{StreamMetaData}})
         ccall((:FLAC__stream_encoder_set_metadata,libflac),Bool,
               (Ptr{Void},Ptr{Ptr{StreamMetaData}},Cuint),
