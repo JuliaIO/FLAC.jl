@@ -103,8 +103,6 @@ function pcallback(en::Ptr{Void},bytesw::Int64,samplesw::Int64,
     nothing
 end
 
-const pcallback_c = cfunction(pcallback, Void, (Ptr{Void},Int64,Int64,Cint,Cint,Ptr{Void}))
-
 """
 ### init_file
 
@@ -169,4 +167,10 @@ function save{T<:Real}(f::File{format"FLAC"}, data::Array{T,2}, samplerate; bits
     process_interleaved(encoder, data_t[end-rem(num_samples,blocksize)+1:end])
     finish(encoder)
     return nothing
+end
+
+# Calculate cfunction versions of all our callbacks once, at runtime, as is necessary with cfunction's
+pcallback_c = Ptr{Void}(C_NULL)
+function init_encoder_cfunctions()
+    global pcallback_c = cfunction(pcallback, Void, (Ptr{Void},Int64,Int64,Cint,Cint,Ptr{Void}))
 end

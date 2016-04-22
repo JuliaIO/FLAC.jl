@@ -104,16 +104,11 @@ function silent_mcallback(d::Ptr{Void}, mp::Ptr{Void}, client::Ptr{Void})
     nothing
 end
 
-const debug_mcallback_c = cfunction(debug_mcallback, Void, (Ptr{Void}, Ptr{Void}, Ptr{Void}))
-const silent_mcallback_c = cfunction(silent_mcallback, Void, (Ptr{Void}, Ptr{Void}, Ptr{Void}))
 
 "error callback"
 function debug_ecallback(d::Ptr{Void}, status::Int32, client::Ptr{Void})
     error("Got error callback with status = $status")
 end
-
-const debug_ecallback_c = cfunction(debug_ecallback, Void,
-                              (Ptr{Void}, Int32, Ptr{Void}))
 
 "debugging write callback"
 function debug_wcallback(dd::Ptr{Void}, hdr::Ptr{FrameHeader},
@@ -133,9 +128,6 @@ function debug_wcallback(dd::Ptr{Void}, hdr::Ptr{FrameHeader},
     zero(Int32)
 end
 
-const debug_wcallback_c = cfunction(debug_wcallback, Int32,
-                              (Ptr{Void}, Ptr{FrameHeader},
-                               Ptr{Ptr{Int32}}, Ptr{Void}))
 
 function initfile!(dd::StreamDecoderPtr, fnm::ByteString; wcallback=debug_wcallback_c,
                    mcallback=debug_mcallback_c, ecallback=debug_ecallback_c, client_data=nothing)
@@ -162,7 +154,6 @@ function saving_mcallback(d::Ptr{Void}, mp::Ptr{Void}, client::Ptr{Void})
     end
     nothing
 end
-const saving_mcallback_c = cfunction(saving_mcallback, Void, (Ptr{Void}, Ptr{Void}, Ptr{Void}))
 
 function buffering_wcallback(dd::Ptr{Void}, hdr::Ptr{FrameHeader},
                    buffer::Ptr{Ptr{Int32}}, client::Ptr{Void})
@@ -178,9 +169,6 @@ function buffering_wcallback(dd::Ptr{Void}, hdr::Ptr{FrameHeader},
     zero(Int32)
 end
 
-const buffering_wcallback_c = cfunction(buffering_wcallback, Int32,
-                              (Ptr{Void}, Ptr{FrameHeader},
-                               Ptr{Ptr{Int32}}, Ptr{Void}))
 
 function load(f::File{format"FLAC"})
     decoder = StreamDecoderPtr()
@@ -200,4 +188,20 @@ function load(f::File{format"FLAC"})
 
     # Return data, fs
     return client_data["channels"], client_data["metadata"].samplerate
+end
+
+# Calculate cfunction versions of all our callbacks once, at runtime, as is necessary with cfunction's
+debug_mcallback_c = Ptr{Void}(C_NULL)
+silent_mcallback_c = Ptr{Void}(C_NULL)
+saving_mcallback_c = Ptr{Void}(C_NULL)
+debug_wcallback_c = Ptr{Void}(C_NULL)
+buffering_wcallback_c = Ptr{Void}(C_NULL)
+debug_ecallback_c = Ptr{Void}(C_NULL)
+function init_decoder_cfunctions()
+    global debug_mcallback_c     = cfunction(debug_mcallback, Void, (Ptr{Void}, Ptr{Void}, Ptr{Void}))
+    global silent_mcallback_c    = cfunction(silent_mcallback, Void, (Ptr{Void}, Ptr{Void}, Ptr{Void}))
+    global saving_mcallback_c    = cfunction(saving_mcallback, Void, (Ptr{Void}, Ptr{Void}, Ptr{Void}))
+    global debug_wcallback_c     = cfunction(debug_wcallback, Int32, (Ptr{Void}, Ptr{FrameHeader}, Ptr{Ptr{Int32}}, Ptr{Void}))
+    global buffering_wcallback_c = cfunction(buffering_wcallback, Int32, (Ptr{Void}, Ptr{FrameHeader}, Ptr{Ptr{Int32}}, Ptr{Void}))
+    global debug_ecallback_c     = cfunction(debug_ecallback, Void, (Ptr{Void}, Int32, Ptr{Void}))
 end
