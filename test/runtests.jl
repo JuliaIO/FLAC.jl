@@ -1,4 +1,4 @@
-using FLAC
+using FileIO
 using WAV
 using Base.Test
 
@@ -27,3 +27,25 @@ stereo_data = load(joinpath(testdir, "stereo.flac"))[1]
 stereo_check_data = wavread(joinpath(testdir, "stereo.wav"))[1]
 @test size(stereo_data) == size(stereo_check_data)
 @test maximum(abs(stereo_data - stereo_check_data)) < 1e-6
+
+
+# Now that we have confidence our decoder works, let's roundtrip a signal multiple times
+function roundtrip(signal, samplerate; params...)
+    path = joinpath(testdir,"roundtrip.flac")
+    if isfile(path)
+        rm(path)
+    end
+    save(path, signal, samplerate; params...)
+    recon_signal, recon_fs = load(path)
+
+    @test recon_fs == samplerate
+    @test size(recon_signal) == size(signal)
+    #show(recon_signal - signal)
+    @test maximum(abs(recon_signal - signal)) < 1e-4
+    rm(path)
+end
+
+test_signal = sin(linspace(0,4410*2*pi,44100)[1:44100])''*.999
+roundtrip(test_signal, 44100)
+roundtrip(test_signal, 44100, bits_per_sample=16)
+roundtrip(test_signal, 48000, compression_level=8)

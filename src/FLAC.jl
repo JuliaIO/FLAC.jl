@@ -4,8 +4,6 @@ module FLAC
 
 using FileIO
 
-import FileIO: load, save
-
 export
        StreamMetaData,
        InfoMetaData,

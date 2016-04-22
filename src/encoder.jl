@@ -22,7 +22,7 @@ function StreamEncoderPtr()
 end
 
 for (nm,typ) in (("verify",:Bool),
-                 ("compression_level",:Cuint), # a value between 0 (fastest, least compression) to 8 (most compression) - default 5
+                 ("compression_level",:Cuint), # a value between 0 (fastest, least compression) to 8 (most compression) - default 3
                  ("channels",:Cuint),          # default 2
                  ("bits_per_sample",:Cuint),   # default 16
                  ("sample_rate",:Cuint),       # default 44100
@@ -62,8 +62,10 @@ get_state(en::StreamEncoderPtr) =
 @enum(StreamEncoderInitStatus,
       EncoderInitOK,
       EncoderInitEncoderError,
+      EncoderInitUnsupportedContainer,
       EncoderInitInvalidCallbacks,
       EncoderInitInvalidNumberOfChannels,
+      EncoderInitInvalidBitsPerSample,
       EncoderInitInvalidSampleRate,
       EncoderInitInvalidBlockSize,
       EncoderInitInvalidMaxLPCSize,
@@ -111,7 +113,7 @@ Initialize the `StreamEncoder` object `en` to write the file `fnm`.
 Note that setting stream characteristics (`channels`, `bits_per_sample`, etc.)
 must be done **before** initializing the encoder.
 """
-function init_file(en::StreamEncoderPtr,fnm::ByteString)
+function initfile!(en::StreamEncoderPtr,fnm::ByteString)
     ec = ccall((:FLAC__stream_encoder_init_file,libflac),StreamEncoderInitStatus,
                (Ptr{Void},Ptr{UInt8},Ptr{Void},Ptr{Void}),
                en,fnm,pcallback_c,C_NULL)
@@ -137,29 +139,34 @@ function Base.show(io::IO,en::StreamEncoderPtr)
     println()
 end
 
-function flacwrite(fnm::AbstractString,num_channels::Cuint,samplerate::Cuint,bits_per_sample::Cuint,mm::Vector{Int16},mdpv::Vector=[])
-    en = StreamEncoderPtr()
-    set_compression_level(en,8)
-    set_total_samples_estimate(en, hdr.dsiz >> 2)
-    set_channels(en,num_channels)
-    set_sample_rate(en,samplerate)
-    set_bits_per_sample(en,bits_per_sample)
-    if isa(mdpv,Vector{Ptr{StreamMetaData}})
-        ccall((:FLAC__stream_encoder_set_metadata,libflac),Bool,
-              (Ptr{Void},Ptr{Ptr{StreamMetaData}},Cuint),
-              en,mdpv,length(mdpv)) || error("call to stream_encoder_set_metadata failed")
+# Cheat save() implementation for people who want to input a 1d array instead of the proper 2d array
+save{T<:Real}(f::File{format"FLAC"}, data::Array{T,1}, samplerate; kwargs...) = save(f, data'', samplerate; kwargs...)
+
+function save{T<:Real}(f::File{format"FLAC"}, data::Array{T,2}, samplerate; bits_per_sample=24, compression_level=3)
+    encoder = StreamEncoderPtr()
+
+    # Set encoder parameters
+    set_compression_level(encoder, compression_level)
+    num_samples = prod(size(data))
+    set_total_samples_estimate(encoder, num_samples)
+    set_channels(encoder, size(data)[2])
+    set_sample_rate(encoder, samplerate)
+    set_bits_per_sample(encoder, bits_per_sample)
+
+    # Open file, make sure encoder was properly initialized
+    initfile!(encoder, f.filename)
+    if get_state(encoder) != EncoderOK
+        throw(InvalidStateException("Encoder state after init_file is $(get_state(en))"))
     end
-    get_state(en) == EncoderUninitialized || error("encoder state before init_file is incorrect")
-    init_file(en,fnm)
-    get_state(en) == EncoderOK || error("encoder state after init_file is $(get_state(en))")
-    ints_per_block = 2048
-    buf = Array(Int32,ints_per_block)
-    indsm = 1:ints_per_block
-    for blk in 1:div(length(mm),ints_per_block)
-        process_interleaved(en,copy!(buf,sub(mm,indsm)))
-        indsm += ints_per_block
+
+    # Shove interleaved samples into the encoder by transposing, and convert to Int32
+    data_t = round(Int32, data'*2^(bits_per_sample - 1))
+    blocksize = get_blocksize(encoder)
+    for idx in 1:div(num_samples, blocksize)
+        block_idxs = ((idx-1)*blocksize+1):(idx*blocksize)
+        process_interleaved(encoder, data_t[block_idxs])
     end
-    indsm = (indsm.start):length(mm)
-    process_interleaved(en,convert(Vector{Int32},sub(mm,indsm)))
-    ccall((:FLAC__stream_encoder_finish,libflac),Bool,(Ptr{Void},),en)
+    process_interleaved(encoder, data_t[end-rem(num_samples,blocksize)+1:end])
+    finish(encoder)
+    return nothing
 end
