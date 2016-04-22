@@ -84,34 +84,39 @@ end
       DecoderInitErrorOpeningFile,
       DecoderInitAlreadyInitialized)
 
-"standard metadata callback function"
-function mcallback(d::Ptr{Void}, mp::Ptr{Void}, client::Ptr{Void})
-    typ = pointer_to_array(reinterpret(Ptr{MetadataType},mp),1)[1]
+"debugging metadata callback function"
+function debug_mcallback(d::Ptr{Void}, mp::Ptr{Void}, client::Ptr{Void})
+    typ = unsafe_load(reinterpret(Ptr{MetaDataType},mp))
     println("Metadata callback on typ = ", typ)
-    if typ == InfoType
-        show(StreamInfoMetaData(mp))
-    elseif typ == PaddingType
-        show(StreamPaddingMetaData(mp))
-    elseif typ == VorbisCommentType
-        show(StreamVorbisCommentMetaData(mp))
-    elseif typ == SeektableType
-        show(StreamSeekTableMetaData(mp))
+    if typ == Info
+        show(unsafe_load(reinterpret(Ptr{InfoMetaData}, mp)))
+    elseif typ == Padding
+        show(unsafe_load(reinterpret(Ptr{PaddingMetaData}, mp)))
+    elseif typ == VorbisComment
+        show(unsafe_load(reinterpret(Ptr{VorbisComment}, mp)))
+    elseif typ == SeekTable
+        show(unsafe_load(reinterpret(Ptr{SeekTable}, mp)))
     end
     nothing
 end
+"silent metadata callback function"
+function silent_mcallback(d::Ptr{Void}, mp::Ptr{Void}, client::Ptr{Void})
+    nothing
+end
 
-const mcallback_c = cfunction(mcallback, Void, (Ptr{Void}, Ptr{Void}, Ptr{Void}))
+const debug_mcallback_c = cfunction(debug_mcallback, Void, (Ptr{Void}, Ptr{Void}, Ptr{Void}))
+const silent_mcallback_c = cfunction(silent_mcallback, Void, (Ptr{Void}, Ptr{Void}, Ptr{Void}))
 
 "error callback"
-function ecallback(d::Ptr{Void}, status::Int32, client::Ptr{Void})
+function debug_ecallback(d::Ptr{Void}, status::Int32, client::Ptr{Void})
     error("Got error callback with status = $status")
 end
 
-const ecallback_c = cfunction(ecallback, Void,
+const debug_ecallback_c = cfunction(debug_ecallback, Void,
                               (Ptr{Void}, Int32, Ptr{Void}))
 
-"write callback"
-function wcallback(dd::Ptr{Void}, hdr::Ptr{FrameHeader},
+"debugging write callback"
+function debug_wcallback(dd::Ptr{Void}, hdr::Ptr{FrameHeader},
                    buffer::Ptr{Ptr{Int32}}, client::Ptr{Void})
     fr = unsafe_load(hdr)
     println("Frame")
@@ -123,18 +128,21 @@ function wcallback(dd::Ptr{Void}, hdr::Ptr{FrameHeader},
     println(" number type: ", fr.typ)
     println(" frame or sample number: ", fr.num)
     println(" crc: ", fr.crc)
+
+    data = pointer_to_array(unsafe_load(buffer), fr.blocksize)/(2^(fr.bits_per_sample - 1))
     zero(Int32)
 end
 
-const wcallback_c = cfunction(wcallback, Int32,
+const debug_wcallback_c = cfunction(debug_wcallback, Int32,
                               (Ptr{Void}, Ptr{FrameHeader},
                                Ptr{Ptr{Int32}}, Ptr{Void}))
 
-function initfile!(dd::StreamDecoderPtr,fnm::ByteString)
+function initfile!(dd::StreamDecoderPtr, fnm::ByteString; wcallback=debug_wcallback_c,
+                   mcallback=debug_mcallback_c, ecallback=debug_ecallback_c, client_data=nothing)
     status = ccall((:FLAC__stream_decoder_init_file,libflac),DecoderInitStatus,
-                   (Ptr{Void}, Ptr{UInt8}, Ptr{Void}, Ptr{Void}, Ptr{Void}),
-                   dd, fnm, wcallback_c, mcallback_c, ecallback_c)
-    if status != DecoderOK
+                   (Ptr{Void}, Ptr{UInt8}, Ptr{Void}, Ptr{Void}, Ptr{Void}, Ptr{Void}),
+                   dd, fnm, wcallback, mcallback, ecallback, client_data)
+    if status != DecoderInitOK
         error("decoder_init_file returned status $status")
     end
     dd
@@ -145,3 +153,51 @@ process_single(dd::StreamDecoderPtr) = ccall((:FLAC__stream_decoder_process_sing
 process_metadata(dd::StreamDecoderPtr) = ccall((:FLAC__stream_decoder_process_until_end_of_metadata,libflac),Bool,(Ptr{Void},),dd)
 
 process_stream(dd::StreamDecoderPtr) = ccall((:FLAC__stream_decoder_process_until_end_of_stream,libflac),Bool,(Ptr{Void},),dd)
+
+function saving_mcallback(d::Ptr{Void}, mp::Ptr{Void}, client::Ptr{Void})
+    typ = unsafe_load(reinterpret(Ptr{MetaDataType},mp))
+    if typ == Info
+        client_data = unsafe_pointer_to_objref(client)
+        client_data["metadata"] = InfoMetaData(unsafe_load(reinterpret(Ptr{InfoMetaData}, mp)))
+    end
+    nothing
+end
+const saving_mcallback_c = cfunction(saving_mcallback, Void, (Ptr{Void}, Ptr{Void}, Ptr{Void}))
+
+function buffering_wcallback(dd::Ptr{Void}, hdr::Ptr{FrameHeader},
+                   buffer::Ptr{Ptr{Int32}}, client::Ptr{Void})
+    fr = unsafe_load(hdr)
+    client_data = unsafe_pointer_to_objref(client)
+
+    max_val = Float32(2^(fr.bits_per_sample - 1))
+    for chidx = 1:fr.channels
+        start_idx = client_data["channel_idxs"][chidx]
+        client_data["channels"][start_idx:start_idx + fr.blocksize - 1,chidx] = pointer_to_array(unsafe_load(buffer,chidx), fr.blocksize)/max_val
+        client_data["channel_idxs"][chidx] += fr.blocksize
+    end
+    zero(Int32)
+end
+
+const buffering_wcallback_c = cfunction(buffering_wcallback, Int32,
+                              (Ptr{Void}, Ptr{FrameHeader},
+                               Ptr{Ptr{Int32}}, Ptr{Void}))
+
+function load(f::File{format"FLAC"})
+    decoder = StreamDecoderPtr()
+
+    client_data = Dict()
+    initfile!(decoder, f.filename, wcallback=buffering_wcallback_c, mcallback=saving_mcallback_c, client_data=pointer_from_objref(client_data))
+
+    # Peek at just the metadata
+    process_metadata(decoder)
+
+    # Create a list of Arrays to hold our sampledata for each channel assigned to us
+    client_data["channels"] = Array{Float32,2}(client_data["metadata"].totalsamples, client_data["metadata"].channels)
+    client_data["channel_idxs"] = ones(UInt64, client_data["metadata"].channels)
+
+    # Process the rest of the stream
+    process_stream(decoder)
+
+    # Return data, fs
+    return client_data["channels"], client_data["metadata"].samplerate
+end
