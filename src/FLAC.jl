@@ -1,18 +1,16 @@
-#__precompile__()
+__precompile__()
 
 module FLAC
 
 using FileIO
 
-export
-       StreamMetaData,
+export StreamMetaData,
        InfoMetaData,
        VorbisCommentMetaData,
        PaddingMetaData,
        ApplicationMetaData,
        SeekTableMetaData,
        CueSheetMetaData,
-
        StreamDecoderPtr,
        StreamEncoderPtr,
        initfile!,
@@ -30,5 +28,10 @@ include("metadata.jl")
 include("format.jl")
 include("decoder.jl")
 include("encoder.jl")
+
+function __init__()
+    init_decoder_cfunctions()
+    init_encoder_cfunctions()
+end
 
 end # module
