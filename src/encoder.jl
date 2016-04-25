@@ -95,11 +95,11 @@ get_state(en::StreamEncoderPtr) =
       TellStatusError,
       TellStatusUnsupported)
 
-finish(en::StreamEncoderPtr) = ccall((:FLAC__stream_encoder_finish,libflac),Int32,(Ptr{Void},),en)
+finish(en::StreamEncoderPtr) = ccall((:FLAC__stream_encoder_finish,libflac), Int32, (Ptr{Void},), en)
 
 "standard progress callback function"
-function pcallback(en::Ptr{Void},bytesw::Int64,samplesw::Int64,
-                   framesw::Cint,totalframesest::Cint,client::Ptr{Void})
+function pcallback(en::Ptr{Void}, bytesw::Int64,samplesw::Int64,
+                   framesw::Cint, totalframesest::Cint, client::Ptr{Void})
     nothing
 end
 
@@ -111,18 +111,18 @@ Initialize the `StreamEncoder` object `en` to write the file `fnm`.
 Note that setting stream characteristics (`channels`, `bits_per_sample`, etc.)
 must be done **before** initializing the encoder.
 """
-function initfile!(en::StreamEncoderPtr,fnm::ByteString)
-    ec = ccall((:FLAC__stream_encoder_init_file,libflac),StreamEncoderInitStatus,
-               (Ptr{Void},Ptr{UInt8},Ptr{Void},Ptr{Void}),
-               en,fnm,pcallback_c,C_NULL)
+function initfile!(en::StreamEncoderPtr, fnm::ByteString)
+    ec = ccall((:FLAC__stream_encoder_init_file, libflac), StreamEncoderInitStatus,
+               (Ptr{Void}, Ptr{UInt8}, Ptr{Void}, Ptr{Void}),
+               en, fnm, pcallback_c, C_NULL)
     ec == EncoderInitOK || error("Error code $ec from stream_encoder_init_file")
     en
 end
 
-function process_interleaved(en::StreamEncoderPtr,buf::Vector{Int32})
-    nsamp = div(length(buf),get_channels(en))
-    ccall((:FLAC__stream_encoder_process_interleaved,libflac),Bool,
-          (Ptr{Void},Ptr{Int32},UInt32),en,buf,nsamp) ||
+function process_interleaved(en::StreamEncoderPtr, buf::Vector{Int32})
+    nsamp = div(length(buf), get_channels(en))
+    ccall((:FLAC__stream_encoder_process_interleaved, libflac), Bool,
+          (Ptr{Void}, Ptr{Int32}, UInt32), en, buf, nsamp) ||
          error("process_interleaved failed: encoder_state is $(get_state(en))")
     nothing
 end
@@ -140,7 +140,7 @@ end
 # Cheat save() implementation for people who want to input a 1d array instead of the proper 2d array
 save{T<:Real}(f::File{format"FLAC"}, data::Array{T,1}, samplerate; kwargs...) = save(f, data'', samplerate; kwargs...)
 
-function save{T<:Real}(f::File{format"FLAC"}, data::Array{T,2}, samplerate; bits_per_sample=24, compression_level=3)
+function save{T<:Real}(f::File{format"FLAC"}, data::Array{T,2}, samplerate; bits_per_sample = 24, compression_level = 3)
     encoder = StreamEncoderPtr()
 
     # Set encoder parameters
@@ -161,10 +161,10 @@ function save{T<:Real}(f::File{format"FLAC"}, data::Array{T,2}, samplerate; bits
     data_t = round(Int32, data'*2^(bits_per_sample - 1))
     blocksize = get_blocksize(encoder)
     for idx in 1:div(num_samples, blocksize)
-        block_idxs = ((idx-1)*blocksize+1):(idx*blocksize)
+        block_idxs = ((idx - 1) * blocksize + 1):(idx * blocksize)
         process_interleaved(encoder, data_t[block_idxs])
     end
-    process_interleaved(encoder, data_t[end-rem(num_samples,blocksize)+1:end])
+    process_interleaved(encoder, data_t[end - rem(num_samples, blocksize) + 1:end])
     finish(encoder)
     return nothing
 end
@@ -172,5 +172,5 @@ end
 # Calculate cfunction versions of all our callbacks once, at runtime, as is necessary with cfunction's
 pcallback_c = Ptr{Void}(C_NULL)
 function init_encoder_cfunctions()
-    global pcallback_c = cfunction(pcallback, Void, (Ptr{Void},Int64,Int64,Cint,Cint,Ptr{Void}))
+    global pcallback_c = cfunction(pcallback, Void, (Ptr{Void}, Int64, Int64, Cint, Cint, Ptr{Void}))
 end
