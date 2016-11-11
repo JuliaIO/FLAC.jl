@@ -115,8 +115,6 @@ immutable VorbisCommentEntry
     entry::Ptr{UInt8}
 end
 
-Base.string(vce::VorbisCommentEntry) = unsafe_string(vce.entry, vce.length)
-
 """
 Vorbis comment metadata.  The vendor comment is always present.
 """
