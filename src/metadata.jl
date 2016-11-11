@@ -200,7 +200,7 @@ const MDTypes = DataType[InfoMetaData, PaddingMetaData, ApplicationMetaData,
 
 for (ind,typ) in enumerate(MDTypes[2:end])
     @eval begin
-        $(symbol(typ))() =
+        $(Symbol(typ))() =
             unsafe_load(ccall((:FLAC__metadata_object_new, libflac),
                               Ptr{$typ}, (MetaDataType,), MetaDataType($ind)))
     end
@@ -218,7 +218,7 @@ metadata(pt::Ptr{StreamMetaData}) =
 """
 Open the file, `fnm`, check that it is a flac stream and return any cue sheets, closing the file.
 """
-function CueSheetMetaData(fnm::ByteString)
+function CueSheetMetaData(fnm::String)
     isreadable(fnm) || throw(ArgumentError(string("\"",fnm, "\" is not a path to a readable file")))
     cue = Ptr{CueSheetMetaData}[C_NULL]
     ccall((:FLAC__metadata_get_cuesheet, libflac), Bool,
@@ -230,7 +230,7 @@ end
 """
 Open the file, `fnm`, check that it is a flac stream and return the stream info, closing the file.
 """
-function InfoMetaData(fnm::ByteString)
+function InfoMetaData(fnm::String)
     isreadable(fnm) || throw(ArgumentError(string("\"",fnm, "\" is not a path to a readable file")))
     strinf = InfoMetaData()
     ccall((:FLAC__metadata_get_streaminfo,libflac), Bool,
@@ -241,7 +241,7 @@ end
 """
 Open the file, `fnm`, check that it is a flac stream and return any Vorbis tags, closing the file.
 """
-function VorbisCommentMetaData(fnm::ByteString)
+function VorbisCommentMetaData(fnm::String)
     isreadable(fnm) || throw(ArgumentError(string("\"",fnm, "\" is not a path to a readable file")))
     vorb = Ptr{VorbisCommentMetaData}[C_NULL]
     ccall((:FLAC__metadata_get_tags, libflac), Bool,
@@ -279,9 +279,9 @@ function Base.convert{K,V}(::Type{Ptr{StreamMetaData}}, dd::Dict{K,V})
 end
 
 function Base.convert(::Type{Dict}, vc::VorbisCommentMetaData)
-    dd = Dict{ByteString, ByteString}()
+    dd = Dict{String, String}()
     dd["vendor"] = string(vc.vendor)
-    for e in pointer_to_array(vc.comments,vc.n)
+    for e in unsafe_wrap(vc.comments,vc.n)
         k = Ptr{UInt8}[C_NULL]
         v = Ptr{UInt8}[C_NULL]
         ccall((:FLAC__metadata_object_vorbiscomment_entry_to_name_value_pair, libflac),
@@ -322,7 +322,7 @@ function Base.show(io::IO, st::SeekTableMetaData)
     st.typ == SeekTable || error("SeekTableType object's typ must be $SeektableType")
     println(io, "Flac seek table metadata of length ", st.len, " bytes with ",
             st.num_points, " points.")
-    pts = pointer_to_array(convert(Ptr{SeekPoint}, st.points), st.num_points)
+    pts = unsafe_wrap(convert(Ptr{SeekPoint}, st.points), st.num_points)
     println(io, pts)
 end
 
@@ -333,7 +333,7 @@ Base.show(io::IO,e::VorbisCommentEntry) = println(io, string(e.entry))
 function Base.show(io::IO,c::VorbisCommentMetaData)
     c.typ == VorbisComment || error("VorbisCommentMetaData's typ must be $VorbisComment")
     println(io,"vendor=", string(c.vendor))
-    for cc in pointer_to_array(c.comments, c.n)
+    for cc in unsafe_wrap(c.comments, c.n)
         println(io, string(cc))
     end
 end
