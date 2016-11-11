@@ -1,4 +1,6 @@
 """
+    StreamEncoderPtr
+
 Flac stream encoder object.
 
 All it contains is an opaque pointer.
@@ -9,17 +11,18 @@ The type is not an immutable because it uses a finalizer.
 type StreamEncoderPtr  # type not immutable so that finalizer can be applied
     v::Ptr{Void}
 end
+function StreamEncoderPtr()
+    en = StreamEncoderPtr(ccall((:FLAC__stream_encoder_new,libflac),Ptr{Void},()))
+    finalizer(en,x->ccall((:FLAC__stream_encoder_delete,libflac),Void,(Ptr{Void},),x.v))
+    en
+end
 
 """
 Allows for passing the instance of the type in a `ccall`.
 """
 Base.unsafe_convert(::Type{Ptr{Void}},en::StreamEncoderPtr) = en.v
 
-function StreamEncoderPtr()
-    en = StreamEncoderPtr(ccall((:FLAC__stream_encoder_new,libflac),Ptr{Void},()))
-    finalizer(en,x->ccall((:FLAC__stream_encoder_delete,libflac),Void,(Ptr{Void},),x.v))
-    en
-end
+
 
 for (nm,typ) in (("verify",:Bool),
                  ("compression_level",:Cuint), # a value between 0 (fastest, least compression) to 8 (most compression) - default 3
@@ -29,10 +32,10 @@ for (nm,typ) in (("verify",:Bool),
                  ("total_samples_estimate",:Cuint), # default 0
                  ("blocksize",:Cuint))         # default 0 - encoder estimates
     @eval begin
-        function $(symbol(string("set_",nm)))(en::StreamEncoderPtr,val)
+        function $(Symbol(string("set_",nm)))(en::StreamEncoderPtr,val)
             ccall(($(string("FLAC__stream_encoder_set_",nm)),libflac),Bool,(Ptr{Void},$typ),en,val)
         end
-        function $(symbol(string("get_",nm)))(en::StreamEncoderPtr)
+        function $(Symbol(string("get_",nm)))(en::StreamEncoderPtr)
             ccall(($(string("FLAC__stream_encoder_get_",nm)),libflac),$typ,(Ptr{Void},),en)
         end
     end
@@ -111,7 +114,7 @@ Initialize the `StreamEncoder` object `en` to write the file `fnm`.
 Note that setting stream characteristics (`channels`, `bits_per_sample`, etc.)
 must be done **before** initializing the encoder.
 """
-function initfile!(en::StreamEncoderPtr, fnm::ByteString)
+function initfile!(en::StreamEncoderPtr, fnm::String)
     ec = ccall((:FLAC__stream_encoder_init_file, libflac), StreamEncoderInitStatus,
                (Ptr{Void}, Ptr{UInt8}, Ptr{Void}, Ptr{Void}),
                en, fnm, pcallback_c, C_NULL)

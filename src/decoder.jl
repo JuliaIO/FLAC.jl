@@ -1,11 +1,13 @@
 """
-Flac stream decoder object.  Contains an opaque pointer only.
+    StreamDecoderPtr
+
+A Julia type for a libflac stream decoder object.
+
+This type primarily exists so that a finalizer to delete the decoder can be assigned.
 """
 type StreamDecoderPtr  # type not immutable so that finalizer can be applied
     v::Ptr{Void}
 end
-
-Base.unsafe_convert(::Type{Ptr{Void}},en::StreamDecoderPtr) = en.v
 
 function StreamDecoderPtr()
     en = StreamDecoderPtr(ccall((:FLAC__stream_decoder_new,libflac),Ptr{Void},()))
@@ -13,20 +15,25 @@ function StreamDecoderPtr()
     en
 end
 
-for (nm,typ) in (("ogg_serial_number",:Clong),
-                 ("md5_checking",:Bool),
-                 ("metadata_respond",:MetadataType),
-                 ("metadata_ignore",:MetadataType))
+Base.unsafe_convert(::Type{Ptr{Void}}, en::StreamDecoderPtr) = en.v
+
+for (nm,typ) in (("ogg_serial_number", :Clong),
+                 ("md5_checking", :Bool),
+                 ("metadata_respond", :MetadataType),
+                 ("metadata_ignore", :MetadataType))
     @eval begin
-        function $(symbol(string("set_",nm)))(dd::StreamDecoderPtr,val)
-            ccall(($(string("FLAC__stream_decoder_set_",nm)),libflac),Bool,(Ptr{Void},$typ),dd,val)
+        function $(Symbol(string("set_", nm)))(dd::StreamDecoderPtr, val)
+            ccall(($(string("FLAC__stream_decoder_set_",nm)), libflac), Bool,
+                (Ptr{Void}, $typ), dd, val)
         end
     end
 end
 
-set_md5_checking(dd::StreamDecoderPtr) = set_md5_checking(dd,true)
+set_md5_checking(dd::StreamDecoderPtr) = set_md5_checking(dd, true)
 
 """
+    set_metadata_respond_all(dd::StreamDecoderPtr)
+
 Set the stream decoder to respond to all metadata blocks.
 
 Must be called before the decoder is initialized.
@@ -35,6 +42,8 @@ set_metadata_respond_all(dd::StreamDecoderPtr) =
     ccall((:FLAC__stream_decoder_set_metadata_respond_all,libflac),Bool,(Ptr{Void},),dd)
 
 """
+    set_metadata_ignore_all(dd::StreamDecoderPtr)
+
 Set the stream decoder to ignore all metadata blocks.
 
 Must be called before the decoder is initialized.
@@ -43,11 +52,12 @@ set_metadata_ignore_all(dd::StreamDecoderPtr) =
     ccall((:FLAC__stream_decoder_set_metadata_respond_all,libflac),Bool,(Ptr{Void},),dd)
 
 """
+    get_state_string(dd::StreamDecoderPtr)
 Returns a character string describing the current state of the decoder
 """
 get_state_string(dd::StreamDecoderPtr) =
-    bytestring(ccall((:FLAC__stream_decoder_get_resolved_state_string,libflac),Ptr{UInt8},
-                     (Ptr{Void},),dd))
+    unsafe_string(ccall((:FLAC__stream_decoder_get_resolved_state_string,libflac), Ptr{UInt8},
+                     (Ptr{Void},), dd))
 
 @enum(StreamDecoderState,
       DecoderMetaDataSearch,
@@ -70,7 +80,7 @@ for (nm,typ) in (("state",:DecoderState),
                  ("sample_rate",Cint),
                  ("blocksize",Cint))
     @eval begin
-        function $(symbol(string("get_",nm)))(dd::StreamDecoderPtr)
+        function $(Symbol(string("get_",nm)))(dd::StreamDecoderPtr)
             ccall(($(string("FLAC__stream_decoder_get_",nm)),libflac),$typ,(Ptr{Void},),dd)
         end
     end
@@ -84,9 +94,15 @@ end
       DecoderInitErrorOpeningFile,
       DecoderInitAlreadyInitialized)
 
-"debugging metadata callback function"
+"""
+    debug_mcallback(d::Ptr{Void}, mp::Ptr{Void}, client::Ptr{Void})
+
+Debugging metadata callback function.  Prints a brief description of any
+`Info`, `Padding`, `VorbisComment`, or `SeekTable` metadata blocks in the
+stream.
+"""
 function debug_mcallback(d::Ptr{Void}, mp::Ptr{Void}, client::Ptr{Void})
-    typ = unsafe_load(reinterpret(Ptr{MetaDataType},mp))
+    typ = unsafe_load(reinterpret(Ptr{MetaDataType}, mp))
     println("Metadata callback on typ = ", typ)
     if typ == Info
         show(unsafe_load(reinterpret(Ptr{InfoMetaData}, mp)))
@@ -99,20 +115,34 @@ function debug_mcallback(d::Ptr{Void}, mp::Ptr{Void}, client::Ptr{Void})
     end
     nothing
 end
-"silent metadata callback function"
+
+"""
+    silent_mcallback(d::Ptr{Void}, mp::Ptr{Void}, client::Ptr{Void})
+
+Silent metadata callback function.  Ignores all metadata blocks.
+"""
 function silent_mcallback(d::Ptr{Void}, mp::Ptr{Void}, client::Ptr{Void})
     nothing
 end
 
+"""
+    debug_ecallback(d::Ptr{Void}, status::Int32, client::Ptr{Void})
 
-"error callback"
+Error callback function.
+"""
 function debug_ecallback(d::Ptr{Void}, status::Int32, client::Ptr{Void})
     error("Got error callback with status = $status")
 end
 
-"debugging write callback"
+"""
+    debug_wcallback(dd::Ptr{Void}, hdr::Ptr{FrameHeader},
+        buffer::Ptr{Ptr{Int32}}, client::Ptr{Void})
+
+Debugging write callback.  Prints information about every frame written.
+Very verbose.  Use with caution.
+"""
 function debug_wcallback(dd::Ptr{Void}, hdr::Ptr{FrameHeader},
-                   buffer::Ptr{Ptr{Int32}}, client::Ptr{Void})
+             buffer::Ptr{Ptr{Int32}}, client::Ptr{Void})
     fr = unsafe_load(hdr)
     println("Frame")
     println(" blocksize: ", fr.blocksize)
@@ -124,12 +154,19 @@ function debug_wcallback(dd::Ptr{Void}, hdr::Ptr{FrameHeader},
     println(" frame or sample number: ", fr.num)
     println(" crc: ", fr.crc)
 
-    data = pointer_to_array(unsafe_load(buffer), fr.blocksize)/(2^(fr.bits_per_sample - 1))
+    data = unsafe_wrap(unsafe_load(buffer), fr.blocksize)/(2^(fr.bits_per_sample - 1))
     zero(Int32)
 end
 
+"""
+    initfile!(dd::StreamDecoderPtr, fnm::String; wcallback=debug_wcallback_c,
+        mcallback=debug_mcallback_c, ecallback=debug_ecallback_c, client_data=nothing)
 
-function initfile!(dd::StreamDecoderPtr, fnm::ByteString; wcallback=debug_wcallback_c,
+Initialize the `StreamDecoderPtr`, `dd`, to read the FLAC file `fnm`.
+
+This function allows the user to override any of the default callback functions.
+"""
+function initfile!(dd::StreamDecoderPtr, fnm::String; wcallback=debug_wcallback_c,
                    mcallback=debug_mcallback_c, ecallback=debug_ecallback_c, client_data=nothing)
     status = ccall((:FLAC__stream_decoder_init_file,libflac),DecoderInitStatus,
                    (Ptr{Void}, Ptr{UInt8}, Ptr{Void}, Ptr{Void}, Ptr{Void}, Ptr{Void}),
@@ -147,7 +184,7 @@ process_metadata(dd::StreamDecoderPtr) = ccall((:FLAC__stream_decoder_process_un
 process_stream(dd::StreamDecoderPtr) = ccall((:FLAC__stream_decoder_process_until_end_of_stream,libflac),Bool,(Ptr{Void},),dd)
 
 function saving_mcallback(d::Ptr{Void}, mp::Ptr{Void}, client::Ptr{Void})
-    typ = unsafe_load(reinterpret(Ptr{MetaDataType},mp))
+    typ = unsafe_load(reinterpret(Ptr{MetaDataType}, mp))
     if typ == Info
         client_data = unsafe_pointer_to_objref(client)
         client_data["metadata"] = InfoMetaData(unsafe_load(reinterpret(Ptr{InfoMetaData}, mp)))
@@ -163,12 +200,12 @@ function buffering_wcallback(dd::Ptr{Void}, hdr::Ptr{FrameHeader},
     max_val = Float32(2^(fr.bits_per_sample - 1))
     for chidx = 1:fr.channels
         start_idx = client_data["channel_idxs"][chidx]
-        client_data["channels"][start_idx:start_idx + fr.blocksize - 1,chidx] = pointer_to_array(unsafe_load(buffer,chidx), fr.blocksize)/max_val
+        client_data["channels"][start_idx:start_idx + fr.blocksize - 1, chidx] =
+            unsafe_wrap(Array, unsafe_load(buffer, chidx), fr.blocksize)/max_val
         client_data["channel_idxs"][chidx] += fr.blocksize
     end
     zero(Int32)
 end
-
 
 function load(f::File{format"FLAC"})
     decoder = StreamDecoderPtr()
