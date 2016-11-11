@@ -115,7 +115,7 @@ immutable VorbisCommentEntry
     entry::Ptr{UInt8}
 end
 
-Base.string(vce::VorbisCommentEntry) = bytestring(vce.entry, vce.length)
+Base.string(vce::VorbisCommentEntry) = unsafe_string(vce.entry, vce.length)
 
 """
 Vorbis comment metadata.  The vendor comment is always present.
@@ -287,7 +287,7 @@ function Base.convert(::Type{Dict}, vc::VorbisCommentMetaData)
         ccall((:FLAC__metadata_object_vorbiscomment_entry_to_name_value_pair, libflac),
               Bool, (VorbisCommentEntry, Ptr{Ptr{UInt8}}, Ptr{Ptr{UInt8}}),
               e, k, v) || error("failure in entry_to_name_value_pair")
-        dd[bytestring(k[1])] = bytestring(v[1])
+        dd[unsafe_string(k[1])] = unsafe_string(v[1])
     end
     dd
 end
@@ -326,7 +326,7 @@ function Base.show(io::IO, st::SeekTableMetaData)
     println(io, pts)
 end
 
-Base.string(e::VorbisCommentEntry) = bytestring(e.entry, e.len)
+Base.string(e::VorbisCommentEntry) = unsafe_string(e.entry, e.len)
 
 Base.show(io::IO,e::VorbisCommentEntry) = println(io, string(e.entry))
 
