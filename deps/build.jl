@@ -13,7 +13,8 @@ provides(AptGet,"libvorbis-dev",libvorbis)
 
 @static if is_apple()
     if Pkg.installed("Homebrew") === nothing
-        error("Homebrew package not installed, please run Pkg.add(\"Homebrew\")")  end
+        error("Homebrew package not installed, please run Pkg.add(\"Homebrew\")")
+    end
     using Homebrew
     provides( Homebrew.HB, "flac", libflac, os = :Darwin )
     provides( Homebrew.HB, "libogg", libogg, os = :Darwin )
