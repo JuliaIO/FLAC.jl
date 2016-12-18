@@ -177,54 +177,150 @@ function initfile!(dd::StreamDecoderPtr, fnm::String; wcallback=debug_wcallback_
     dd
 end
 
-process_single(dd::StreamDecoderPtr) = ccall((:FLAC__stream_decoder_process_single,libflac),Bool,(Ptr{Void},),dd)
-
-process_metadata(dd::StreamDecoderPtr) = ccall((:FLAC__stream_decoder_process_until_end_of_metadata,libflac),Bool,(Ptr{Void},),dd)
-
-process_stream(dd::StreamDecoderPtr) = ccall((:FLAC__stream_decoder_process_until_end_of_stream,libflac),Bool,(Ptr{Void},),dd)
+process_single(dd::StreamDecoderPtr) = ccall((:FLAC__stream_decoder_process_single,libflac), Bool,(Ptr{Void},), dd)
+process_metadata(dd::StreamDecoderPtr) = ccall((:FLAC__stream_decoder_process_until_end_of_metadata,libflac), Bool,(Ptr{Void},), dd)
+process_stream(dd::StreamDecoderPtr) = ccall((:FLAC__stream_decoder_process_until_end_of_stream,libflac), Bool,(Ptr{Void},), dd)
+seek_absolute(dd::StreamDecoderPtr, offset::UInt64) = ccall((:FLAC__stream_decoder_seek_absolute,libflac), Bool,(Ptr{Void},UInt64), dd, offset)
+flush(dd::StreamDecoderPtr) = ccall((:FLAC__stream_decoder_flush,libflac), Bool,(Ptr{Void},), dd)
 
 function saving_mcallback(d::Ptr{Void}, mp::Ptr{Void}, client::Ptr{Void})
     typ = unsafe_load(reinterpret(Ptr{MetaDataType}, mp))
     if typ == Info
-        client_data = unsafe_pointer_to_objref(client)
-        client_data["metadata"] = InfoMetaData(unsafe_load(reinterpret(Ptr{InfoMetaData}, mp)))
+        f = unsafe_pointer_to_objref(client)
+        f.metadata = InfoMetaData(unsafe_load(reinterpret(Ptr{InfoMetaData}, mp)))
     end
-    nothing
+    return nothing
 end
 
 function buffering_wcallback(dd::Ptr{Void}, hdr::Ptr{FrameHeader},
                    buffer::Ptr{Ptr{Int32}}, client::Ptr{Void})
     fr = unsafe_load(hdr)
-    client_data = unsafe_pointer_to_objref(client)
+    f = unsafe_pointer_to_objref(client)
 
     max_val = Float32(2^(fr.bits_per_sample - 1))
     for chidx = 1:fr.channels
-        start_idx = client_data["channel_idxs"][chidx]
-        client_data["channels"][start_idx:start_idx + fr.blocksize - 1, chidx] =
-            unsafe_wrap(Array, unsafe_load(buffer, chidx), fr.blocksize)/max_val
-        client_data["channel_idxs"][chidx] += fr.blocksize
+        ch_data = unsafe_load(buffer, chidx)
+        f.chunk[1:fr.blocksize, chidx] = unsafe_wrap(Array, ch_data, fr.blocksize)/max_val
     end
-    zero(Int32)
+    # Set the current blocksize and how much we've consumed from it
+    f.chunk_len = fr.blocksize
+    f.chunk_consumed = 0
+    return zero(Int32)
 end
 
-function load(f::File{format"FLAC"})
-    decoder = StreamDecoderPtr()
+type FLACDecoder
+    # Filename of the file this actually represents
+    filename::String
 
-    client_data = Dict()
-    initfile!(decoder, f.filename, wcallback=buffering_wcallback_c, mcallback=saving_mcallback_c, client_data=pointer_from_objref(client_data))
+    # Pointer to our decoder object
+    dec::StreamDecoderPtr
 
-    # Peek at just the metadata
-    process_metadata(decoder)
+    # Metadata for this FLAC file
+    metadata::InfoMetaData
 
-    # Create a list of Arrays to hold our sampledata for each channel assigned to us
-    client_data["channels"] = Array{Float32,2}(client_data["metadata"].totalsamples, client_data["metadata"].channels)
-    client_data["channel_idxs"] = ones(UInt64, client_data["metadata"].channels)
+    # Current chunk of audio data, its length (we allocate maximum framesize,
+    # but frames can vary in size) and how much we've consumed from it, so we
+    # know where to pick up next when reading in
+    chunk::Array{Float32,2}
+    chunk_len::UInt
+    chunk_consumed::UInt
 
-    # Process the rest of the stream
-    process_stream(decoder)
+    function FLACDecoder(path::String)
+        dec = StreamDecoderPtr()
+
+        # Create initial, empty FLACDecoder object
+        f = new(path, dec, InfoMetaData(), Array{Float32,2}(), 0, 0)
+
+        # Open file, process metadata
+        initfile!(dec, path, wcallback=buffering_wcallback_c, mcallback=saving_mcallback_c, client_data=pointer_from_objref(f))
+        process_metadata(dec)
+
+        # Initialize chunk storage
+        f.chunk = Array{Float32,2}(f.metadata.maxblocksize, f.metadata.channels)
+        return f
+    end
+end
+
+"""
+`read(f::FLACDecoder, num_samples::Int)`
+
+Read up to the specified number of samples from the given FLACDecoder,
+"""
+function read(f::FLACDecoder, num_samples::Int)
+    # Allocate memory to hold all the read data
+    data = Array{Float32,2}(num_samples, f.metadata.channels)
+    data_read = 0
+
+    # Save our current position, and read until we hit an error or exceed our
+    # num_samples read:
+    while data_read < num_samples
+        data_needed = num_samples - data_read
+        data_avail = f.chunk_len - f.chunk_consumed
+
+        # If we've got data to load in from a previous chunk, then do so
+        if data_avail > 0
+            # Take only as much as we need, or as much as we can
+            amnt = min(data_needed, data_avail) - 1
+
+            # Copy from the chunk into data
+            d_start = data_read + 1
+            f_start = f.chunk_consumed + 1
+            data[d_start:d_start + amnt, :] = f.chunk[f_start:f_start + amnt, :]
+
+            # Increment data_read and chunk_consumed for proper bookkeeping
+            data_read += amnt + 1
+            f.chunk_consumed += amnt + 1
+        else
+            # If we have no data ready for us, read it in!
+            if !process_single(f.dec)
+                # If this fails, quit out with whatever we've managed to get
+                return data[1:data_read]
+            end
+            # Did we not actually get any new data?
+            if f.chunk_len - f.chunk_consumed == 0
+                return data[1:data_read]
+            end
+        end
+    end
+
+    return data
+end
+
+"""
+`seek(f::FLACDecoder, offset::Int)`
+
+Perform an absolute seek within the given FLAC stream
+"""
+function seek(f::FLACDecoder, offset::Int)
+    if !seek_absolute(f.dec, UInt64(offset))
+        ArgumentError("Could not seek to offset $offset")
+    end
+end
+
+"""
+`length(f::FLACDecoder)`
+
+Return the total length of the FLAC file in samples
+"""
+function length(f::FLACDecoder)
+    return f.metadata.totalsamples
+end
+
+"""
+`size(f::FLACDecoder)`
+
+Return the size tuple of the FLAC file (length in samples, number of channels)
+"""
+function size(f::FLACDecoder)
+    return (length(f), f.metadata.channels)
+end
+
+
+function load(file::File{format"FLAC"})
+    f = FLACDecoder(file.filename)
 
     # Return data, fs
-    return client_data["channels"], client_data["metadata"].samplerate
+    return read(f, length(f)), f.metadata.samplerate
 end
 
 # Calculate cfunction versions of all our callbacks once, at runtime, as is necessary with cfunction's

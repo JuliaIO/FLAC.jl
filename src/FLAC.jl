@@ -14,8 +14,13 @@ export StreamMetaData,
        StreamDecoderPtr,
        StreamEncoderPtr,
        initfile!,
-       load,
-       save
+       FLACDecoder,
+       seek,
+       read,
+       size,
+       length
+
+import Base: read, seek, size, length
 
 const depfile = joinpath(dirname(@__FILE__), "..", "deps", "deps.jl")
 if isfile(depfile)
