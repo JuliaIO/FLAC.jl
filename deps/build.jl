@@ -11,7 +11,7 @@ provides(AptGet,"libflac-dev",libflac)
 provides(AptGet,"libogg-dev",libogg)
 provides(AptGet,"libvorbis-dev",libvorbis)
 
-@static if is_apple() begin
+@static if is_apple()
     if Pkg.installed("Homebrew") === nothing
         error("Homebrew package not installed, please run Pkg.add(\"Homebrew\")")  end
     using Homebrew
