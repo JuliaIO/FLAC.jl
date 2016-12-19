@@ -177,11 +177,31 @@ function initfile!(dd::StreamDecoderPtr, fnm::String; wcallback=debug_wcallback_
     dd
 end
 
-process_single(dd::StreamDecoderPtr) = ccall((:FLAC__stream_decoder_process_single,libflac), Bool,(Ptr{Void},), dd)
-process_metadata(dd::StreamDecoderPtr) = ccall((:FLAC__stream_decoder_process_until_end_of_metadata,libflac), Bool,(Ptr{Void},), dd)
-process_stream(dd::StreamDecoderPtr) = ccall((:FLAC__stream_decoder_process_until_end_of_stream,libflac), Bool,(Ptr{Void},), dd)
-seek_absolute(dd::StreamDecoderPtr, offset::UInt64) = ccall((:FLAC__stream_decoder_seek_absolute,libflac), Bool,(Ptr{Void},UInt64), dd, offset)
-flush(dd::StreamDecoderPtr) = ccall((:FLAC__stream_decoder_flush,libflac), Bool,(Ptr{Void},), dd)
+function process_single(dd::StreamDecoderPtr)
+    disable_sigint() do
+        ccall((:FLAC__stream_decoder_process_single,libflac), Bool, (Ptr{Void},), dd)
+    end
+end
+function process_metadata(dd::StreamDecoderPtr)
+    disable_sigint() do
+        ccall((:FLAC__stream_decoder_process_until_end_of_metadata,libflac), Bool, (Ptr{Void},), dd)
+    end
+end
+function process_stream(dd::StreamDecoderPtr)
+    disable_sigint() do
+        ccall((:FLAC__stream_decoder_process_until_end_of_stream,libflac), Bool, (Ptr{Void},), dd)
+    end
+end
+function seek_absolute(dd::StreamDecoderPtr, offset::UInt64)
+    disable_sigint() do
+        ccall((:FLAC__stream_decoder_seek_absolute,libflac), Bool, (Ptr{Void},UInt64), dd, offset)
+    end
+end
+function flush(dd::StreamDecoderPtr)
+    disable_sigint() do
+        ccall((:FLAC__stream_decoder_flush,libflac), Bool, (Ptr{Void},), dd)
+    end
+end
 
 function saving_mcallback(d::Ptr{Void}, mp::Ptr{Void}, client::Ptr{Void})
     typ = unsafe_load(reinterpret(Ptr{MetaDataType}, mp))
