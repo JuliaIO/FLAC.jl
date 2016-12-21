@@ -51,6 +51,7 @@ seek(f, 0)
 function roundtrip(signal, samplerate; params...)
     path = joinpath(testdir,"roundtrip.flac")
     if isfile(path)
+        gc()
         rm(path)
     end
     save(path, signal, samplerate; params...)
@@ -60,6 +61,7 @@ function roundtrip(signal, samplerate; params...)
     @test size(recon_signal) == size(signal)
     #show(recon_signal - signal)
     @test maximum(abs(recon_signal - signal)) < 1e-4
+    gc()
     rm(path)
 end
 
