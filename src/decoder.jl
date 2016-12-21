@@ -262,11 +262,11 @@ type FLACDecoder
 end
 
 """
-`read(f::FLACDecoder, num_samples::Int)`
+`read(f::FLACDecoder, num_samples::Integer)`
 
 Read up to the specified number of samples from the given FLACDecoder,
 """
-function read(f::FLACDecoder, num_samples::Int)
+function read{T<:Integer}(f::FLACDecoder, num_samples::T)
     # Allocate memory to hold all the read data
     data = Array{Float32,2}(num_samples, f.metadata.channels)
     data_read = 0
@@ -307,11 +307,11 @@ function read(f::FLACDecoder, num_samples::Int)
 end
 
 """
-`seek(f::FLACDecoder, offset::Int)`
+`seek(f::FLACDecoder, offset::Int64)`
 
 Perform an absolute seek within the given FLAC stream
 """
-function seek(f::FLACDecoder, offset::Int)
+function seek{T<:Integer}(f::FLACDecoder, offset::T)
     if !seek_absolute(f.dec, UInt64(offset))
         ArgumentError("Could not seek to offset $offset")
     end
