@@ -217,7 +217,7 @@ metadata(pt::Ptr{StreamMetaData}) =
 Open the file, `fnm`, check that it is a flac stream and return any cue sheets, closing the file.
 """
 function CueSheetMetaData(fnm::String)
-    isreadable(fnm) || throw(ArgumentError(string("\"",fnm, "\" is not a path to a readable file")))
+    isfile(fnm) || throw(ArgumentError(string("\"",fnm, "\" is not a path to a readable file")))
     cue = Ptr{CueSheetMetaData}[C_NULL]
     ccall((:FLAC__metadata_get_cuesheet, libflac), Bool,
           (Ptr{UInt8}, Ptr{Ptr{CueSheetMetaData}}),
@@ -229,7 +229,7 @@ end
 Open the file, `fnm`, check that it is a flac stream and return the stream info, closing the file.
 """
 function InfoMetaData(fnm::String)
-    isreadable(fnm) || throw(ArgumentError(string("\"",fnm, "\" is not a path to a readable file")))
+    isfile(fnm) || throw(ArgumentError(string("\"",fnm, "\" is not a path to a readable file")))
     strinf = InfoMetaData()
     ccall((:FLAC__metadata_get_streaminfo,libflac), Bool,
           (Ptr{UInt8}, Ref{InfoMetaData}), fnm, strinf) || error("call to get_streaminfo failed")
@@ -240,7 +240,7 @@ end
 Open the file, `fnm`, check that it is a flac stream and return any Vorbis tags, closing the file.
 """
 function VorbisCommentMetaData(fnm::String)
-    isreadable(fnm) || throw(ArgumentError(string("\"",fnm, "\" is not a path to a readable file")))
+    isfile(fnm) || throw(ArgumentError(string("\"",fnm, "\" is not a path to a readable file")))
     vorb = Ptr{VorbisCommentMetaData}[C_NULL]
     ccall((:FLAC__metadata_get_tags, libflac), Bool,
           (Ptr{UInt8}, Ptr{Ptr{VorbisCommentMetaData}}),
@@ -279,7 +279,7 @@ end
 function Base.convert(::Type{Dict}, vc::VorbisCommentMetaData)
     dd = Dict{String, String}()
     dd["vendor"] = string(vc.vendor)
-    for e in unsafe_wrap(vc.comments,vc.n)
+    for e in unsafe_wrap(Vector{FLAC.VorbisCommentMetaData}, vc.comments, vc.n)
         k = Ptr{UInt8}[C_NULL]
         v = Ptr{UInt8}[C_NULL]
         ccall((:FLAC__metadata_object_vorbiscomment_entry_to_name_value_pair, libflac),
@@ -331,7 +331,7 @@ Base.show(io::IO,e::VorbisCommentEntry) = println(io, string(e.entry))
 function Base.show(io::IO,c::VorbisCommentMetaData)
     c.typ == VorbisComment || error("VorbisCommentMetaData's typ must be $VorbisComment")
     println(io,"vendor=", string(c.vendor))
-    for cc in unsafe_wrap(c.comments, c.n)
+    for cc in unsafe_wrap(Vector{VorbisCommentEntry}, c.comments, c.n)
         println(io, string(cc))
     end
 end
