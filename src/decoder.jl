@@ -19,8 +19,8 @@ Base.unsafe_convert(::Type{Ptr{Void}}, en::StreamDecoderPtr) = en.v
 
 for (nm,typ) in (("ogg_serial_number", :Clong),
                  ("md5_checking", :Bool),
-                 ("metadata_respond", :MetadataType),
-                 ("metadata_ignore", :MetadataType))
+                 ("metadata_respond", :MetaDataType),
+                 ("metadata_ignore", :MetaDataType))
     @eval begin
         function $(Symbol(string("set_", nm)))(dd::StreamDecoderPtr, val)
             ccall(($(string("FLAC__stream_decoder_set_",nm)), libflac), Bool,
@@ -71,7 +71,8 @@ get_state_string(dd::StreamDecoderPtr) =
       DecoderMemoryAllocationError,
       DecoderUninitialized)
 
-for (nm,typ) in (("state",:DecoderState),
+
+for (nm,typ) in (("state",:StreamDecoderState),
                  ("md5_checking",:Bool),
                  ("total_samples",:Int64),
                  ("channels",:Cint),
@@ -249,7 +250,7 @@ type FLACDecoder
         dec = StreamDecoderPtr()
 
         # Create initial, empty FLACDecoder object
-        f = new(path, dec, InfoMetaData(), Array{Float32,2}(), 0, 0)
+        f = new(path, dec, InfoMetaData(), Array{Float32,2}(0, 0), 0, 0)
 
         # Open file, process metadata
         initfile!(dec, path, wcallback=buffering_wcallback_c, mcallback=saving_mcallback_c, client_data=pointer_from_objref(f))

@@ -140,8 +140,8 @@ function Base.show(io::IO,en::StreamEncoderPtr)
     println()
 end
 
-# Cheat save() implementation for people who want to input a 1d array instead of the proper 2d array
-save{T<:Real}(f::File{format"FLAC"}, data::Array{T,1}, samplerate; kwargs...) = save(f, data'', samplerate; kwargs...)
+# save() implementation for people who want to input a 1d array instead of the proper 2d array
+save{T<:Real}(f::File{format"FLAC"}, data::Array{T,1}, samplerate; kwargs...) = save(f, reshape(data, :, 1), samplerate; kwargs...)
 
 function save{T<:Real}(f::File{format"FLAC"}, data::Array{T,2}, samplerate; bits_per_sample = 24, compression_level = 3)
     encoder = StreamEncoderPtr()

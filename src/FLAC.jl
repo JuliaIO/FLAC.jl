@@ -3,6 +3,7 @@ __precompile__()
 module FLAC
 
 using FileIO
+using Compat
 
 export StreamMetaData,
        InfoMetaData,
