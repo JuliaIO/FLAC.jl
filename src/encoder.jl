@@ -143,6 +143,14 @@ end
 # save() implementation for people who want to input a 1d array instead of the proper 2d array
 save{T<:Real}(f::File{format"FLAC"}, data::Array{T,1}, samplerate; kwargs...) = save(f, reshape(data, :, 1), samplerate; kwargs...)
 
+"""
+`save(filename, data, samplerate; bits_per_sample = 24, compression_level = 3)`
+
+Encodes and writes an array of values out to a file, using the given bitdepth and
+compression level.  This method is part of the FileIO integration, do not call
+directly but instead import the FileIO bindings and call `save()` with a filename
+ending in `.flac` to invoke this method through the FileIO machinery.
+"""
 function save{T<:Real}(f::File{format"FLAC"}, data::Array{T,2}, samplerate; bits_per_sample = 24, compression_level = 3)
     encoder = StreamEncoderPtr()
 
