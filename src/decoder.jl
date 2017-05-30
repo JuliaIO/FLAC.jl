@@ -336,7 +336,15 @@ function size(f::FLACDecoder)
     return (length(f), f.metadata.channels)
 end
 
+"""
+`load(filename)`
 
+Opens and reads the given filename, returning an array of samples and as well
+as the samplerate of the samples stored within the file.  This method is part
+of the FileIO integration, do not call directly but instead import the FileIO
+bindings and call `load()` with a filename ending in `.flac` to invoke this
+method through the FileIO machinery.
+"""
 function load(file::File{format"FLAC"})
     f = FLACDecoder(file.filename)
 
