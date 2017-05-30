@@ -2,9 +2,7 @@
 
 Julia bindings for libFLAC
 
-[![Travis Build Status](https://travis-ci.org/dmbates/FLAC.jl.svg?branch=master)](https://travis-ci.org/dmbates/FLAC.jl)
-
-[![Appveyor Build Status](https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true)](https://ci.appveyor.com/project/dmbates/flac-jl)
+[![Travis Build Status](https://travis-ci.org/dmbates/FLAC.jl.svg?branch=master)](https://travis-ci.org/dmbates/FLAC.jl)  [![Appveyor Build Status](https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true)](https://ci.appveyor.com/project/dmbates/flac-jl)
 
 ## Usage
 Integration through [FileIO](https://github.com/JuliaIO/FileIO.jl) makes loading and saving easy:
