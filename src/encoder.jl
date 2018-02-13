@@ -169,7 +169,7 @@ function save{T<:Real}(f::File{format"FLAC"}, data::Array{T,2}, samplerate; bits
     end
 
     # Shove interleaved samples into the encoder by transposing, and convert to Int32
-    data_t = round(Int32, data'*2^(bits_per_sample - 1))
+    data_t = round.(Int32, data'*2^(bits_per_sample - 1))
     blocksize = get_blocksize(encoder)
     for idx in 1:div(num_samples, blocksize)
         block_idxs = ((idx - 1) * blocksize + 1):(idx * blocksize)
