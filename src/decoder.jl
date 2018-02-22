@@ -53,6 +53,7 @@ set_metadata_ignore_all(dd::StreamDecoderPtr) =
 
 """
     get_state_string(dd::StreamDecoderPtr)
+
 Returns a character string describing the current state of the decoder
 """
 get_state_string(dd::StreamDecoderPtr) =
@@ -271,7 +272,7 @@ type FLACDecoder
 end
 
 """
-`read(f::FLACDecoder, num_samples::Integer)`
+    read(f::FLACDecoder, num_samples::Integer)
 
 Read up to the specified number of samples from the given FLACDecoder,
 """
@@ -334,7 +335,7 @@ function seek{T<:Integer}(f::FLACDecoder, offset::T)
 end
 
 """
-`length(f::FLACDecoder)`
+    length(f::FLACDecoder)
 
 Return the total length of the FLAC file in samples
 """
@@ -343,7 +344,7 @@ function length(f::FLACDecoder)
 end
 
 """
-`size(f::FLACDecoder)`
+    size(f::FLACDecoder)
 
 Return the size tuple of the FLAC file (length in samples, number of channels)
 """
@@ -352,7 +353,7 @@ function size(f::FLACDecoder)
 end
 
 """
-`load(filename)`
+    load(filename::File{format"FLAC"})
 
 Opens and reads the given filename, returning an array of samples and as well
 as the samplerate of the samples stored within the file.  This method is part
