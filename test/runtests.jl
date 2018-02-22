@@ -48,6 +48,11 @@ using FLAC
     seek(f, 0)
     @test maximum(abs.(read(f, length(f)) - check_data)) < 1e-6
 
+    # Test that we automatically recover from a seek error properly
+    @test_throws ArgumentError seek(f, length(f) + 1000)
+    seek(f, 0)
+    @test maximum(abs.(read(f, length(f)) - check_data)) < 1e-6
+
 
     # Now that we have confidence our decoder works, let's roundtrip a signal multiple times
     function roundtrip(signal, samplerate; params...)

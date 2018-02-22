@@ -59,6 +59,14 @@ get_state_string(dd::StreamDecoderPtr) =
     unsafe_string(ccall((:FLAC__stream_decoder_get_resolved_state_string,libflac), Ptr{UInt8},
                      (Ptr{Void},), dd))
 
+"""
+    get_state(dd:StreamDecoderPtr)
+
+Returns the decoder state as an integer.
+"""
+get_state(dd::StreamDecoderPtr) =
+    ccall((:FLAC__stream_decoder_get_state, libflac), UInt32, (Ptr{Void},), dd)
+
 @enum(StreamDecoderState,
       DecoderMetaDataSearch,
       DecoderMetaDataRead,
@@ -308,13 +316,20 @@ function read{T<:Integer}(f::FLACDecoder, num_samples::T)
 end
 
 """
-`seek(f::FLACDecoder, offset::Int64)`
+    seek(f::FLACDecoder, offset::Int64)
 
-Perform an absolute seek within the given FLAC stream
+Perform an absolute seek within the given FLAC stream.  Throws an
+`ArgumentError` if the requested seek is impossible.  Will automatically
+`flush()` the decoder stream if a seek error is encountered.
 """
 function seek{T<:Integer}(f::FLACDecoder, offset::T)
     if !seek_absolute(f.dec, UInt64(offset))
-        ArgumentError("Could not seek to offset $offset")
+        # If we got a seek error, we need to flush the decoder before we
+        # can continue decoding, as we've crunked the decoder state. Whoops.
+        if get_state(f.dec) == 0x06
+            flush(f.dec)
+        end
+        throw(ArgumentError("Could not seek to offset $offset"))
     end
 end
 
