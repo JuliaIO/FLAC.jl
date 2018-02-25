@@ -53,11 +53,20 @@ set_metadata_ignore_all(dd::StreamDecoderPtr) =
 
 """
     get_state_string(dd::StreamDecoderPtr)
+
 Returns a character string describing the current state of the decoder
 """
 get_state_string(dd::StreamDecoderPtr) =
     unsafe_string(ccall((:FLAC__stream_decoder_get_resolved_state_string,libflac), Ptr{UInt8},
                      (Ptr{Void},), dd))
+
+"""
+    get_state(dd:StreamDecoderPtr)
+
+Returns the decoder state as an integer.
+"""
+get_state(dd::StreamDecoderPtr) =
+    ccall((:FLAC__stream_decoder_get_state, libflac), UInt32, (Ptr{Void},), dd)
 
 @enum(StreamDecoderState,
       DecoderMetaDataSearch,
@@ -263,7 +272,7 @@ type FLACDecoder
 end
 
 """
-`read(f::FLACDecoder, num_samples::Integer)`
+    read(f::FLACDecoder, num_samples::Integer)
 
 Read up to the specified number of samples from the given FLACDecoder,
 """
@@ -308,18 +317,25 @@ function read{T<:Integer}(f::FLACDecoder, num_samples::T)
 end
 
 """
-`seek(f::FLACDecoder, offset::Int64)`
+    seek(f::FLACDecoder, offset::Int64)
 
-Perform an absolute seek within the given FLAC stream
+Perform an absolute seek within the given FLAC stream.  Throws an
+`ArgumentError` if the requested seek is impossible.  Will automatically
+`flush()` the decoder stream if a seek error is encountered.
 """
 function seek{T<:Integer}(f::FLACDecoder, offset::T)
     if !seek_absolute(f.dec, UInt64(offset))
-        ArgumentError("Could not seek to offset $offset")
+        # If we got a seek error, we need to flush the decoder before we
+        # can continue decoding, as we've crunked the decoder state. Whoops.
+        if get_state(f.dec) == 0x06
+            flush(f.dec)
+        end
+        throw(ArgumentError("Could not seek to offset $offset"))
     end
 end
 
 """
-`length(f::FLACDecoder)`
+    length(f::FLACDecoder)
 
 Return the total length of the FLAC file in samples
 """
@@ -328,7 +344,7 @@ function length(f::FLACDecoder)
 end
 
 """
-`size(f::FLACDecoder)`
+    size(f::FLACDecoder)
 
 Return the size tuple of the FLAC file (length in samples, number of channels)
 """
@@ -337,7 +353,7 @@ function size(f::FLACDecoder)
 end
 
 """
-`load(filename)`
+    load(filename::File{format"FLAC"})
 
 Opens and reads the given filename, returning an array of samples and as well
 as the samplerate of the samples stored within the file.  This method is part
