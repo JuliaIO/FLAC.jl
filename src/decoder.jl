@@ -63,10 +63,9 @@ get_state_string(dd::StreamDecoderPtr) =
 """
     get_state(dd:StreamDecoderPtr)
 
-Returns the decoder state as an integer.
+Returns the decoder state as a `StreamDecoderState` enum value.
 """
-get_state(dd::StreamDecoderPtr) =
-    ccall((:FLAC__stream_decoder_get_state, libflac), UInt32, (Ptr{Void},), dd)
+get_state(dd)
 
 @enum(StreamDecoderState,
       DecoderMetaDataSearch,
