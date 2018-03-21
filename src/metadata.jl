@@ -6,7 +6,7 @@ Each type of metadata object contains an indicator
 of its `typ`, an indicator of whether this is the
 last metadata block and its length, in bytes.
 """
-@compat abstract type StreamMetaData end
+abstract type StreamMetaData end
 
 @enum(MetaDataType,
       Info,
@@ -46,7 +46,7 @@ A block containing information on the stream including
 `samplerate`, `channels`, `bitspersample`, `totalsamples`,
 and `mdsum`.
 """
-@compat type InfoMetaData <: StreamMetaData
+type InfoMetaData <: StreamMetaData
     typ::MetaDataType
     is_last::Cint
     len::Int64
@@ -66,7 +66,7 @@ end
 """
 `len` bytes of padding in the FLAC stream.
 """
-@compat type PaddingMetaData <: StreamMetaData
+type PaddingMetaData <: StreamMetaData
     typ::MetaDataType
     is_last::Cint
     len::Int64
@@ -78,7 +78,7 @@ Application metadata
 
 Not sure what this is for.
 """
-@compat type ApplicationMetaData <: StreamMetaData
+type ApplicationMetaData <: StreamMetaData
     typ::MetaDataType
     is_last::Cint
     len::Int64
@@ -86,7 +86,7 @@ Not sure what this is for.
     data::Ptr{Void}
 end
 
-@compat immutable SeekPoint
+immutable SeekPoint
     sample_number::Int64
     stream_offset::Int64
     frame_samples::UInt32
@@ -95,7 +95,7 @@ end
 """
 An array of `SeekPoint`s
 """
-@compat type SeekTableMetaData <: StreamMetaData
+type SeekTableMetaData <: StreamMetaData
     typ::MetaDataType
     is_last::Cint
     len::Int64
@@ -110,7 +110,7 @@ A single Vorbis comment.
 Comments are usually key/value pairs of the form
 `ARTIST=Miles Davis`, `YEAR=1965`, etc.
 """
-@compat immutable VorbisCommentEntry
+immutable VorbisCommentEntry
     len::UInt32
     entry::Ptr{UInt8}
 end
@@ -118,7 +118,7 @@ end
 """
 Vorbis comment metadata.  The vendor comment is always present.
 """
-@compat type VorbisCommentMetaData <: StreamMetaData
+type VorbisCommentMetaData <: StreamMetaData
     typ::MetaDataType
     is_last::Cint
     len::Cuint
@@ -130,7 +130,7 @@ end
 """
 A single cue sheet index
 """
-@compat immutable CueSheetIndex
+immutable CueSheetIndex
     offset::UInt64
     number::UInt8
 end
@@ -141,7 +141,7 @@ A single track annotation in a CueSheet.
 I'm not sure about the offsets here.  In the C struct the `typ` and `pre_emphasis` fields
 are single bits.
 """
-@compat immutable CueSheetTrack
+immutable CueSheetTrack
     offset::Int64
     number::UInt8
     isrc::NTuple{13, UInt8}
@@ -159,7 +159,7 @@ Cue sheet meta data.
 
 An array of `CueSheetTrack`s
 """
-@compat type CueSheetMetaData <: StreamMetaData
+type CueSheetMetaData <: StreamMetaData
     typ::MetaDataType
     is_last::Cint
     len::Int64
@@ -170,7 +170,7 @@ An array of `CueSheetTrack`s
     tracks::Ptr{CueSheetTrack}
 end
 
-@compat type PictureMetaData <: StreamMetaData
+type PictureMetaData <: StreamMetaData
     typ::MetaDataType
     is_last::Cint
     len::Int64

@@ -8,7 +8,7 @@
       FrameNumber,
       SampleNumber)
 
-@compat immutable FrameHeader
+immutable FrameHeader
     blocksize::Cuint
     sample_rate::Cuint
     channels::Cuint
@@ -23,7 +23,7 @@ const FrameHeaderSync = 0x00003ffe
 
 const MAX_CHANNELS = 0x00000008
 
-@compat immutable FrameFooter
+immutable FrameFooter
     crc::UInt16
 end
 
@@ -31,18 +31,18 @@ end
       PartitionedRice,
       PartitionedRice2)
 
-@compat immutable PartitionedRiceContents
+immutable PartitionedRiceContents
     parameters::Ptr{Cuint}
     raw_bits::Ptr{Cuint}
     capacity_by_order::Cuint
 end
 
-@compat immutable PartitionedRiceT
+immutable PartitionedRiceT
     order::Cuint
     contents::Ptr{PartitionedRiceContents}
 end
 
-@compat immutable EntropyCodingMethod
+immutable EntropyCodingMethod
     typ::EntropyCodingMethodType
     data::PartitionedRiceT
 end
@@ -53,19 +53,19 @@ end
       SubframeFixed,
       SubframeLPC)
 
-@compat abstract type Subframe end
+abstract type Subframe end
 
-@compat immutable Subframe_Constant <: Subframe
+immutable Subframe_Constant <: Subframe
     value::Int32
 end
 
-@compat immutable Subframe_Verbatim <: Subframe
+immutable Subframe_Verbatim <: Subframe
     data::Ptr{Int32}
 end
 
 const MAX_FIXED_ORDER = 0x00000004
 
-@compat immutable SubFrame_Fixed <: Subframe
+immutable SubFrame_Fixed <: Subframe
     method::EntropyCodingMethod
     order::Cuint
     warmup::NTuple{Int(MAX_FIXED_ORDER),Int32}
@@ -74,7 +74,7 @@ end
 
 const MAX_LPC_ORDER = 0x00000020
 
-@compat immutable SubFrame_LPC <: Subframe
+immutable SubFrame_LPC <: Subframe
     method::EntropyCodingMethod
     order::Cuint
     qlp_coeff_precision::Cuint
@@ -84,13 +84,13 @@ const MAX_LPC_ORDER = 0x00000020
     residual::Ptr{Int32}
 end
 
-@compat immutable SubFrame{SF <: Subframe}
+immutable SubFrame{SF <: Subframe}
     typ::SubframeType
     data::SF
     wasted_bits::Cuint
 end
 
-@compat immutable Frame
+immutable Frame
     header::FrameHeader
     subframes::NTuple{Int(MAX_CHANNELS),SubFrame}
     footer::FrameFooter
