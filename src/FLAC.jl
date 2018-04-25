@@ -4,6 +4,12 @@ module FLAC
 
 using FileIO
 
+# This `using` is literally only just so that `Ogg.__init__()` gets run.  This
+# ensures that `libogg` is loaded into the Julia namcespace, which is necessary
+# for `libFLAC` to load properly.  This will not be necessary in the future,
+# once https://github.com/JuliaPackaging/BinaryBuilder.jl/issues/194 is solved.
+using Ogg
+
 export StreamMetaData,
        InfoMetaData,
        VorbisCommentMetaData,
