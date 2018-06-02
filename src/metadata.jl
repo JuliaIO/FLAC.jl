@@ -46,7 +46,7 @@ A block containing information on the stream including
 `samplerate`, `channels`, `bitspersample`, `totalsamples`,
 and `mdsum`.
 """
-type InfoMetaData <: StreamMetaData
+mutable struct InfoMetaData <: StreamMetaData
     typ::MetaDataType
     is_last::Cint
     len::Int64
@@ -66,7 +66,7 @@ end
 """
 `len` bytes of padding in the FLAC stream.
 """
-type PaddingMetaData <: StreamMetaData
+mutable struct PaddingMetaData <: StreamMetaData
     typ::MetaDataType
     is_last::Cint
     len::Int64
@@ -78,7 +78,7 @@ Application metadata
 
 Not sure what this is for.
 """
-type ApplicationMetaData <: StreamMetaData
+mutable struct ApplicationMetaData <: StreamMetaData
     typ::MetaDataType
     is_last::Cint
     len::Int64
@@ -86,7 +86,7 @@ type ApplicationMetaData <: StreamMetaData
     data::Ptr{Void}
 end
 
-immutable SeekPoint
+struct SeekPoint
     sample_number::Int64
     stream_offset::Int64
     frame_samples::UInt32
@@ -95,7 +95,7 @@ end
 """
 An array of `SeekPoint`s
 """
-type SeekTableMetaData <: StreamMetaData
+mutable struct SeekTableMetaData <: StreamMetaData
     typ::MetaDataType
     is_last::Cint
     len::Int64
@@ -110,7 +110,7 @@ A single Vorbis comment.
 Comments are usually key/value pairs of the form
 `ARTIST=Miles Davis`, `YEAR=1965`, etc.
 """
-immutable VorbisCommentEntry
+struct VorbisCommentEntry
     len::UInt32
     entry::Ptr{UInt8}
 end
@@ -118,7 +118,7 @@ end
 """
 Vorbis comment metadata.  The vendor comment is always present.
 """
-type VorbisCommentMetaData <: StreamMetaData
+mutable struct VorbisCommentMetaData <: StreamMetaData
     typ::MetaDataType
     is_last::Cint
     len::Cuint
@@ -130,7 +130,7 @@ end
 """
 A single cue sheet index
 """
-immutable CueSheetIndex
+struct CueSheetIndex
     offset::UInt64
     number::UInt8
 end
@@ -141,7 +141,7 @@ A single track annotation in a CueSheet.
 I'm not sure about the offsets here.  In the C struct the `typ` and `pre_emphasis` fields
 are single bits.
 """
-immutable CueSheetTrack
+struct CueSheetTrack
     offset::Int64
     number::UInt8
     isrc::NTuple{13, UInt8}
@@ -159,7 +159,7 @@ Cue sheet meta data.
 
 An array of `CueSheetTrack`s
 """
-type CueSheetMetaData <: StreamMetaData
+mutable struct CueSheetMetaData <: StreamMetaData
     typ::MetaDataType
     is_last::Cint
     len::Int64
@@ -170,7 +170,7 @@ type CueSheetMetaData <: StreamMetaData
     tracks::Ptr{CueSheetTrack}
 end
 
-type PictureMetaData <: StreamMetaData
+mutable struct PictureMetaData <: StreamMetaData
     typ::MetaDataType
     is_last::Cint
     len::Int64
@@ -253,7 +253,7 @@ Create a Ptr{StreamMetaData} from a Dict of key/value pairs.
 
 Both the key and the value are converted to strings.
 """
-function Base.convert{K,V}(::Type{Ptr{StreamMetaData}}, dd::Dict{K,V})
+function Base.convert(::Type{Ptr{StreamMetaData}}, dd::Dict{K,V}) where {K,V}
     vcp = ccall((:FLAC__metadata_object_new, libflac),
                 Ptr{StreamMetaData}, (MetaDataType, ), VorbisComment)
     for (k, v) in dd

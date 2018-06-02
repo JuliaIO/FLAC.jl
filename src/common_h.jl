@@ -25,35 +25,35 @@ const FLAC__STREAM_METADATA_SEEKPOINT_LENGTH = 18
 const FLAC__STREAM_METADATA_HEADER_LENGTH = 4
 
 # begin enum ANONYMOUS_1
-typealias ANONYMOUS_1 UInt32
+const ANONYMOUS_1 = UInt32
 const FLAC__ENTROPY_CODING_METHOD_PARTITIONED_RICE = (UInt32)(0)
 const FLAC__ENTROPY_CODING_METHOD_PARTITIONED_RICE2 = (UInt32)(1)
 # end enum ANONYMOUS_1
 
 # begin enum FLAC__EntropyCodingMethodType
-typealias FLAC__EntropyCodingMethodType UInt32
+const FLAC__EntropyCodingMethodType = UInt32
 const FLAC__ENTROPY_CODING_METHOD_PARTITIONED_RICE = (UInt32)(0)
 const FLAC__ENTROPY_CODING_METHOD_PARTITIONED_RICE2 = (UInt32)(1)
 # end enum FLAC__EntropyCodingMethodType
 
-type FLAC__EntropyCodingMethod_PartitionedRiceContents
+mutable struct FLAC__EntropyCodingMethod_PartitionedRiceContents
     parameters::Ptr{UInt32}
     raw_bits::Ptr{UInt32}
     capacity_by_order::UInt32
 end
 
-type FLAC__EntropyCodingMethod_PartitionedRice
+mutable struct FLAC__EntropyCodingMethod_PartitionedRice
     order::UInt32
     contents::Ptr{FLAC__EntropyCodingMethod_PartitionedRiceContents}
 end
 
-type FLAC__EntropyCodingMethod
+mutable struct FLAC__EntropyCodingMethod
     _type::FLAC__EntropyCodingMethodType
     data::Void
 end
 
 # begin enum ANONYMOUS_2
-typealias ANONYMOUS_2 UInt32
+const ANONYMOUS_2 = UInt32
 const FLAC__SUBFRAME_TYPE_CONSTANT = (UInt32)(0)
 const FLAC__SUBFRAME_TYPE_VERBATIM = (UInt32)(1)
 const FLAC__SUBFRAME_TYPE_FIXED = (UInt32)(2)
@@ -61,30 +61,30 @@ const FLAC__SUBFRAME_TYPE_LPC = (UInt32)(3)
 # end enum ANONYMOUS_2
 
 # begin enum FLAC__SubframeType
-typealias FLAC__SubframeType UInt32
+const FLAC__SubframeType = UInt32
 const FLAC__SUBFRAME_TYPE_CONSTANT = (UInt32)(0)
 const FLAC__SUBFRAME_TYPE_VERBATIM = (UInt32)(1)
 const FLAC__SUBFRAME_TYPE_FIXED = (UInt32)(2)
 const FLAC__SUBFRAME_TYPE_LPC = (UInt32)(3)
 # end enum FLAC__SubframeType
 
-typealias FLAC__bool Bool
-typealias FLAC__byte UInt8
-typealias FLAC__int32 Int32
-typealias FLAC__UInt8 UInt8
-typealias FLAC__UInt16 UInt16
-typealias FLAC__UInt32 UInt32
-typealias FLAC__uint64 UInt64
+const FLAC__bool = Bool
+const FLAC__byte = UInt8
+const FLAC__int32 = Int32
+const FLAC__UInt8 = UInt8
+const FLAC__UInt16 = UInt16
+const FLAC__UInt32 = UInt32
+const FLAC__uint64 = UInt64
 
-type FLAC__Subframe_Constant
+mutable struct FLAC__Subframe_Constant
     value::FLAC__int32
 end
 
-type FLAC__Subframe_Verbatim
+mutable struct FLAC__Subframe_Verbatim
     data::Ptr{FLAC__int32}
 end
 
-immutable Array_4_FLAC__int32
+struct Array_4_FLAC__int32
     d1::FLAC__int32
     d2::FLAC__int32
     d3::FLAC__int32
@@ -95,14 +95,14 @@ zero(::Type{Array_4_FLAC__int32}) = begin  # /home/bates/.julia/v0.4/Clang/src/w
         Array_4_FLAC__int32(fill(zero(FLAC__int32),4)...)
     end
 
-type FLAC__Subframe_Fixed
+mutable struct FLAC__Subframe_Fixed
     entropy_coding_method::FLAC__EntropyCodingMethod
     order::UInt32
     warmup::Array_4_FLAC__int32
     residual::Ptr{FLAC__int32}
 end
 
-immutable Array_32_FLAC__int32
+struct Array_32_FLAC__int32
     d1::FLAC__int32
     d2::FLAC__int32
     d3::FLAC__int32
@@ -141,7 +141,7 @@ zero(::Type{Array_32_FLAC__int32}) = begin  # /home/bates/.julia/v0.4/Clang/src/
         Array_32_FLAC__int32(fill(zero(FLAC__int32),32)...)
     end
 
-type FLAC__Subframe_LPC
+mutable struct FLAC__Subframe_LPC
     entropy_coding_method::FLAC__EntropyCodingMethod
     order::UInt32
     qlp_coeff_precision::UInt32
@@ -151,14 +151,14 @@ type FLAC__Subframe_LPC
     residual::Ptr{FLAC__int32}
 end
 
-type FLAC__Subframe
+mutable struct FLAC__Subframe
     _type::FLAC__SubframeType
     data::Void
     wasted_bits::UInt32
 end
 
 # begin enum ANONYMOUS_3
-typealias ANONYMOUS_3 UInt32
+const ANONYMOUS_3 = UInt32
 const FLAC__CHANNEL_ASSIGNMENT_INDEPENDENT = (UInt32)(0)
 const FLAC__CHANNEL_ASSIGNMENT_LEFT_SIDE = (UInt32)(1)
 const FLAC__CHANNEL_ASSIGNMENT_RIGHT_SIDE = (UInt32)(2)
@@ -166,7 +166,7 @@ const FLAC__CHANNEL_ASSIGNMENT_MID_SIDE = (UInt32)(3)
 # end enum ANONYMOUS_3
 
 # begin enum FLAC__ChannelAssignment
-typealias FLAC__ChannelAssignment UInt32
+const FLAC__ChannelAssignment = UInt32
 const FLAC__CHANNEL_ASSIGNMENT_INDEPENDENT = (UInt32)(0)
 const FLAC__CHANNEL_ASSIGNMENT_LEFT_SIDE = (UInt32)(1)
 const FLAC__CHANNEL_ASSIGNMENT_RIGHT_SIDE = (UInt32)(2)
@@ -174,18 +174,18 @@ const FLAC__CHANNEL_ASSIGNMENT_MID_SIDE = (UInt32)(3)
 # end enum FLAC__ChannelAssignment
 
 # begin enum ANONYMOUS_4
-typealias ANONYMOUS_4 UInt32
+const ANONYMOUS_4 = UInt32
 const FLAC__FRAME_NUMBER_TYPE_FRAME_NUMBER = (UInt32)(0)
 const FLAC__FRAME_NUMBER_TYPE_SAMPLE_NUMBER = (UInt32)(1)
 # end enum ANONYMOUS_4
 
 # begin enum FLAC__FrameNumberType
-typealias FLAC__FrameNumberType UInt32
+const FLAC__FrameNumberType = UInt32
 const FLAC__FRAME_NUMBER_TYPE_FRAME_NUMBER = (UInt32)(0)
 const FLAC__FRAME_NUMBER_TYPE_SAMPLE_NUMBER = (UInt32)(1)
 # end enum FLAC__FrameNumberType
 
-type FLAC__FrameHeader
+mutable struct FLAC__FrameHeader
     blocksize::UInt32
     sample_rate::UInt32
     channels::UInt32
@@ -196,11 +196,11 @@ type FLAC__FrameHeader
     crc::FLAC__UInt8
 end
 
-type FLAC__FrameFooter
+mutable struct FLAC__FrameFooter
     crc::FLAC__UInt16
 end
 
-immutable Array_8_FLAC__Subframe
+struct Array_8_FLAC__Subframe
     d1::FLAC__Subframe
     d2::FLAC__Subframe
     d3::FLAC__Subframe
@@ -215,14 +215,14 @@ zero(::Type{Array_8_FLAC__Subframe}) = begin  # /home/bates/.julia/v0.4/Clang/sr
         Array_8_FLAC__Subframe(fill(zero(FLAC__Subframe),8)...)
     end
 
-type FLAC__Frame
+mutable struct FLAC__Frame
     header::FLAC__FrameHeader
     subframes::Array_8_FLAC__Subframe
     footer::FLAC__FrameFooter
 end
 
 # begin enum ANONYMOUS_5
-typealias ANONYMOUS_5 UInt32
+const ANONYMOUS_5 = UInt32
 const FLAC__METADATA_TYPE_STREAMINFO = (UInt32)(0)
 const FLAC__METADATA_TYPE_PADDING = (UInt32)(1)
 const FLAC__METADATA_TYPE_APPLICATION = (UInt32)(2)
@@ -235,7 +235,7 @@ const FLAC__MAX_METADATA_TYPE = (UInt32)(126)
 # end enum ANONYMOUS_5
 
 # begin enum FLAC__MetadataType
-typealias FLAC__MetadataType UInt32
+const FLAC__MetadataType = UInt32
 const FLAC__METADATA_TYPE_STREAMINFO = (UInt32)(0)
 const FLAC__METADATA_TYPE_PADDING = (UInt32)(1)
 const FLAC__METADATA_TYPE_APPLICATION = (UInt32)(2)
@@ -247,7 +247,7 @@ const FLAC__METADATA_TYPE_UNDEFINED = (UInt32)(7)
 const FLAC__MAX_METADATA_TYPE = (UInt32)(126)
 # end enum FLAC__MetadataType
 
-immutable Array_16_FLAC__byte
+struct Array_16_FLAC__byte
     d1::FLAC__byte
     d2::FLAC__byte
     d3::FLAC__byte
@@ -270,7 +270,7 @@ zero(::Type{Array_16_FLAC__byte}) = begin  # /home/bates/.julia/v0.4/Clang/src/w
         Array_16_FLAC__byte(fill(zero(FLAC__byte),16)...)
     end
 
-type FLAC__StreamMetadata_StreamInfo
+mutable struct FLAC__StreamMetadata_StreamInfo
     min_blocksize::UInt32
     max_blocksize::UInt32
     min_framesize::UInt32
@@ -282,11 +282,11 @@ type FLAC__StreamMetadata_StreamInfo
     md5sum::Array_16_FLAC__byte
 end
 
-type FLAC__StreamMetadata_Padding
+mutable struct FLAC__StreamMetadata_Padding
     dummy::Cint
 end
 
-immutable Array_4_FLAC__byte
+struct Array_4_FLAC__byte
     d1::FLAC__byte
     d2::FLAC__byte
     d3::FLAC__byte
@@ -297,39 +297,39 @@ zero(::Type{Array_4_FLAC__byte}) = begin  # /home/bates/.julia/v0.4/Clang/src/wr
         Array_4_FLAC__byte(fill(zero(FLAC__byte),4)...)
     end
 
-type FLAC__StreamMetadata_Application
+mutable struct FLAC__StreamMetadata_Application
     id::Array_4_FLAC__byte
     data::Ptr{FLAC__byte}
 end
 
-type FLAC__StreamMetadata_SeekPoint
+mutable struct FLAC__StreamMetadata_SeekPoint
     sample_number::FLAC__uint64
     stream_offset::FLAC__uint64
     frame_samples::UInt32
 end
 
-type FLAC__StreamMetadata_SeekTable
+mutable struct FLAC__StreamMetadata_SeekTable
     num_points::UInt32
     points::Ptr{FLAC__StreamMetadata_SeekPoint}
 end
 
-type FLAC__StreamMetadata_VorbisComment_Entry
+mutable struct FLAC__StreamMetadata_VorbisComment_Entry
     length::FLAC__UInt32
     entry::Ptr{FLAC__byte}
 end
 
-type FLAC__StreamMetadata_VorbisComment
+mutable struct FLAC__StreamMetadata_VorbisComment
     vendor_string::FLAC__StreamMetadata_VorbisComment_Entry
     num_comments::FLAC__UInt32
     comments::Ptr{FLAC__StreamMetadata_VorbisComment_Entry}
 end
 
-type FLAC__StreamMetadata_CueSheet_Index
+mutable struct FLAC__StreamMetadata_CueSheet_Index
     offset::FLAC__uint64
     number::FLAC__byte
 end
 
-immutable Array_13_UInt8
+struct Array_13_UInt8
     d1::UInt8
     d2::UInt8
     d3::UInt8
@@ -349,7 +349,7 @@ zero(::Type{Array_13_UInt8}) = begin  # /home/bates/.julia/v0.4/Clang/src/wrap_c
         Array_13_UInt8(fill(zero(UInt8),13)...)
     end
 
-type FLAC__StreamMetadata_CueSheet_Track
+mutable struct FLAC__StreamMetadata_CueSheet_Track
     offset::FLAC__uint64
     number::FLAC__byte
     isrc::Array_13_UInt8
@@ -359,7 +359,7 @@ type FLAC__StreamMetadata_CueSheet_Track
     indices::Ptr{FLAC__StreamMetadata_CueSheet_Index}
 end
 
-immutable Array_129_UInt8
+struct Array_129_UInt8
     d1::UInt8
     d2::UInt8
     d3::UInt8
@@ -495,7 +495,7 @@ zero(::Type{Array_129_UInt8}) = begin  # /home/bates/.julia/v0.4/Clang/src/wrap_
         Array_129_UInt8(fill(zero(UInt8),129)...)
     end
 
-type FLAC__StreamMetadata_CueSheet
+mutable struct FLAC__StreamMetadata_CueSheet
     media_catalog_number::Array_129_UInt8
     lead_in::FLAC__uint64
     is_cd::FLAC__bool
@@ -504,7 +504,7 @@ type FLAC__StreamMetadata_CueSheet
 end
 
 # begin enum ANONYMOUS_6
-typealias ANONYMOUS_6 UInt32
+const ANONYMOUS_6 = UInt32
 const FLAC__STREAM_METADATA_PICTURE_TYPE_OTHER = (UInt32)(0)
 const FLAC__STREAM_METADATA_PICTURE_TYPE_FILE_ICON_STANDARD = (UInt32)(1)
 const FLAC__STREAM_METADATA_PICTURE_TYPE_FILE_ICON = (UInt32)(2)
@@ -530,7 +530,7 @@ const FLAC__STREAM_METADATA_PICTURE_TYPE_UNDEFINED = (UInt32)(21)
 # end enum ANONYMOUS_6
 
 # begin enum FLAC__StreamMetadata_Picture_Type
-typealias FLAC__StreamMetadata_Picture_Type UInt32
+const FLAC__StreamMetadata_Picture_Type = UInt32
 const FLAC__STREAM_METADATA_PICTURE_TYPE_OTHER = (UInt32)(0)
 const FLAC__STREAM_METADATA_PICTURE_TYPE_FILE_ICON_STANDARD = (UInt32)(1)
 const FLAC__STREAM_METADATA_PICTURE_TYPE_FILE_ICON = (UInt32)(2)
@@ -555,7 +555,7 @@ const FLAC__STREAM_METADATA_PICTURE_TYPE_PUBLISHER_LOGOTYPE = (UInt32)(20)
 const FLAC__STREAM_METADATA_PICTURE_TYPE_UNDEFINED = (UInt32)(21)
 # end enum FLAC__StreamMetadata_Picture_Type
 
-type FLAC__StreamMetadata_Picture
+mutable struct FLAC__StreamMetadata_Picture
     _type::FLAC__StreamMetadata_Picture_Type
     mime_type::Ptr{UInt8}
     description::Ptr{FLAC__byte}
@@ -567,11 +567,11 @@ type FLAC__StreamMetadata_Picture
     data::Ptr{FLAC__byte}
 end
 
-type FLAC__StreamMetadata_Unknown
+mutable struct FLAC__StreamMetadata_Unknown
     data::Ptr{FLAC__byte}
 end
 
-type FLAC__StreamMetadata
+mutable struct FLAC__StreamMetadata
     _type::FLAC__MetadataType
     is_last::FLAC__bool
     length::UInt32
@@ -579,7 +579,7 @@ type FLAC__StreamMetadata
 end
 
 # begin enum ANONYMOUS_7
-typealias ANONYMOUS_7 UInt32
+const ANONYMOUS_7 = UInt32
 const FLAC__STREAM_DECODER_SEARCH_FOR_METADATA = (UInt32)(0)
 const FLAC__STREAM_DECODER_READ_METADATA = (UInt32)(1)
 const FLAC__STREAM_DECODER_SEARCH_FOR_FRAME_SYNC = (UInt32)(2)
@@ -593,7 +593,7 @@ const FLAC__STREAM_DECODER_UNINITIALIZED = (UInt32)(9)
 # end enum ANONYMOUS_7
 
 # begin enum FLAC__StreamDecoderState
-typealias FLAC__StreamDecoderState UInt32
+const FLAC__StreamDecoderState = UInt32
 const FLAC__STREAM_DECODER_SEARCH_FOR_METADATA = (UInt32)(0)
 const FLAC__STREAM_DECODER_READ_METADATA = (UInt32)(1)
 const FLAC__STREAM_DECODER_SEARCH_FOR_FRAME_SYNC = (UInt32)(2)
@@ -607,7 +607,7 @@ const FLAC__STREAM_DECODER_UNINITIALIZED = (UInt32)(9)
 # end enum FLAC__StreamDecoderState
 
 # begin enum ANONYMOUS_8
-typealias ANONYMOUS_8 UInt32
+const ANONYMOUS_8 = UInt32
 const FLAC__STREAM_DECODER_INIT_STATUS_OK = (UInt32)(0)
 const FLAC__STREAM_DECODER_INIT_STATUS_UNSUPPORTED_CONTAINER = (UInt32)(1)
 const FLAC__STREAM_DECODER_INIT_STATUS_INVALID_CALLBACKS = (UInt32)(2)
@@ -617,7 +617,7 @@ const FLAC__STREAM_DECODER_INIT_STATUS_ALREADY_INITIALIZED = (UInt32)(5)
 # end enum ANONYMOUS_8
 
 # begin enum FLAC__StreamDecoderInitStatus
-typealias FLAC__StreamDecoderInitStatus UInt32
+const FLAC__StreamDecoderInitStatus = UInt32
 const FLAC__STREAM_DECODER_INIT_STATUS_OK = (UInt32)(0)
 const FLAC__STREAM_DECODER_INIT_STATUS_UNSUPPORTED_CONTAINER = (UInt32)(1)
 const FLAC__STREAM_DECODER_INIT_STATUS_INVALID_CALLBACKS = (UInt32)(2)
@@ -627,75 +627,75 @@ const FLAC__STREAM_DECODER_INIT_STATUS_ALREADY_INITIALIZED = (UInt32)(5)
 # end enum FLAC__StreamDecoderInitStatus
 
 # begin enum ANONYMOUS_9
-typealias ANONYMOUS_9 UInt32
+const ANONYMOUS_9 = UInt32
 const FLAC__STREAM_DECODER_READ_STATUS_CONTINUE = (UInt32)(0)
 const FLAC__STREAM_DECODER_READ_STATUS_END_OF_STREAM = (UInt32)(1)
 const FLAC__STREAM_DECODER_READ_STATUS_ABORT = (UInt32)(2)
 # end enum ANONYMOUS_9
 
 # begin enum FLAC__StreamDecoderReadStatus
-typealias FLAC__StreamDecoderReadStatus UInt32
+const FLAC__StreamDecoderReadStatus = UInt32
 const FLAC__STREAM_DECODER_READ_STATUS_CONTINUE = (UInt32)(0)
 const FLAC__STREAM_DECODER_READ_STATUS_END_OF_STREAM = (UInt32)(1)
 const FLAC__STREAM_DECODER_READ_STATUS_ABORT = (UInt32)(2)
 # end enum FLAC__StreamDecoderReadStatus
 
 # begin enum ANONYMOUS_10
-typealias ANONYMOUS_10 UInt32
+const ANONYMOUS_10 = UInt32
 const FLAC__STREAM_DECODER_SEEK_STATUS_OK = (UInt32)(0)
 const FLAC__STREAM_DECODER_SEEK_STATUS_ERROR = (UInt32)(1)
 const FLAC__STREAM_DECODER_SEEK_STATUS_UNSUPPORTED = (UInt32)(2)
 # end enum ANONYMOUS_10
 
 # begin enum FLAC__StreamDecoderSeekStatus
-typealias FLAC__StreamDecoderSeekStatus UInt32
+const FLAC__StreamDecoderSeekStatus = UInt32
 const FLAC__STREAM_DECODER_SEEK_STATUS_OK = (UInt32)(0)
 const FLAC__STREAM_DECODER_SEEK_STATUS_ERROR = (UInt32)(1)
 const FLAC__STREAM_DECODER_SEEK_STATUS_UNSUPPORTED = (UInt32)(2)
 # end enum FLAC__StreamDecoderSeekStatus
 
 # begin enum ANONYMOUS_11
-typealias ANONYMOUS_11 UInt32
+const ANONYMOUS_11 = UInt32
 const FLAC__STREAM_DECODER_TELL_STATUS_OK = (UInt32)(0)
 const FLAC__STREAM_DECODER_TELL_STATUS_ERROR = (UInt32)(1)
 const FLAC__STREAM_DECODER_TELL_STATUS_UNSUPPORTED = (UInt32)(2)
 # end enum ANONYMOUS_11
 
 # begin enum FLAC__StreamDecoderTellStatus
-typealias FLAC__StreamDecoderTellStatus UInt32
+const FLAC__StreamDecoderTellStatus = UInt32
 const FLAC__STREAM_DECODER_TELL_STATUS_OK = (UInt32)(0)
 const FLAC__STREAM_DECODER_TELL_STATUS_ERROR = (UInt32)(1)
 const FLAC__STREAM_DECODER_TELL_STATUS_UNSUPPORTED = (UInt32)(2)
 # end enum FLAC__StreamDecoderTellStatus
 
 # begin enum ANONYMOUS_12
-typealias ANONYMOUS_12 UInt32
+const ANONYMOUS_12 = UInt32
 const FLAC__STREAM_DECODER_LENGTH_STATUS_OK = (UInt32)(0)
 const FLAC__STREAM_DECODER_LENGTH_STATUS_ERROR = (UInt32)(1)
 const FLAC__STREAM_DECODER_LENGTH_STATUS_UNSUPPORTED = (UInt32)(2)
 # end enum ANONYMOUS_12
 
 # begin enum FLAC__StreamDecoderLengthStatus
-typealias FLAC__StreamDecoderLengthStatus UInt32
+const FLAC__StreamDecoderLengthStatus = UInt32
 const FLAC__STREAM_DECODER_LENGTH_STATUS_OK = (UInt32)(0)
 const FLAC__STREAM_DECODER_LENGTH_STATUS_ERROR = (UInt32)(1)
 const FLAC__STREAM_DECODER_LENGTH_STATUS_UNSUPPORTED = (UInt32)(2)
 # end enum FLAC__StreamDecoderLengthStatus
 
 # begin enum ANONYMOUS_13
-typealias ANONYMOUS_13 UInt32
+const ANONYMOUS_13 = UInt32
 const FLAC__STREAM_DECODER_WRITE_STATUS_CONTINUE = (UInt32)(0)
 const FLAC__STREAM_DECODER_WRITE_STATUS_ABORT = (UInt32)(1)
 # end enum ANONYMOUS_13
 
 # begin enum FLAC__StreamDecoderWriteStatus
-typealias FLAC__StreamDecoderWriteStatus UInt32
+const FLAC__StreamDecoderWriteStatus = UInt32
 const FLAC__STREAM_DECODER_WRITE_STATUS_CONTINUE = (UInt32)(0)
 const FLAC__STREAM_DECODER_WRITE_STATUS_ABORT = (UInt32)(1)
 # end enum FLAC__StreamDecoderWriteStatus
 
 # begin enum ANONYMOUS_14
-typealias ANONYMOUS_14 UInt32
+const ANONYMOUS_14 = UInt32
 const FLAC__STREAM_DECODER_ERROR_STATUS_LOST_SYNC = (UInt32)(0)
 const FLAC__STREAM_DECODER_ERROR_STATUS_BAD_HEADER = (UInt32)(1)
 const FLAC__STREAM_DECODER_ERROR_STATUS_FRAME_CRC_MISMATCH = (UInt32)(2)
@@ -703,35 +703,35 @@ const FLAC__STREAM_DECODER_ERROR_STATUS_UNPARSEABLE_STREAM = (UInt32)(3)
 # end enum ANONYMOUS_14
 
 # begin enum FLAC__StreamDecoderErrorStatus
-typealias FLAC__StreamDecoderErrorStatus UInt32
+const FLAC__StreamDecoderErrorStatus = UInt32
 const FLAC__STREAM_DECODER_ERROR_STATUS_LOST_SYNC = (UInt32)(0)
 const FLAC__STREAM_DECODER_ERROR_STATUS_BAD_HEADER = (UInt32)(1)
 const FLAC__STREAM_DECODER_ERROR_STATUS_FRAME_CRC_MISMATCH = (UInt32)(2)
 const FLAC__STREAM_DECODER_ERROR_STATUS_UNPARSEABLE_STREAM = (UInt32)(3)
 # end enum FLAC__StreamDecoderErrorStatus
 
-type FLAC__StreamDecoderProtected
+mutable struct FLAC__StreamDecoderProtected
 end
 
-type FLAC__StreamDecoderPrivate
+mutable struct FLAC__StreamDecoderPrivate
 end
 
-type FLAC__StreamDecoder
+mutable struct FLAC__StreamDecoder
     protected_::Ptr{FLAC__StreamDecoderProtected}
     private_::Ptr{FLAC__StreamDecoderPrivate}
 end
 
-typealias FLAC__StreamDecoderReadCallback Ptr{Void}
-typealias FLAC__StreamDecoderSeekCallback Ptr{Void}
-typealias FLAC__StreamDecoderTellCallback Ptr{Void}
-typealias FLAC__StreamDecoderLengthCallback Ptr{Void}
-typealias FLAC__StreamDecoderEofCallback Ptr{Void}
-typealias FLAC__StreamDecoderWriteCallback Ptr{Void}
-typealias FLAC__StreamDecoderMetadataCallback Ptr{Void}
-typealias FLAC__StreamDecoderErrorCallback Ptr{Void}
+const FLAC__StreamDecoderReadCallback = Ptr{Void}
+const FLAC__StreamDecoderSeekCallback = Ptr{Void}
+const FLAC__StreamDecoderTellCallback = Ptr{Void}
+const FLAC__StreamDecoderLengthCallback = Ptr{Void}
+const FLAC__StreamDecoderEofCallback = Ptr{Void}
+const FLAC__StreamDecoderWriteCallback = Ptr{Void}
+const FLAC__StreamDecoderMetadataCallback = Ptr{Void}
+const FLAC__StreamDecoderErrorCallback = Ptr{Void}
 
 # begin enum ANONYMOUS_15
-typealias ANONYMOUS_15 UInt32
+const ANONYMOUS_15 = UInt32
 const FLAC__STREAM_ENCODER_OK = (UInt32)(0)
 const FLAC__STREAM_ENCODER_UNINITIALIZED = (UInt32)(1)
 const FLAC__STREAM_ENCODER_OGG_ERROR = (UInt32)(2)
@@ -744,7 +744,7 @@ const FLAC__STREAM_ENCODER_MEMORY_ALLOCATION_ERROR = (UInt32)(8)
 # end enum ANONYMOUS_15
 
 # begin enum FLAC__StreamEncoderState
-typealias FLAC__StreamEncoderState UInt32
+const FLAC__StreamEncoderState = UInt32
 const FLAC__STREAM_ENCODER_OK = (UInt32)(0)
 const FLAC__STREAM_ENCODER_UNINITIALIZED = (UInt32)(1)
 const FLAC__STREAM_ENCODER_OGG_ERROR = (UInt32)(2)
@@ -757,7 +757,7 @@ const FLAC__STREAM_ENCODER_MEMORY_ALLOCATION_ERROR = (UInt32)(8)
 # end enum FLAC__StreamEncoderState
 
 # begin enum ANONYMOUS_16
-typealias ANONYMOUS_16 UInt32
+const ANONYMOUS_16 = UInt32
 const FLAC__STREAM_ENCODER_INIT_STATUS_OK = (UInt32)(0)
 const FLAC__STREAM_ENCODER_INIT_STATUS_ENCODER_ERROR = (UInt32)(1)
 const FLAC__STREAM_ENCODER_INIT_STATUS_UNSUPPORTED_CONTAINER = (UInt32)(2)
@@ -775,7 +775,7 @@ const FLAC__STREAM_ENCODER_INIT_STATUS_ALREADY_INITIALIZED = (UInt32)(13)
 # end enum ANONYMOUS_16
 
 # begin enum FLAC__StreamEncoderInitStatus
-typealias FLAC__StreamEncoderInitStatus UInt32
+const FLAC__StreamEncoderInitStatus = UInt32
 const FLAC__STREAM_ENCODER_INIT_STATUS_OK = (UInt32)(0)
 const FLAC__STREAM_ENCODER_INIT_STATUS_ENCODER_ERROR = (UInt32)(1)
 const FLAC__STREAM_ENCODER_INIT_STATUS_UNSUPPORTED_CONTAINER = (UInt32)(2)
@@ -793,7 +793,7 @@ const FLAC__STREAM_ENCODER_INIT_STATUS_ALREADY_INITIALIZED = (UInt32)(13)
 # end enum FLAC__StreamEncoderInitStatus
 
 # begin enum ANONYMOUS_17
-typealias ANONYMOUS_17 UInt32
+const ANONYMOUS_17 = UInt32
 const FLAC__STREAM_ENCODER_READ_STATUS_CONTINUE = (UInt32)(0)
 const FLAC__STREAM_ENCODER_READ_STATUS_END_OF_STREAM = (UInt32)(1)
 const FLAC__STREAM_ENCODER_READ_STATUS_ABORT = (UInt32)(2)
@@ -801,7 +801,7 @@ const FLAC__STREAM_ENCODER_READ_STATUS_UNSUPPORTED = (UInt32)(3)
 # end enum ANONYMOUS_17
 
 # begin enum FLAC__StreamEncoderReadStatus
-typealias FLAC__StreamEncoderReadStatus UInt32
+const FLAC__StreamEncoderReadStatus = UInt32
 const FLAC__STREAM_ENCODER_READ_STATUS_CONTINUE = (UInt32)(0)
 const FLAC__STREAM_ENCODER_READ_STATUS_END_OF_STREAM = (UInt32)(1)
 const FLAC__STREAM_ENCODER_READ_STATUS_ABORT = (UInt32)(2)
@@ -809,71 +809,71 @@ const FLAC__STREAM_ENCODER_READ_STATUS_UNSUPPORTED = (UInt32)(3)
 # end enum FLAC__StreamEncoderReadStatus
 
 # begin enum ANONYMOUS_18
-typealias ANONYMOUS_18 UInt32
+const ANONYMOUS_18 = UInt32
 const FLAC__STREAM_ENCODER_WRITE_STATUS_OK = (UInt32)(0)
 const FLAC__STREAM_ENCODER_WRITE_STATUS_FATAL_ERROR = (UInt32)(1)
 # end enum ANONYMOUS_18
 
 # begin enum FLAC__StreamEncoderWriteStatus
-typealias FLAC__StreamEncoderWriteStatus UInt32
+const FLAC__StreamEncoderWriteStatus = UInt32
 const FLAC__STREAM_ENCODER_WRITE_STATUS_OK = (UInt32)(0)
 const FLAC__STREAM_ENCODER_WRITE_STATUS_FATAL_ERROR = (UInt32)(1)
 # end enum FLAC__StreamEncoderWriteStatus
 
 # begin enum ANONYMOUS_19
-typealias ANONYMOUS_19 UInt32
+const ANONYMOUS_19 = UInt32
 const FLAC__STREAM_ENCODER_SEEK_STATUS_OK = (UInt32)(0)
 const FLAC__STREAM_ENCODER_SEEK_STATUS_ERROR = (UInt32)(1)
 const FLAC__STREAM_ENCODER_SEEK_STATUS_UNSUPPORTED = (UInt32)(2)
 # end enum ANONYMOUS_19
 
 # begin enum FLAC__StreamEncoderSeekStatus
-typealias FLAC__StreamEncoderSeekStatus UInt32
+const FLAC__StreamEncoderSeekStatus = UInt32
 const FLAC__STREAM_ENCODER_SEEK_STATUS_OK = (UInt32)(0)
 const FLAC__STREAM_ENCODER_SEEK_STATUS_ERROR = (UInt32)(1)
 const FLAC__STREAM_ENCODER_SEEK_STATUS_UNSUPPORTED = (UInt32)(2)
 # end enum FLAC__StreamEncoderSeekStatus
 
 # begin enum ANONYMOUS_20
-typealias ANONYMOUS_20 UInt32
+const ANONYMOUS_20 = UInt32
 const FLAC__STREAM_ENCODER_TELL_STATUS_OK = (UInt32)(0)
 const FLAC__STREAM_ENCODER_TELL_STATUS_ERROR = (UInt32)(1)
 const FLAC__STREAM_ENCODER_TELL_STATUS_UNSUPPORTED = (UInt32)(2)
 # end enum ANONYMOUS_20
 
 # begin enum FLAC__StreamEncoderTellStatus
-typealias FLAC__StreamEncoderTellStatus UInt32
+const FLAC__StreamEncoderTellStatus = UInt32
 const FLAC__STREAM_ENCODER_TELL_STATUS_OK = (UInt32)(0)
 const FLAC__STREAM_ENCODER_TELL_STATUS_ERROR = (UInt32)(1)
 const FLAC__STREAM_ENCODER_TELL_STATUS_UNSUPPORTED = (UInt32)(2)
 # end enum FLAC__StreamEncoderTellStatus
 
-type FLAC__StreamEncoderProtected
+mutable struct FLAC__StreamEncoderProtected
 end
 
-type FLAC__StreamEncoderPrivate
+mutable struct FLAC__StreamEncoderPrivate
 end
 
-type FLAC__StreamEncoder
+mutable struct FLAC__StreamEncoder
     protected_::Ptr{FLAC__StreamEncoderProtected}
     private_::Ptr{FLAC__StreamEncoderPrivate}
 end
 
-typealias FLAC__StreamEncoderReadCallback Ptr{Void}
-typealias FLAC__StreamEncoderWriteCallback Ptr{Void}
-typealias FLAC__StreamEncoderSeekCallback Ptr{Void}
-typealias FLAC__StreamEncoderTellCallback Ptr{Void}
-typealias FLAC__StreamEncoderMetadataCallback Ptr{Void}
-typealias FLAC__StreamEncoderProgressCallback Ptr{Void}
+const FLAC__StreamEncoderReadCallback = Ptr{Void}
+const FLAC__StreamEncoderWriteCallback = Ptr{Void}
+const FLAC__StreamEncoderSeekCallback = Ptr{Void}
+const FLAC__StreamEncoderTellCallback = Ptr{Void}
+const FLAC__StreamEncoderMetadataCallback = Ptr{Void}
+const FLAC__StreamEncoderProgressCallback = Ptr{Void}
 
 # begin enum ANONYMOUS_21
-typealias ANONYMOUS_21 UInt32
+const ANONYMOUS_21 = UInt32
 const FLAC__ENTROPY_CODING_METHOD_PARTITIONED_RICE = (UInt32)(0)
 const FLAC__ENTROPY_CODING_METHOD_PARTITIONED_RICE2 = (UInt32)(1)
 # end enum ANONYMOUS_21
 
 # begin enum ANONYMOUS_22
-typealias ANONYMOUS_22 UInt32
+const ANONYMOUS_22 = UInt32
 const FLAC__SUBFRAME_TYPE_CONSTANT = (UInt32)(0)
 const FLAC__SUBFRAME_TYPE_VERBATIM = (UInt32)(1)
 const FLAC__SUBFRAME_TYPE_FIXED = (UInt32)(2)
@@ -881,7 +881,7 @@ const FLAC__SUBFRAME_TYPE_LPC = (UInt32)(3)
 # end enum ANONYMOUS_22
 
 # begin enum ANONYMOUS_23
-typealias ANONYMOUS_23 UInt32
+const ANONYMOUS_23 = UInt32
 const FLAC__CHANNEL_ASSIGNMENT_INDEPENDENT = (UInt32)(0)
 const FLAC__CHANNEL_ASSIGNMENT_LEFT_SIDE = (UInt32)(1)
 const FLAC__CHANNEL_ASSIGNMENT_RIGHT_SIDE = (UInt32)(2)
@@ -889,13 +889,13 @@ const FLAC__CHANNEL_ASSIGNMENT_MID_SIDE = (UInt32)(3)
 # end enum ANONYMOUS_23
 
 # begin enum ANONYMOUS_24
-typealias ANONYMOUS_24 UInt32
+const ANONYMOUS_24 = UInt32
 const FLAC__FRAME_NUMBER_TYPE_FRAME_NUMBER = (UInt32)(0)
 const FLAC__FRAME_NUMBER_TYPE_SAMPLE_NUMBER = (UInt32)(1)
 # end enum ANONYMOUS_24
 
 # begin enum ANONYMOUS_25
-typealias ANONYMOUS_25 UInt32
+const ANONYMOUS_25 = UInt32
 const FLAC__METADATA_TYPE_STREAMINFO = (UInt32)(0)
 const FLAC__METADATA_TYPE_PADDING = (UInt32)(1)
 const FLAC__METADATA_TYPE_APPLICATION = (UInt32)(2)
@@ -908,7 +908,7 @@ const FLAC__MAX_METADATA_TYPE = (UInt32)(126)
 # end enum ANONYMOUS_25
 
 # begin enum ANONYMOUS_26
-typealias ANONYMOUS_26 UInt32
+const ANONYMOUS_26 = UInt32
 const FLAC__STREAM_METADATA_PICTURE_TYPE_OTHER = (UInt32)(0)
 const FLAC__STREAM_METADATA_PICTURE_TYPE_FILE_ICON_STANDARD = (UInt32)(1)
 const FLAC__STREAM_METADATA_PICTURE_TYPE_FILE_ICON = (UInt32)(2)
@@ -934,7 +934,7 @@ const FLAC__STREAM_METADATA_PICTURE_TYPE_UNDEFINED = (UInt32)(21)
 # end enum ANONYMOUS_26
 
 # begin enum ANONYMOUS_27
-typealias ANONYMOUS_27 UInt32
+const ANONYMOUS_27 = UInt32
 const FLAC__STREAM_DECODER_SEARCH_FOR_METADATA = (UInt32)(0)
 const FLAC__STREAM_DECODER_READ_METADATA = (UInt32)(1)
 const FLAC__STREAM_DECODER_SEARCH_FOR_FRAME_SYNC = (UInt32)(2)
@@ -948,7 +948,7 @@ const FLAC__STREAM_DECODER_UNINITIALIZED = (UInt32)(9)
 # end enum ANONYMOUS_27
 
 # begin enum ANONYMOUS_28
-typealias ANONYMOUS_28 UInt32
+const ANONYMOUS_28 = UInt32
 const FLAC__STREAM_DECODER_INIT_STATUS_OK = (UInt32)(0)
 const FLAC__STREAM_DECODER_INIT_STATUS_UNSUPPORTED_CONTAINER = (UInt32)(1)
 const FLAC__STREAM_DECODER_INIT_STATUS_INVALID_CALLBACKS = (UInt32)(2)
@@ -958,59 +958,59 @@ const FLAC__STREAM_DECODER_INIT_STATUS_ALREADY_INITIALIZED = (UInt32)(5)
 # end enum ANONYMOUS_28
 
 # begin enum ANONYMOUS_29
-typealias ANONYMOUS_29 UInt32
+const ANONYMOUS_29 = UInt32
 const FLAC__STREAM_DECODER_READ_STATUS_CONTINUE = (UInt32)(0)
 const FLAC__STREAM_DECODER_READ_STATUS_END_OF_STREAM = (UInt32)(1)
 const FLAC__STREAM_DECODER_READ_STATUS_ABORT = (UInt32)(2)
 # end enum ANONYMOUS_29
 
 # begin enum ANONYMOUS_30
-typealias ANONYMOUS_30 UInt32
+const ANONYMOUS_30 = UInt32
 const FLAC__STREAM_DECODER_SEEK_STATUS_OK = (UInt32)(0)
 const FLAC__STREAM_DECODER_SEEK_STATUS_ERROR = (UInt32)(1)
 const FLAC__STREAM_DECODER_SEEK_STATUS_UNSUPPORTED = (UInt32)(2)
 # end enum ANONYMOUS_30
 
 # begin enum ANONYMOUS_31
-typealias ANONYMOUS_31 UInt32
+const ANONYMOUS_31 = UInt32
 const FLAC__STREAM_DECODER_TELL_STATUS_OK = (UInt32)(0)
 const FLAC__STREAM_DECODER_TELL_STATUS_ERROR = (UInt32)(1)
 const FLAC__STREAM_DECODER_TELL_STATUS_UNSUPPORTED = (UInt32)(2)
 # end enum ANONYMOUS_31
 
 # begin enum ANONYMOUS_32
-typealias ANONYMOUS_32 UInt32
+const ANONYMOUS_32 = UInt32
 const FLAC__STREAM_DECODER_LENGTH_STATUS_OK = (UInt32)(0)
 const FLAC__STREAM_DECODER_LENGTH_STATUS_ERROR = (UInt32)(1)
 const FLAC__STREAM_DECODER_LENGTH_STATUS_UNSUPPORTED = (UInt32)(2)
 # end enum ANONYMOUS_32
 
 # begin enum ANONYMOUS_33
-typealias ANONYMOUS_33 UInt32
+const ANONYMOUS_33 = UInt32
 const FLAC__STREAM_DECODER_WRITE_STATUS_CONTINUE = (UInt32)(0)
 const FLAC__STREAM_DECODER_WRITE_STATUS_ABORT = (UInt32)(1)
 # end enum ANONYMOUS_33
 
 # begin enum ANONYMOUS_34
-typealias ANONYMOUS_34 UInt32
+const ANONYMOUS_34 = UInt32
 const FLAC__STREAM_DECODER_ERROR_STATUS_LOST_SYNC = (UInt32)(0)
 const FLAC__STREAM_DECODER_ERROR_STATUS_BAD_HEADER = (UInt32)(1)
 const FLAC__STREAM_DECODER_ERROR_STATUS_FRAME_CRC_MISMATCH = (UInt32)(2)
 const FLAC__STREAM_DECODER_ERROR_STATUS_UNPARSEABLE_STREAM = (UInt32)(3)
 # end enum ANONYMOUS_34
 
-typealias ogg_int16_t Int16
-typealias ogg_UInt16_t UInt16
-typealias ogg_int32_t Int32
-typealias ogg_UInt32_t UInt32
-typealias ogg_int64_t Int64
+const ogg_int16_t = Int16
+const ogg_UInt16_t = UInt16
+const ogg_int32_t = Int32
+const ogg_UInt32_t = UInt32
+const ogg_int64_t = Int64
 
-type ogg_iovec_t
+mutable struct ogg_iovec_t
     iov_base::Ptr{Void}
     iov_len::Cint
 end
 
-type oggpack_buffer
+mutable struct oggpack_buffer
     endbyte::Clong
     endbit::Cint
     buffer::Ptr{Cuchar}
@@ -1018,14 +1018,14 @@ type oggpack_buffer
     storage::Clong
 end
 
-type ogg_page
+mutable struct ogg_page
     header::Ptr{Cuchar}
     header_len::Clong
     body::Ptr{Cuchar}
     body_len::Clong
 end
 
-immutable Array_282_Cuchar
+struct Array_282_Cuchar
     d1::Cuchar
     d2::Cuchar
     d3::Cuchar
@@ -1314,7 +1314,7 @@ zero(::Type{Array_282_Cuchar}) = begin  # /home/bates/.julia/v0.4/Clang/src/wrap
         Array_282_Cuchar(fill(zero(Cuchar),282)...)
     end
 
-type ogg_stream_state
+mutable struct ogg_stream_state
     body_data::Ptr{Cuchar}
     body_storage::Clong
     body_fill::Clong
@@ -1335,7 +1335,7 @@ type ogg_stream_state
     granulepos::ogg_int64_t
 end
 
-type ogg_packet
+mutable struct ogg_packet
     packet::Ptr{Cuchar}
     bytes::Clong
     b_o_s::Clong
@@ -1344,7 +1344,7 @@ type ogg_packet
     packetno::ogg_int64_t
 end
 
-type ogg_sync_state
+mutable struct ogg_sync_state
     data::Ptr{Cuchar}
     storage::Cint
     fill::Cint
@@ -1355,7 +1355,7 @@ type ogg_sync_state
 end
 
 # begin enum OggzError
-typealias OggzError Cint
+const OggzError = Cint
 const OGGZ_ERR_OK = (Int32)(0)
 const OGGZ_ERR_GENERIC = (Int32)(-1)
 const OGGZ_ERR_BAD_OGGZ = (Int32)(-2)
@@ -1388,7 +1388,7 @@ const OGGZ_ERR_READ_STOP_OK = OGGZ_ERR_STOP_OK
 const OGGZ_ERR_READ_STOP_ERR = OGGZ_ERR_STOP_ERR
 
 # begin enum OggzFlags
-typealias OggzFlags UInt32
+const OggzFlags = UInt32
 const OGGZ_READ = (UInt32)(0)
 const OGGZ_WRITE = (UInt32)(1)
 const OGGZ_NONSTRICT = (UInt32)(16)
@@ -1398,20 +1398,20 @@ const OGGZ_SUFFIX = (UInt32)(128)
 # end enum OggzFlags
 
 # begin enum OggzStopCtl
-typealias OggzStopCtl Cint
+const OggzStopCtl = Cint
 const OGGZ_CONTINUE = (Int32)(0)
 const OGGZ_STOP_OK = (Int32)(1)
 const OGGZ_STOP_ERR = (Int32)(-1)
 # end enum OggzStopCtl
 
 # begin enum OggzFlushOpts
-typealias OggzFlushOpts UInt32
+const OggzFlushOpts = UInt32
 const OGGZ_FLUSH_BEFORE = (UInt32)(1)
 const OGGZ_FLUSH_AFTER = (UInt32)(2)
 # end enum OggzFlushOpts
 
 # begin enum OggzStreamContent
-typealias OggzStreamContent UInt32
+const OggzStreamContent = UInt32
 const OGGZ_CONTENT_THEORA = (UInt32)(0)
 const OGGZ_CONTENT_VORBIS = (UInt32)(1)
 const OGGZ_CONTENT_SPEEX = (UInt32)(2)
@@ -1428,11 +1428,11 @@ const OGGZ_CONTENT_DIRAC = (UInt32)(12)
 const OGGZ_CONTENT_UNKNOWN = (UInt32)(13)
 # end enum OggzStreamContent
 
-typealias OggzTable Void
-typealias OGGZ Void
-typealias oggz_off_t Coff_t
+const OggzTable = Void
+const OGGZ = Void
+const oggz_off_t = Coff_t
 
-type oggz_position
+mutable struct oggz_position
     calc_granulepos::ogg_int64_t
     begin_page_offset::oggz_off_t
     end_page_offset::oggz_off_t
@@ -1440,33 +1440,33 @@ type oggz_position
     begin_segment_index::Cint
 end
 
-type oggz_packet
+mutable struct oggz_packet
     op::ogg_packet
     pos::oggz_position
 end
 
-typealias OggzReadPacket Ptr{Void}
-typealias OggzReadPage Ptr{Void}
-typealias OggzMetric Ptr{Void}
-typealias OggzWriteHungry Ptr{Void}
-typealias OggzIOWrite Ptr{Void}
-typealias OggzIOSeek Ptr{Void}
-typealias OggzIOTell Ptr{Void}
-typealias OggzIOFlush Ptr{Void}
+const OggzReadPacket = Ptr{Void}
+const OggzReadPage = Ptr{Void}
+const OggzMetric = Ptr{Void}
+const OggzWriteHungry = Ptr{Void}
+const OggzIOWrite = Ptr{Void}
+const OggzIOSeek = Ptr{Void}
+const OggzIOTell = Ptr{Void}
+const OggzIOFlush = Ptr{Void}
 
-type OggzComment
+mutable struct OggzComment
     name::Ptr{UInt8}
     value::Ptr{UInt8}
 end
 
-typealias FLAC__IOHandle Ptr{Void}
-typealias FLAC__IOCallback_Write Ptr{Void}
-typealias FLAC__IOCallback_Seek Ptr{Void}
-typealias FLAC__IOCallback_Tell Ptr{Void}
-typealias FLAC__IOCallback_Eof Ptr{Void}
-typealias FLAC__IOCallback_Close Ptr{Void}
+const FLAC__IOHandle = Ptr{Void}
+const FLAC__IOCallback_Write = Ptr{Void}
+const FLAC__IOCallback_Seek = Ptr{Void}
+const FLAC__IOCallback_Tell = Ptr{Void}
+const FLAC__IOCallback_Eof = Ptr{Void}
+const FLAC__IOCallback_Close = Ptr{Void}
 
-type FLAC__IOCallbacks
+mutable struct FLAC__IOCallbacks
     read::Cint
     write::FLAC__IOCallback_Write
     seek::FLAC__IOCallback_Seek
@@ -1476,13 +1476,13 @@ type FLAC__IOCallbacks
 end
 
 # begin enum ANONYMOUS_36
-typealias ANONYMOUS_36 UInt32
+const ANONYMOUS_36 = UInt32
 const FLAC__ENTROPY_CODING_METHOD_PARTITIONED_RICE = (UInt32)(0)
 const FLAC__ENTROPY_CODING_METHOD_PARTITIONED_RICE2 = (UInt32)(1)
 # end enum ANONYMOUS_36
 
 # begin enum ANONYMOUS_37
-typealias ANONYMOUS_37 UInt32
+const ANONYMOUS_37 = UInt32
 const FLAC__SUBFRAME_TYPE_CONSTANT = (UInt32)(0)
 const FLAC__SUBFRAME_TYPE_VERBATIM = (UInt32)(1)
 const FLAC__SUBFRAME_TYPE_FIXED = (UInt32)(2)
@@ -1490,7 +1490,7 @@ const FLAC__SUBFRAME_TYPE_LPC = (UInt32)(3)
 # end enum ANONYMOUS_37
 
 # begin enum ANONYMOUS_38
-typealias ANONYMOUS_38 UInt32
+const ANONYMOUS_38 = UInt32
 const FLAC__CHANNEL_ASSIGNMENT_INDEPENDENT = (UInt32)(0)
 const FLAC__CHANNEL_ASSIGNMENT_LEFT_SIDE = (UInt32)(1)
 const FLAC__CHANNEL_ASSIGNMENT_RIGHT_SIDE = (UInt32)(2)
@@ -1498,13 +1498,13 @@ const FLAC__CHANNEL_ASSIGNMENT_MID_SIDE = (UInt32)(3)
 # end enum ANONYMOUS_38
 
 # begin enum ANONYMOUS_39
-typealias ANONYMOUS_39 UInt32
+const ANONYMOUS_39 = UInt32
 const FLAC__FRAME_NUMBER_TYPE_FRAME_NUMBER = (UInt32)(0)
 const FLAC__FRAME_NUMBER_TYPE_SAMPLE_NUMBER = (UInt32)(1)
 # end enum ANONYMOUS_39
 
 # begin enum ANONYMOUS_40
-typealias ANONYMOUS_40 UInt32
+const ANONYMOUS_40 = UInt32
 const FLAC__METADATA_TYPE_STREAMINFO = (UInt32)(0)
 const FLAC__METADATA_TYPE_PADDING = (UInt32)(1)
 const FLAC__METADATA_TYPE_APPLICATION = (UInt32)(2)
@@ -1517,7 +1517,7 @@ const FLAC__MAX_METADATA_TYPE = (UInt32)(126)
 # end enum ANONYMOUS_40
 
 # begin enum ANONYMOUS_41
-typealias ANONYMOUS_41 UInt32
+const ANONYMOUS_41 = UInt32
 const FLAC__STREAM_METADATA_PICTURE_TYPE_OTHER = (UInt32)(0)
 const FLAC__STREAM_METADATA_PICTURE_TYPE_FILE_ICON_STANDARD = (UInt32)(1)
 const FLAC__STREAM_METADATA_PICTURE_TYPE_FILE_ICON = (UInt32)(2)
@@ -1542,11 +1542,11 @@ const FLAC__STREAM_METADATA_PICTURE_TYPE_PUBLISHER_LOGOTYPE = (UInt32)(20)
 const FLAC__STREAM_METADATA_PICTURE_TYPE_UNDEFINED = (UInt32)(21)
 # end enum ANONYMOUS_41
 
-type FLAC__Metadata_SimpleIterator
+mutable struct FLAC__Metadata_SimpleIterator
 end
 
 # begin enum ANONYMOUS_42
-typealias ANONYMOUS_42 UInt32
+const ANONYMOUS_42 = UInt32
 const FLAC__METADATA_SIMPLE_ITERATOR_STATUS_OK = (UInt32)(0)
 const FLAC__METADATA_SIMPLE_ITERATOR_STATUS_ILLEGAL_INPUT = (UInt32)(1)
 const FLAC__METADATA_SIMPLE_ITERATOR_STATUS_ERROR_OPENING_FILE = (UInt32)(2)
@@ -1563,7 +1563,7 @@ const FLAC__METADATA_SIMPLE_ITERATOR_STATUS_INTERNAL_ERROR = (UInt32)(12)
 # end enum ANONYMOUS_42
 
 # begin enum FLAC__Metadata_SimpleIteratorStatus
-typealias FLAC__Metadata_SimpleIteratorStatus UInt32
+const FLAC__Metadata_SimpleIteratorStatus = UInt32
 const FLAC__METADATA_SIMPLE_ITERATOR_STATUS_OK = (UInt32)(0)
 const FLAC__METADATA_SIMPLE_ITERATOR_STATUS_ILLEGAL_INPUT = (UInt32)(1)
 const FLAC__METADATA_SIMPLE_ITERATOR_STATUS_ERROR_OPENING_FILE = (UInt32)(2)
@@ -1579,14 +1579,14 @@ const FLAC__METADATA_SIMPLE_ITERATOR_STATUS_MEMORY_ALLOCATION_ERROR = (UInt32)(1
 const FLAC__METADATA_SIMPLE_ITERATOR_STATUS_INTERNAL_ERROR = (UInt32)(12)
 # end enum FLAC__Metadata_SimpleIteratorStatus
 
-type FLAC__Metadata_Chain
+mutable struct FLAC__Metadata_Chain
 end
 
-type FLAC__Metadata_Iterator
+mutable struct FLAC__Metadata_Iterator
 end
 
 # begin enum ANONYMOUS_43
-typealias ANONYMOUS_43 UInt32
+const ANONYMOUS_43 = UInt32
 const FLAC__METADATA_CHAIN_STATUS_OK = (UInt32)(0)
 const FLAC__METADATA_CHAIN_STATUS_ILLEGAL_INPUT = (UInt32)(1)
 const FLAC__METADATA_CHAIN_STATUS_ERROR_OPENING_FILE = (UInt32)(2)
@@ -1606,7 +1606,7 @@ const FLAC__METADATA_CHAIN_STATUS_WRONG_WRITE_CALL = (UInt32)(15)
 # end enum ANONYMOUS_43
 
 # begin enum FLAC__Metadata_ChainStatus
-typealias FLAC__Metadata_ChainStatus UInt32
+const FLAC__Metadata_ChainStatus = UInt32
 const FLAC__METADATA_CHAIN_STATUS_OK = (UInt32)(0)
 const FLAC__METADATA_CHAIN_STATUS_ILLEGAL_INPUT = (UInt32)(1)
 const FLAC__METADATA_CHAIN_STATUS_ERROR_OPENING_FILE = (UInt32)(2)
@@ -1625,7 +1625,7 @@ const FLAC__METADATA_CHAIN_STATUS_READ_WRITE_MISMATCH = (UInt32)(14)
 const FLAC__METADATA_CHAIN_STATUS_WRONG_WRITE_CALL = (UInt32)(15)
 # end enum FLAC__Metadata_ChainStatus
 
-immutable Array_27_UInt8
+struct Array_27_UInt8
     d1::UInt8
     d2::UInt8
     d3::UInt8
@@ -1660,7 +1660,7 @@ zero(::Type{Array_27_UInt8}) = begin  # /home/bates/.julia/v0.4/Clang/src/wrap_c
     end
 
 # begin enum ANONYMOUS_44
-typealias ANONYMOUS_44 UInt32
+const ANONYMOUS_44 = UInt32
 const FLAC__STREAM_DECODER_SEARCH_FOR_METADATA = (UInt32)(0)
 const FLAC__STREAM_DECODER_READ_METADATA = (UInt32)(1)
 const FLAC__STREAM_DECODER_SEARCH_FOR_FRAME_SYNC = (UInt32)(2)
@@ -1674,7 +1674,7 @@ const FLAC__STREAM_DECODER_UNINITIALIZED = (UInt32)(9)
 # end enum ANONYMOUS_44
 
 # begin enum ANONYMOUS_45
-typealias ANONYMOUS_45 UInt32
+const ANONYMOUS_45 = UInt32
 const FLAC__STREAM_DECODER_INIT_STATUS_OK = (UInt32)(0)
 const FLAC__STREAM_DECODER_INIT_STATUS_UNSUPPORTED_CONTAINER = (UInt32)(1)
 const FLAC__STREAM_DECODER_INIT_STATUS_INVALID_CALLBACKS = (UInt32)(2)
@@ -1684,41 +1684,41 @@ const FLAC__STREAM_DECODER_INIT_STATUS_ALREADY_INITIALIZED = (UInt32)(5)
 # end enum ANONYMOUS_45
 
 # begin enum ANONYMOUS_46
-typealias ANONYMOUS_46 UInt32
+const ANONYMOUS_46 = UInt32
 const FLAC__STREAM_DECODER_READ_STATUS_CONTINUE = (UInt32)(0)
 const FLAC__STREAM_DECODER_READ_STATUS_END_OF_STREAM = (UInt32)(1)
 const FLAC__STREAM_DECODER_READ_STATUS_ABORT = (UInt32)(2)
 # end enum ANONYMOUS_46
 
 # begin enum ANONYMOUS_47
-typealias ANONYMOUS_47 UInt32
+const ANONYMOUS_47 = UInt32
 const FLAC__STREAM_DECODER_SEEK_STATUS_OK = (UInt32)(0)
 const FLAC__STREAM_DECODER_SEEK_STATUS_ERROR = (UInt32)(1)
 const FLAC__STREAM_DECODER_SEEK_STATUS_UNSUPPORTED = (UInt32)(2)
 # end enum ANONYMOUS_47
 
 # begin enum ANONYMOUS_48
-typealias ANONYMOUS_48 UInt32
+const ANONYMOUS_48 = UInt32
 const FLAC__STREAM_DECODER_TELL_STATUS_OK = (UInt32)(0)
 const FLAC__STREAM_DECODER_TELL_STATUS_ERROR = (UInt32)(1)
 const FLAC__STREAM_DECODER_TELL_STATUS_UNSUPPORTED = (UInt32)(2)
 # end enum ANONYMOUS_48
 
 # begin enum ANONYMOUS_49
-typealias ANONYMOUS_49 UInt32
+const ANONYMOUS_49 = UInt32
 const FLAC__STREAM_DECODER_LENGTH_STATUS_OK = (UInt32)(0)
 const FLAC__STREAM_DECODER_LENGTH_STATUS_ERROR = (UInt32)(1)
 const FLAC__STREAM_DECODER_LENGTH_STATUS_UNSUPPORTED = (UInt32)(2)
 # end enum ANONYMOUS_49
 
 # begin enum ANONYMOUS_50
-typealias ANONYMOUS_50 UInt32
+const ANONYMOUS_50 = UInt32
 const FLAC__STREAM_DECODER_WRITE_STATUS_CONTINUE = (UInt32)(0)
 const FLAC__STREAM_DECODER_WRITE_STATUS_ABORT = (UInt32)(1)
 # end enum ANONYMOUS_50
 
 # begin enum ANONYMOUS_51
-typealias ANONYMOUS_51 UInt32
+const ANONYMOUS_51 = UInt32
 const FLAC__STREAM_DECODER_ERROR_STATUS_LOST_SYNC = (UInt32)(0)
 const FLAC__STREAM_DECODER_ERROR_STATUS_BAD_HEADER = (UInt32)(1)
 const FLAC__STREAM_DECODER_ERROR_STATUS_FRAME_CRC_MISMATCH = (UInt32)(2)
@@ -1726,7 +1726,7 @@ const FLAC__STREAM_DECODER_ERROR_STATUS_UNPARSEABLE_STREAM = (UInt32)(3)
 # end enum ANONYMOUS_51
 
 # begin enum ANONYMOUS_52
-typealias ANONYMOUS_52 UInt32
+const ANONYMOUS_52 = UInt32
 const FLAC__STREAM_ENCODER_OK = (UInt32)(0)
 const FLAC__STREAM_ENCODER_UNINITIALIZED = (UInt32)(1)
 const FLAC__STREAM_ENCODER_OGG_ERROR = (UInt32)(2)
@@ -1739,7 +1739,7 @@ const FLAC__STREAM_ENCODER_MEMORY_ALLOCATION_ERROR = (UInt32)(8)
 # end enum ANONYMOUS_52
 
 # begin enum ANONYMOUS_53
-typealias ANONYMOUS_53 UInt32
+const ANONYMOUS_53 = UInt32
 const FLAC__STREAM_ENCODER_INIT_STATUS_OK = (UInt32)(0)
 const FLAC__STREAM_ENCODER_INIT_STATUS_ENCODER_ERROR = (UInt32)(1)
 const FLAC__STREAM_ENCODER_INIT_STATUS_UNSUPPORTED_CONTAINER = (UInt32)(2)
@@ -1757,7 +1757,7 @@ const FLAC__STREAM_ENCODER_INIT_STATUS_ALREADY_INITIALIZED = (UInt32)(13)
 # end enum ANONYMOUS_53
 
 # begin enum ANONYMOUS_54
-typealias ANONYMOUS_54 UInt32
+const ANONYMOUS_54 = UInt32
 const FLAC__STREAM_ENCODER_READ_STATUS_CONTINUE = (UInt32)(0)
 const FLAC__STREAM_ENCODER_READ_STATUS_END_OF_STREAM = (UInt32)(1)
 const FLAC__STREAM_ENCODER_READ_STATUS_ABORT = (UInt32)(2)
@@ -1765,20 +1765,20 @@ const FLAC__STREAM_ENCODER_READ_STATUS_UNSUPPORTED = (UInt32)(3)
 # end enum ANONYMOUS_54
 
 # begin enum ANONYMOUS_55
-typealias ANONYMOUS_55 UInt32
+const ANONYMOUS_55 = UInt32
 const FLAC__STREAM_ENCODER_WRITE_STATUS_OK = (UInt32)(0)
 const FLAC__STREAM_ENCODER_WRITE_STATUS_FATAL_ERROR = (UInt32)(1)
 # end enum ANONYMOUS_55
 
 # begin enum ANONYMOUS_56
-typealias ANONYMOUS_56 UInt32
+const ANONYMOUS_56 = UInt32
 const FLAC__STREAM_ENCODER_SEEK_STATUS_OK = (UInt32)(0)
 const FLAC__STREAM_ENCODER_SEEK_STATUS_ERROR = (UInt32)(1)
 const FLAC__STREAM_ENCODER_SEEK_STATUS_UNSUPPORTED = (UInt32)(2)
 # end enum ANONYMOUS_56
 
 # begin enum ANONYMOUS_57
-typealias ANONYMOUS_57 UInt32
+const ANONYMOUS_57 = UInt32
 const FLAC__STREAM_ENCODER_TELL_STATUS_OK = (UInt32)(0)
 const FLAC__STREAM_ENCODER_TELL_STATUS_ERROR = (UInt32)(1)
 const FLAC__STREAM_ENCODER_TELL_STATUS_UNSUPPORTED = (UInt32)(2)
