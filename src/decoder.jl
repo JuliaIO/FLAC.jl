@@ -5,7 +5,7 @@ A Julia type for a libflac stream decoder object.
 
 This type primarily exists so that a finalizer to delete the decoder can be assigned.
 """
-type StreamDecoderPtr  # type not immutable so that finalizer can be applied
+mutable struct StreamDecoderPtr  # type not immutable so that finalizer can be applied
     v::Ptr{Void}
 end
 
@@ -237,7 +237,7 @@ function buffering_wcallback(dd::Ptr{Void}, hdr::Ptr{FrameHeader},
     return zero(Int32)
 end
 
-type FLACDecoder
+mutable struct FLACDecoder
     # Filename of the file this actually represents
     filename::String
 
@@ -275,7 +275,7 @@ end
 
 Read up to the specified number of samples from the given FLACDecoder,
 """
-function read{T<:Integer}(f::FLACDecoder, num_samples::T)
+function read(f::FLACDecoder, num_samples::T) where T<:Integer
     # Allocate memory to hold all the read data
     data = Array{Float32,2}(num_samples, f.metadata.channels)
     data_read = 0
@@ -322,7 +322,7 @@ Perform an absolute seek within the given FLAC stream.  Throws an
 `ArgumentError` if the requested seek is impossible.  Will automatically
 `flush()` the decoder stream if a seek error is encountered.
 """
-function seek{T<:Integer}(f::FLACDecoder, offset::T)
+function seek(f::FLACDecoder, offset::T) where T<:Integer
     if !seek_absolute(f.dec, UInt64(offset))
         # If we got a seek error, we need to flush the decoder before we
         # can continue decoding, as we've crunked the decoder state. Whoops.

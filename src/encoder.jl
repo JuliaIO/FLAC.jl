@@ -8,7 +8,7 @@ The zero-argument constructor creates a new stream decoder and wraps the pointer
 
 The type is not an immutable because it uses a finalizer.
 """
-type StreamEncoderPtr  # type not immutable so that finalizer can be applied
+mutable struct StreamEncoderPtr  # type not immutable so that finalizer can be applied
     v::Ptr{Void}
 end
 function StreamEncoderPtr()
@@ -141,7 +141,7 @@ function Base.show(io::IO,en::StreamEncoderPtr)
 end
 
 # save() implementation for people who want to input a 1d array instead of the proper 2d array
-save{T<:Real}(f::File{format"FLAC"}, data::Array{T,1}, samplerate; kwargs...) = save(f, reshape(data, :, 1), samplerate; kwargs...)
+save(f::File{format"FLAC"}, data::Array{T,1}, samplerate; kwargs...) where {T<:Real} = save(f, reshape(data, :, 1), samplerate; kwargs...)
 
 """
 `save(filename, data, samplerate; bits_per_sample = 24, compression_level = 3)`
@@ -151,7 +151,7 @@ compression level.  This method is part of the FileIO integration, do not call
 directly but instead import the FileIO bindings and call `save()` with a filename
 ending in `.flac` to invoke this method through the FileIO machinery.
 """
-function save{T<:Real}(f::File{format"FLAC"}, data::Array{T,2}, samplerate; bits_per_sample = 24, compression_level = 3)
+function save(f::File{format"FLAC"}, data::Array{T,2}, samplerate; bits_per_sample = 24, compression_level = 3) where T<:Real
     encoder = StreamEncoderPtr()
 
     # Set encoder parameters

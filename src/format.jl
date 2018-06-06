@@ -8,7 +8,7 @@
       FrameNumber,
       SampleNumber)
 
-immutable FrameHeader
+struct FrameHeader
     blocksize::Cuint
     sample_rate::Cuint
     channels::Cuint
@@ -23,7 +23,7 @@ const FrameHeaderSync = 0x00003ffe
 
 const MAX_CHANNELS = 0x00000008
 
-immutable FrameFooter
+struct FrameFooter
     crc::UInt16
 end
 
@@ -31,18 +31,18 @@ end
       PartitionedRice,
       PartitionedRice2)
 
-immutable PartitionedRiceContents
+struct PartitionedRiceContents
     parameters::Ptr{Cuint}
     raw_bits::Ptr{Cuint}
     capacity_by_order::Cuint
 end
 
-immutable PartitionedRiceT
+struct PartitionedRiceT
     order::Cuint
     contents::Ptr{PartitionedRiceContents}
 end
 
-immutable EntropyCodingMethod
+struct EntropyCodingMethod
     typ::EntropyCodingMethodType
     data::PartitionedRiceT
 end
@@ -55,17 +55,17 @@ end
 
 abstract type Subframe end
 
-immutable Subframe_Constant <: Subframe
+struct Subframe_Constant <: Subframe
     value::Int32
 end
 
-immutable Subframe_Verbatim <: Subframe
+struct Subframe_Verbatim <: Subframe
     data::Ptr{Int32}
 end
 
 const MAX_FIXED_ORDER = 0x00000004
 
-immutable SubFrame_Fixed <: Subframe
+struct SubFrame_Fixed <: Subframe
     method::EntropyCodingMethod
     order::Cuint
     warmup::NTuple{Int(MAX_FIXED_ORDER),Int32}
@@ -74,7 +74,7 @@ end
 
 const MAX_LPC_ORDER = 0x00000020
 
-immutable SubFrame_LPC <: Subframe
+struct SubFrame_LPC <: Subframe
     method::EntropyCodingMethod
     order::Cuint
     qlp_coeff_precision::Cuint
@@ -84,13 +84,13 @@ immutable SubFrame_LPC <: Subframe
     residual::Ptr{Int32}
 end
 
-immutable SubFrame{SF <: Subframe}
+struct SubFrame{SF <: Subframe}
     typ::SubframeType
     data::SF
     wasted_bits::Cuint
 end
 
-immutable Frame
+struct Frame
     header::FrameHeader
     subframes::NTuple{Int(MAX_CHANNELS),SubFrame}
     footer::FrameFooter
