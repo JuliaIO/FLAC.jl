@@ -1,5 +1,4 @@
 julia 0.6
-BinDeps
+BinaryProvider 0.3.0
+Ogg 0.1.0
 FileIO
-@osx Homebrew
-@windows WinRPM

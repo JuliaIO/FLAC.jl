@@ -294,7 +294,7 @@ end
 
 function Base.show(io::IO, ib::InfoMetaData)
     ib.typ == Info || error("StreamInfoMetaData must have typ == $InfoType")
-    println("StreamInfo metadata block")
+    println(io,"StreamInfo metadata block")
     println(io," is_last ", ib.is_last)
     println(io," len ", ib.len)
     println(io," minblocksize: ", ib.minblocksize)
