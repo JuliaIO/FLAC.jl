@@ -1,4 +1,5 @@
 using BinaryProvider # requires BinaryProvider 0.3.0 or later
+using Libdl
 
 # Parse some basic command-line arguments
 const verbose = "--verbose" in ARGS
@@ -36,7 +37,10 @@ if dl != nothing
         # Download and install binaries
         install(url, tarball_hash; prefix=prefix, force=true, verbose=true)
         # debugging for CI
-        locate(products[1]; verbose=true)
+        if Base.Sys.isapple()
+            handle = dlopen(joinpath(prefix, "lib", "libFLAC.dylib"))
+            @show handle
+        end
     end
 elseif unsatisfied
     # If we don't have a BinaryProvider-compatible .tar.gz to download, complain.
