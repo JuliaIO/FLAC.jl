@@ -80,7 +80,7 @@ import Base.GC: gc
         rm(path)
     end
 
-    test_signal = sin.(range(0,4410*2*pi,length=44100)[1:44100])''*.999
+    test_signal = sin.(range(0,stop=4410*2*pi,length=44100)[1:44100])''*.999
     roundtrip(test_signal, 44100)
     roundtrip(test_signal, 44100, bits_per_sample=16)
     roundtrip(test_signal, 48000, compression_level=8)
