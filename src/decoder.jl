@@ -6,16 +6,16 @@ A Julia type for a libflac stream decoder object.
 This type primarily exists so that a finalizer to delete the decoder can be assigned.
 """
 mutable struct StreamDecoderPtr  # type not immutable so that finalizer can be applied
-    v::Ptr{Void}
+    v::Ptr{Cvoid}
 end
 
 function StreamDecoderPtr()
-    en = StreamDecoderPtr(ccall((:FLAC__stream_decoder_new,libflac),Ptr{Void},()))
-    finalizer(en,x->ccall((:FLAC__stream_decoder_delete,libflac),Void,(Ptr{Void},),x.v))
-    en
+    dec = StreamDecoderPtr(ccall((:FLAC__stream_decoder_new,libflac),Ptr{Cvoid},()))
+    finalizer(x->ccall((:FLAC__stream_decoder_delete,libflac),Cvoid,(Ptr{Cvoid},),x.v), dec)
+    dec
 end
 
-Base.unsafe_convert(::Type{Ptr{Void}}, en::StreamDecoderPtr) = en.v
+Base.unsafe_convert(::Type{Ptr{Cvoid}}, en::StreamDecoderPtr) = en.v
 
 for (nm,typ) in (("ogg_serial_number", :Clong),
                  ("md5_checking", :Bool),
@@ -24,7 +24,7 @@ for (nm,typ) in (("ogg_serial_number", :Clong),
     @eval begin
         function $(Symbol(string("set_", nm)))(dd::StreamDecoderPtr, val)
             ccall(($(string("FLAC__stream_decoder_set_",nm)), libflac), Bool,
-                (Ptr{Void}, $typ), dd, val)
+                (Ptr{Cvoid}, $typ), dd, val)
         end
     end
 end
@@ -39,7 +39,7 @@ Set the stream decoder to respond to all metadata blocks.
 Must be called before the decoder is initialized.
 """
 set_metadata_respond_all(dd::StreamDecoderPtr) =
-    ccall((:FLAC__stream_decoder_set_metadata_respond_all,libflac),Bool,(Ptr{Void},),dd)
+    ccall((:FLAC__stream_decoder_set_metadata_respond_all,libflac),Bool,(Ptr{Cvoid},),dd)
 
 """
     set_metadata_ignore_all(dd::StreamDecoderPtr)
@@ -49,7 +49,7 @@ Set the stream decoder to ignore all metadata blocks.
 Must be called before the decoder is initialized.
 """
 set_metadata_ignore_all(dd::StreamDecoderPtr) =
-    ccall((:FLAC__stream_decoder_set_metadata_respond_all,libflac),Bool,(Ptr{Void},),dd)
+    ccall((:FLAC__stream_decoder_set_metadata_respond_all,libflac),Bool,(Ptr{Cvoid},),dd)
 
 """
     get_state_string(dd::StreamDecoderPtr)
@@ -58,7 +58,7 @@ Returns a character string describing the current state of the decoder
 """
 get_state_string(dd::StreamDecoderPtr) =
     unsafe_string(ccall((:FLAC__stream_decoder_get_resolved_state_string,libflac), Ptr{UInt8},
-                     (Ptr{Void},), dd))
+                     (Ptr{Cvoid},), dd))
 
 """
     get_state(dd:StreamDecoderPtr)
@@ -90,7 +90,7 @@ for (nm,typ) in (("state",:StreamDecoderState),
                  ("blocksize",Cint))
     @eval begin
         function $(Symbol(string("get_",nm)))(dd::StreamDecoderPtr)
-            ccall(($(string("FLAC__stream_decoder_get_",nm)),libflac),$typ,(Ptr{Void},),dd)
+            ccall(($(string("FLAC__stream_decoder_get_",nm)),libflac),$typ,(Ptr{Cvoid},),dd)
         end
     end
 end
@@ -104,13 +104,13 @@ end
       DecoderInitAlreadyInitialized)
 
 """
-    debug_mcallback(d::Ptr{Void}, mp::Ptr{Void}, client::Ptr{Void})
+    debug_mcallback(d::Ptr{Cvoid}, mp::Ptr{Cvoid}, client::Ptr{Cvoid})
 
 Debugging metadata callback function.  Prints a brief description of any
 `Info`, `Padding`, `VorbisComment`, or `SeekTable` metadata blocks in the
 stream.
 """
-function debug_mcallback(d::Ptr{Void}, mp::Ptr{Void}, client::Ptr{Void})
+function debug_mcallback(d::Ptr{Cvoid}, mp::Ptr{Cvoid}, client::Ptr{Cvoid})
     typ = unsafe_load(reinterpret(Ptr{MetaDataType}, mp))
     println("Metadata callback on typ = ", typ)
     if typ == Info
@@ -126,32 +126,32 @@ function debug_mcallback(d::Ptr{Void}, mp::Ptr{Void}, client::Ptr{Void})
 end
 
 """
-    silent_mcallback(d::Ptr{Void}, mp::Ptr{Void}, client::Ptr{Void})
+    silent_mcallback(d::Ptr{Cvoid}, mp::Ptr{Cvoid}, client::Ptr{Cvoid})
 
 Silent metadata callback function.  Ignores all metadata blocks.
 """
-function silent_mcallback(d::Ptr{Void}, mp::Ptr{Void}, client::Ptr{Void})
+function silent_mcallback(d::Ptr{Cvoid}, mp::Ptr{Cvoid}, client::Ptr{Cvoid})
     nothing
 end
 
 """
-    debug_ecallback(d::Ptr{Void}, status::Int32, client::Ptr{Void})
+    debug_ecallback(d::Ptr{Cvoid}, status::Int32, client::Ptr{Cvoid})
 
 Error callback function.
 """
-function debug_ecallback(d::Ptr{Void}, status::Int32, client::Ptr{Void})
+function debug_ecallback(d::Ptr{Cvoid}, status::Int32, client::Ptr{Cvoid})
     error("Got error callback with status = $status")
 end
 
 """
-    debug_wcallback(dd::Ptr{Void}, hdr::Ptr{FrameHeader},
-        buffer::Ptr{Ptr{Int32}}, client::Ptr{Void})
+    debug_wcallback(dd::Ptr{Cvoid}, hdr::Ptr{FrameHeader},
+        buffer::Ptr{Ptr{Int32}}, client::Ptr{Cvoid})
 
 Debugging write callback.  Prints information about every frame written.
 Very verbose.  Use with caution.
 """
-function debug_wcallback(dd::Ptr{Void}, hdr::Ptr{FrameHeader},
-             buffer::Ptr{Ptr{Int32}}, client::Ptr{Void})
+function debug_wcallback(dd::Ptr{Cvoid}, hdr::Ptr{FrameHeader},
+             buffer::Ptr{Ptr{Int32}}, client::Ptr{Cvoid})
     fr = unsafe_load(hdr)
     println("Frame")
     println(" blocksize: ", fr.blocksize)
@@ -178,7 +178,7 @@ This function allows the user to override any of the default callback functions.
 function initfile!(dd::StreamDecoderPtr, fnm::String; wcallback=debug_wcallback_c,
                    mcallback=debug_mcallback_c, ecallback=debug_ecallback_c, client_data=nothing)
     status = ccall((:FLAC__stream_decoder_init_file,libflac),DecoderInitStatus,
-                   (Ptr{Void}, Ptr{UInt8}, Ptr{Void}, Ptr{Void}, Ptr{Void}, Ptr{Void}),
+                   (Ptr{Cvoid}, Ptr{UInt8}, Ptr{Cvoid}, Ptr{Cvoid}, Ptr{Cvoid}, Ptr{Cvoid}),
                    dd, fnm, wcallback, mcallback, ecallback, client_data)
     if status != DecoderInitOK
         error("decoder_init_file returned status $status")
@@ -188,41 +188,41 @@ end
 
 function process_single(dd::StreamDecoderPtr)
     disable_sigint() do
-        ccall((:FLAC__stream_decoder_process_single,libflac), Bool, (Ptr{Void},), dd)
+        ccall((:FLAC__stream_decoder_process_single,libflac), Bool, (Ptr{Cvoid},), dd)
     end
 end
 function process_metadata(dd::StreamDecoderPtr)
     disable_sigint() do
-        ccall((:FLAC__stream_decoder_process_until_end_of_metadata,libflac), Bool, (Ptr{Void},), dd)
+        ccall((:FLAC__stream_decoder_process_until_end_of_metadata,libflac), Bool, (Ptr{Cvoid},), dd)
     end
 end
 function process_stream(dd::StreamDecoderPtr)
     disable_sigint() do
-        ccall((:FLAC__stream_decoder_process_until_end_of_stream,libflac), Bool, (Ptr{Void},), dd)
+        ccall((:FLAC__stream_decoder_process_until_end_of_stream,libflac), Bool, (Ptr{Cvoid},), dd)
     end
 end
 function seek_absolute(dd::StreamDecoderPtr, offset::UInt64)
     disable_sigint() do
-        ccall((:FLAC__stream_decoder_seek_absolute,libflac), Bool, (Ptr{Void},UInt64), dd, offset)
+        ccall((:FLAC__stream_decoder_seek_absolute,libflac), Bool, (Ptr{Cvoid},UInt64), dd, offset)
     end
 end
 function flush(dd::StreamDecoderPtr)
     disable_sigint() do
-        ccall((:FLAC__stream_decoder_flush,libflac), Bool, (Ptr{Void},), dd)
+        ccall((:FLAC__stream_decoder_flush,libflac), Bool, (Ptr{Cvoid},), dd)
     end
 end
 
-function saving_mcallback(d::Ptr{Void}, mp::Ptr{Void}, client::Ptr{Void})
+function saving_mcallback(d::Ptr{Cvoid}, mp::Ptr{Cvoid}, client::Ptr{Cvoid})
     typ = unsafe_load(reinterpret(Ptr{MetaDataType}, mp))
     if typ == Info
         f = unsafe_pointer_to_objref(client)
-        f.metadata = InfoMetaData(unsafe_load(reinterpret(Ptr{InfoMetaData}, mp)))
+        f.metadata = unsafe_load(reinterpret(Ptr{InfoMetaData}, mp))
     end
     return nothing
 end
 
-function buffering_wcallback(dd::Ptr{Void}, hdr::Ptr{FrameHeader},
-                   buffer::Ptr{Ptr{Int32}}, client::Ptr{Void})
+function buffering_wcallback(dd::Ptr{Cvoid}, hdr::Ptr{FrameHeader},
+                   buffer::Ptr{Ptr{Int32}}, client::Ptr{Cvoid})
     fr = unsafe_load(hdr)
     f = unsafe_pointer_to_objref(client)
 
@@ -258,14 +258,14 @@ mutable struct FLACDecoder
         dec = StreamDecoderPtr()
 
         # Create initial, empty FLACDecoder object
-        f = new(path, dec, InfoMetaData(), Array{Float32,2}(0, 0), 0, 0)
+        f = new(path, dec, InfoMetaData(), Array{Float32,2}(undef, 0, 0), 0, 0)
 
         # Open file, process metadata
         initfile!(dec, path, wcallback=buffering_wcallback_c, mcallback=saving_mcallback_c, client_data=pointer_from_objref(f))
         process_metadata(dec)
 
         # Initialize chunk storage
-        f.chunk = Array{Float32,2}(f.metadata.maxblocksize, f.metadata.channels)
+        f.chunk = Array{Float32,2}(undef, f.metadata.maxblocksize, f.metadata.channels)
         return f
     end
 end
@@ -277,7 +277,7 @@ Read up to the specified number of samples from the given FLACDecoder,
 """
 function read(f::FLACDecoder, num_samples::T) where T<:Integer
     # Allocate memory to hold all the read data
-    data = Array{Float32,2}(num_samples, f.metadata.channels)
+    data = Array{Float32,2}(undef, num_samples, f.metadata.channels)
     data_read = 0
 
     # Save our current position, and read until we hit an error or exceed our
@@ -368,17 +368,17 @@ function load(file::File{format"FLAC"})
 end
 
 # Calculate cfunction versions of all our callbacks once, at runtime, as is necessary with cfunction's
-debug_mcallback_c = Ptr{Void}(C_NULL)
-silent_mcallback_c = Ptr{Void}(C_NULL)
-saving_mcallback_c = Ptr{Void}(C_NULL)
-debug_wcallback_c = Ptr{Void}(C_NULL)
-buffering_wcallback_c = Ptr{Void}(C_NULL)
-debug_ecallback_c = Ptr{Void}(C_NULL)
+debug_mcallback_c = Ptr{Cvoid}(C_NULL)
+silent_mcallback_c = Ptr{Cvoid}(C_NULL)
+saving_mcallback_c = Ptr{Cvoid}(C_NULL)
+debug_wcallback_c = Ptr{Cvoid}(C_NULL)
+buffering_wcallback_c = Ptr{Cvoid}(C_NULL)
+debug_ecallback_c = Ptr{Cvoid}(C_NULL)
 function init_decoder_cfunctions()
-    global debug_mcallback_c     = cfunction(debug_mcallback, Void, (Ptr{Void}, Ptr{Void}, Ptr{Void}))
-    global silent_mcallback_c    = cfunction(silent_mcallback, Void, (Ptr{Void}, Ptr{Void}, Ptr{Void}))
-    global saving_mcallback_c    = cfunction(saving_mcallback, Void, (Ptr{Void}, Ptr{Void}, Ptr{Void}))
-    global debug_wcallback_c     = cfunction(debug_wcallback, Int32, (Ptr{Void}, Ptr{FrameHeader}, Ptr{Ptr{Int32}}, Ptr{Void}))
-    global buffering_wcallback_c = cfunction(buffering_wcallback, Int32, (Ptr{Void}, Ptr{FrameHeader}, Ptr{Ptr{Int32}}, Ptr{Void}))
-    global debug_ecallback_c     = cfunction(debug_ecallback, Void, (Ptr{Void}, Int32, Ptr{Void}))
+    global debug_mcallback_c     = @cfunction(debug_mcallback, Cvoid, (Ptr{Cvoid}, Ptr{Cvoid}, Ptr{Cvoid}))
+    global silent_mcallback_c    = @cfunction(silent_mcallback, Cvoid, (Ptr{Cvoid}, Ptr{Cvoid}, Ptr{Cvoid}))
+    global saving_mcallback_c    = @cfunction(saving_mcallback, Cvoid, (Ptr{Cvoid}, Ptr{Cvoid}, Ptr{Cvoid}))
+    global debug_wcallback_c     = @cfunction(debug_wcallback, Int32, (Ptr{Cvoid}, Ptr{FrameHeader}, Ptr{Ptr{Int32}}, Ptr{Cvoid}))
+    global buffering_wcallback_c = @cfunction(buffering_wcallback, Int32, (Ptr{Cvoid}, Ptr{FrameHeader}, Ptr{Ptr{Int32}}, Ptr{Cvoid}))
+    global debug_ecallback_c     = @cfunction(debug_ecallback, Cvoid, (Ptr{Cvoid}, Int32, Ptr{Cvoid}))
 end

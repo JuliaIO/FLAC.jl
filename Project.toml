@@ -1,0 +1,12 @@
+name = "FLAC"
+uuid = "abae9e3b-a9a0-4778-b5c6-ca109b507d99"
+version = "0.3.0"
+
+[deps]
+FileIO = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
+Libdl = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
+Ogg = "796d8c31-69d0-5366-9081-a3bf997f4f0d"
+
+[compat]
+Ogg = "0.2"
+julia = "1"
