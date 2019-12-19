@@ -1,10 +1,15 @@
 using BinaryProvider # requires BinaryProvider 0.3.0 or later
 using Libdl
 
-# add the Ogg library directory to the load path, necessary on macOS
+# open the Ogg library, necessary on macOS
 import Ogg
-const OGG_LIB_DIR = abspath(joinpath(dirname(pathof(Ogg)), "..", "deps", "usr", "lib"))
-push!(Libdl.DL_LOAD_PATH, OGG_LIB_DIR)
+const depfile = joinpath(dirname(pathof(Ogg)), "..", "deps", "deps.jl")
+if isfile(depfile)
+    include(depfile)
+else
+    error("Ogg not properly installed. Please run Pkg.build(\"Ogg\")")
+end
+check_deps()
 
 # Parse some basic command-line arguments
 const verbose = "--verbose" in ARGS

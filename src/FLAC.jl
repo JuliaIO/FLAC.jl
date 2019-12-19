@@ -4,11 +4,20 @@ module FLAC
 
 using FileIO
 
-# This `using` is literally only just so that `Ogg.__init__()` gets run.  This
-# ensures that `libogg` is loaded into the Julia namcespace, which is necessary
-# for `libFLAC` to load properly.  This will not be necessary in the future,
-# once https://github.com/JuliaPackaging/BinaryBuilder.jl/issues/194 is solved.
-using Ogg
+# This `OggWrapper` is literally only just so that `libogg` is loaded into the
+# Julia namespace, which is necessary for `libFLAC` to load properly.
+# It looks like the original issue https://github.com/JuliaPackaging/BinaryBuilder.jl/issues/194
+# has been solved, so we just need to make another BinaryBuilder release of libFLAC
+# and then this can be deleted.
+module OggWrapper
+    import Ogg
+    const depfile = joinpath(dirname(pathof(Ogg)), "..", "deps", "deps.jl")
+    if isfile(depfile)
+        include(depfile)
+    else
+        error("Ogg not properly installed. Please run Pkg.build(\"Ogg\")")
+    end
+end
 
 export StreamMetaData,
        InfoMetaData,
@@ -40,10 +49,8 @@ include("format.jl")
 include("decoder.jl")
 include("encoder.jl")
 
-const OGG_LIB_DIR = abspath(joinpath(dirname(pathof(Ogg)), "..", "deps", "usr", "lib"))
-
 function __init__()
-    push!(Libdl.DL_LOAD_PATH, OGG_LIB_DIR)
+    OggWrapper.check_deps()
     init_decoder_cfunctions()
     init_encoder_cfunctions()
 end
