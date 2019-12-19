@@ -1,6 +1,11 @@
 using BinaryProvider # requires BinaryProvider 0.3.0 or later
 using Libdl
 
+# add the Ogg library directory to the load path, necessary on macOS
+import Ogg
+const OGG_LIB_DIR = abspath(joinpath(dirname(pathof(Ogg)), "..", "deps", "usr", "lib"))
+push!(Libdl.DL_LOAD_PATH, OGG_LIB_DIR)
+
 # Parse some basic command-line arguments
 const verbose = "--verbose" in ARGS
 const prefix = Prefix(get([a for a in ARGS if a != "--verbose"], 1, joinpath(@__DIR__, "usr")))

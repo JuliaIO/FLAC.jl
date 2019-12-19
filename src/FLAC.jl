@@ -40,7 +40,10 @@ include("format.jl")
 include("decoder.jl")
 include("encoder.jl")
 
+const OGG_LIB_DIR = abspath(joinpath(dirname(pathof(Ogg)), "..", "deps", "usr", "lib"))
+
 function __init__()
+    push!(Libdl.DL_LOAD_PATH, OGG_LIB_DIR)
     init_decoder_cfunctions()
     init_encoder_cfunctions()
 end
