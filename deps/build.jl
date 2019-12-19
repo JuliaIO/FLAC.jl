@@ -4,7 +4,7 @@ using BinaryProvider # requires BinaryProvider 0.3.0 or later
 const verbose = "--verbose" in ARGS
 const prefix = Prefix(get([a for a in ARGS if a != "--verbose"], 1, joinpath(@__DIR__, "usr")))
 products = [
-    LibraryProduct(prefix, String["libFLAC"], :libflac),
+    LibraryProduct(prefix, "libFLAC", :libflac),
 ]
 
 # Download binaries from hosted location
@@ -35,6 +35,8 @@ if dl != nothing
     if unsatisfied || !isinstalled(url, tarball_hash; prefix=prefix)
         # Download and install binaries
         install(url, tarball_hash; prefix=prefix, force=true, verbose=true)
+        # debugging for CI
+        locate(products[1]; verbose=true)
     end
 elseif unsatisfied
     # If we don't have a BinaryProvider-compatible .tar.gz to download, complain.
