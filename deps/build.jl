@@ -29,8 +29,9 @@ download_info = Dict(
 
 # Install unsatisfied or updated dependencies:
 unsatisfied = any(!satisfied(p; verbose=verbose) for p in products)
-if haskey(download_info, platform_key())
-    url, tarball_hash = download_info[platform_key()]
+dl = choose_download(download_info)
+if !isnothing(dl)
+    url, tarball_hash = dl
     if unsatisfied || !isinstalled(url, tarball_hash; prefix=prefix)
         # Download and install binaries
         install(url, tarball_hash; prefix=prefix, force=true, verbose=verbose)
@@ -39,7 +40,7 @@ elseif unsatisfied
     # If we don't have a BinaryProvider-compatible .tar.gz to download, complain.
     # Alternatively, you could attempt to install from a separate provider,
     # build from source or something even more ambitious here.
-    error("Your platform $(triplet(platform_key())) is not supported by this package!")
+    error("Your platform $(triplet(platform_key_abi())) is not supported by this package!")
 end
 
 # Write out a deps.jl file that will contain mappings for our products
