@@ -6,6 +6,7 @@ version = "0.3.0"
 FileIO = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
 Libdl = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
 Ogg = "796d8c31-69d0-5366-9081-a3bf997f4f0d"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [compat]
 Ogg = "0.2"
