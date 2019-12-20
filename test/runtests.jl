@@ -1,7 +1,8 @@
 using FileIO
 using WAV
-using Base.Test
+using Test
 using FLAC
+import Base.GC: gc
 
 
 @testset "FLAC" begin
@@ -33,7 +34,7 @@ using FLAC
 
     # Test FLACDecoder works with chunked reads
     f = FLACDecoder(joinpath(testdir, "4410hz.flac"))
-    chunked = Array{Float32,2}(size(f)...)
+    chunked = Array{Float32,2}(undef, size(f)...)
     chunked[1:100, :] = read(f, 100)
     chunked[101:end, :] = read(f, length(f) - 100)
     @test f.metadata.samplerate == check_fs
@@ -66,10 +67,10 @@ using FLAC
 
         # Squeeze the signals to avoid Julia 0.5/0.6 differences
         if ndims(recon_signal) > 1 
-            recon_signal = squeeze(recon_signal, 2)
+            recon_signal = vec(recon_signal)
         end
         if ndims(signal) > 1
-            signal = squeeze(signal, 2)
+            signal = vec(signal)
         end
 
         @test recon_fs == samplerate
@@ -79,7 +80,7 @@ using FLAC
         rm(path)
     end
 
-    test_signal = sin.(linspace(0,4410*2*pi,44100)[1:44100])''*.999
+    test_signal = sin.(range(0,stop=4410*2*pi,length=44100)[1:44100])''*.999
     roundtrip(test_signal, 44100)
     roundtrip(test_signal, 44100, bits_per_sample=16)
     roundtrip(test_signal, 48000, compression_level=8)

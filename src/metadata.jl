@@ -83,7 +83,7 @@ mutable struct ApplicationMetaData <: StreamMetaData
     is_last::Cint
     len::Int64
     id::NTuple{4, Char}
-    data::Ptr{Void}
+    data::Ptr{Cvoid}
 end
 
 struct SeekPoint
@@ -152,7 +152,7 @@ struct CueSheetTrack
 end
 
 CueSheetTrack() = unsafe_load((:FLAC__StreamMetadata_CueSheet_Track, libflac),
-                              Ptr{CueSheetTrack}, (Void,))
+                              Ptr{CueSheetTrack}, (Cvoid,))
 
 """
 Cue sheet meta data.
@@ -207,7 +207,7 @@ end
 """
 Factory to construct a subtype of StreamMetaData from an opaque pointer.
 
-Typically this is used in a callback function that is passed a `Ptr{Void}`.
+Typically this is used in a callback function that is passed a `Ptr{Cvoid}`.
 """
 metadata(pt::Ptr{StreamMetaData}) =
     unsafe_load(convert(Ptr{MDTypes[unsafe_load(convert(Ptr{Int32}, pt)) + 1]}, pt))

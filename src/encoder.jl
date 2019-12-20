@@ -9,18 +9,18 @@ The zero-argument constructor creates a new stream decoder and wraps the pointer
 The type is not an immutable because it uses a finalizer.
 """
 mutable struct StreamEncoderPtr  # type not immutable so that finalizer can be applied
-    v::Ptr{Void}
+    v::Ptr{Cvoid}
 end
 function StreamEncoderPtr()
-    en = StreamEncoderPtr(ccall((:FLAC__stream_encoder_new,libflac),Ptr{Void},()))
-    finalizer(en,x->ccall((:FLAC__stream_encoder_delete,libflac),Void,(Ptr{Void},),x.v))
+    en = StreamEncoderPtr(ccall((:FLAC__stream_encoder_new,libflac),Ptr{Cvoid},()))
+    finalizer(x->ccall((:FLAC__stream_encoder_delete,libflac),Cvoid,(Ptr{Cvoid},),x.v), en)
     en
 end
 
 """
 Allows for passing the instance of the type in a `ccall`.
 """
-Base.unsafe_convert(::Type{Ptr{Void}},en::StreamEncoderPtr) = en.v
+Base.unsafe_convert(::Type{Ptr{Cvoid}},en::StreamEncoderPtr) = en.v
 
 
 
@@ -33,17 +33,17 @@ for (nm,typ) in (("verify",:Bool),
                  ("blocksize",:Cuint))         # default 0 - encoder estimates
     @eval begin
         function $(Symbol(string("set_",nm)))(en::StreamEncoderPtr,val)
-            ccall(($(string("FLAC__stream_encoder_set_",nm)),libflac),Bool,(Ptr{Void},$typ),en,val)
+            ccall(($(string("FLAC__stream_encoder_set_",nm)),libflac),Bool,(Ptr{Cvoid},$typ),en,val)
         end
         function $(Symbol(string("get_",nm)))(en::StreamEncoderPtr)
-            ccall(($(string("FLAC__stream_encoder_get_",nm)),libflac),$typ,(Ptr{Void},),en)
+            ccall(($(string("FLAC__stream_encoder_get_",nm)),libflac),$typ,(Ptr{Cvoid},),en)
         end
     end
 end
 
 function set_metadata(en::StreamEncoderPtr,mdpv::Vector{Ptr{StreamMetaData}})
     ccall((:FLAC__stream_encoder_set_metadata,libflac),Cint,
-          (Ptr{Void},Ptr{Ptr{StreamMetaData}},Cuint),en,mdpv,length(mpdv)) ||
+          (Ptr{Cvoid},Ptr{Ptr{StreamMetaData}},Cuint),en,mdpv,length(mpdv)) ||
         error("Call to stream_encoder_set_metadata failed")
     en
 end
@@ -60,7 +60,7 @@ end
       EncoderMemoryAllocationError)
 
 get_state(en::StreamEncoderPtr) =
-    ccall((:FLAC__stream_encoder_get_state,libflac),StreamEncoderState,(Ptr{Void},),en)
+    ccall((:FLAC__stream_encoder_get_state,libflac),StreamEncoderState,(Ptr{Cvoid},),en)
 
 @enum(StreamEncoderInitStatus,
       EncoderInitOK,
@@ -98,11 +98,11 @@ get_state(en::StreamEncoderPtr) =
       TellStatusError,
       TellStatusUnsupported)
 
-finish(en::StreamEncoderPtr) = ccall((:FLAC__stream_encoder_finish,libflac), Int32, (Ptr{Void},), en)
+finish(en::StreamEncoderPtr) = ccall((:FLAC__stream_encoder_finish,libflac), Int32, (Ptr{Cvoid},), en)
 
 "standard progress callback function"
-function pcallback(en::Ptr{Void}, bytesw::Int64,samplesw::Int64,
-                   framesw::Cint, totalframesest::Cint, client::Ptr{Void})
+function pcallback(en::Ptr{Cvoid}, bytesw::Int64,samplesw::Int64,
+                   framesw::Cint, totalframesest::Cint, client::Ptr{Cvoid})
     nothing
 end
 
@@ -116,7 +116,7 @@ must be done **before** initializing the encoder.
 """
 function initfile!(en::StreamEncoderPtr, fnm::String)
     ec = ccall((:FLAC__stream_encoder_init_file, libflac), StreamEncoderInitStatus,
-               (Ptr{Void}, Ptr{UInt8}, Ptr{Void}, Ptr{Void}),
+               (Ptr{Cvoid}, Ptr{UInt8}, Ptr{Cvoid}, Ptr{Cvoid}),
                en, fnm, pcallback_c, C_NULL)
     ec == EncoderInitOK || error("Error code $ec from stream_encoder_init_file")
     en
@@ -125,7 +125,7 @@ end
 function process_interleaved(en::StreamEncoderPtr, buf::Vector{Int32})
     nsamp = div(length(buf), get_channels(en))
     ccall((:FLAC__stream_encoder_process_interleaved, libflac), Bool,
-          (Ptr{Void}, Ptr{Int32}, UInt32), en, buf, nsamp) ||
+          (Ptr{Cvoid}, Ptr{Int32}, UInt32), en, buf, nsamp) ||
          error("process_interleaved failed: encoder_state is $(get_state(en))")
     nothing
 end
@@ -181,7 +181,7 @@ function save(f::File{format"FLAC"}, data::Array{T,2}, samplerate; bits_per_samp
 end
 
 # Calculate cfunction versions of all our callbacks once, at runtime, as is necessary with cfunction's
-pcallback_c = Ptr{Void}(C_NULL)
+pcallback_c = Ptr{Cvoid}(C_NULL)
 function init_encoder_cfunctions()
-    global pcallback_c = cfunction(pcallback, Void, (Ptr{Void}, Int64, Int64, Cint, Cint, Ptr{Void}))
+    global pcallback_c = @cfunction(pcallback, Cvoid, (Ptr{Cvoid}, Int64, Int64, Cint, Cint, Ptr{Cvoid}))
 end
