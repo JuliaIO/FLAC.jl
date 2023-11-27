@@ -98,7 +98,7 @@ get_state(en::StreamEncoderPtr) =
       TellStatusError,
       TellStatusUnsupported)
 
-finish(en::StreamEncoderPtr) = ccall((:FLAC__stream_encoder_finish,libflac), Int32, (Ptr{Cvoid},), en)
+finish(en::StreamEncoderPtr, datatype) = ccall((:FLAC__stream_encoder_finish,libflac), datatype, (Ptr{Cvoid},), en)
 
 "standard progress callback function"
 function pcallback(en::Ptr{Cvoid}, bytesw::Int64,samplesw::Int64,
@@ -126,6 +126,14 @@ function process_interleaved(en::StreamEncoderPtr, buf::Vector{Int32})
     nsamp = div(length(buf), get_channels(en))
     ccall((:FLAC__stream_encoder_process_interleaved, libflac), Bool,
           (Ptr{Cvoid}, Ptr{Int32}, UInt32), en, buf, nsamp) ||
+         error("process_interleaved failed: encoder_state is $(get_state(en))")
+    nothing
+end
+
+function process_interleaved(en::StreamEncoderPtr, buf::Vector{Int16})
+    nsamp = div(length(buf), get_channels(en))
+    ccall((:FLAC__stream_encoder_process_interleaved, libflac), Bool,
+          (Ptr{Cvoid}, Ptr{Int16}, UInt16), en, buf, nsamp) ||
          error("process_interleaved failed: encoder_state is $(get_state(en))")
     nothing
 end
@@ -180,7 +188,7 @@ function save(f::File{format"FLAC"}, data::Array{T,2}, samplerate; bits_per_samp
         process_interleaved(encoder, data_t[block_idxs])
     end
     process_interleaved(encoder, data_t[end - rem(num_samples, blocksize) + 1:end])
-    finish(encoder)
+    finish(encoder, eltype(data_t))
     return nothing
 end
 
