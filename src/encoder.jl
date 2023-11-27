@@ -98,7 +98,15 @@ get_state(en::StreamEncoderPtr) =
       TellStatusError,
       TellStatusUnsupported)
 
-finish(en::StreamEncoderPtr, datatype) = ccall((:FLAC__stream_encoder_finish,libflac), datatype, (Ptr{Cvoid},), en)
+function finish(en::StreamEncoderPtr, datatype)
+    if datatype == Int16
+        ccall((:FLAC__stream_encoder_finish,libflac), Int16, (Ptr{Cvoid},), en)
+    elseif datatype == Int32
+        ccall((:FLAC__stream_encoder_finish,libflac), Int32, (Ptr{Cvoid},), en)
+    else
+        error("datatype must be Int16 or Int32")
+    end
+end
 
 "standard progress callback function"
 function pcallback(en::Ptr{Cvoid}, bytesw::Int64,samplesw::Int64,
