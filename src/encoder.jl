@@ -187,7 +187,7 @@ function save(f::File{format"FLAC"}, data::Array{T,2}, samplerate; bits_per_samp
     end
 
     # Shove interleaved samples into the encoder by transposing, and convert to Int32
-    data_t = data
+    data_t = data'
     if !raw_Int_data
         data_t = round.(Int32, data'*2^(bits_per_sample - 1))
     elseif eltype(data_t) != Int32
