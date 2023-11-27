@@ -169,7 +169,6 @@ directly but instead import the FileIO bindings and call `save()` with a filenam
 ending in `.flac` to invoke this method through the FileIO machinery.
 """
 function save(f::File{format"FLAC"}, data::Array{T,2}, samplerate; bits_per_sample = 24, compression_level = 3, raw_Int_data=true) where T<:Real
-    @info "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  HHHH  ^^^^^^^^^^^^"
     encoder = StreamEncoderPtr()
 
     # Set encoder parameters
