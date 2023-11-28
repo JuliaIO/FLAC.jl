@@ -168,7 +168,7 @@ compression level.  This method is part of the FileIO integration, do not call
 directly but instead import the FileIO bindings and call `save()` with a filename
 ending in `.flac` to invoke this method through the FileIO machinery.
 """
-function save(f::File{format"FLAC"}, data::Array{T,2}, samplerate; bits_per_sample = 24, compression_level = 3, raw_Int_data=true) where T<:Real
+function save(f::File{format"FLAC"}, data::Array{T,2}, samplerate; bits_per_sample = 24, compression_level = 3) where T<:Real
     encoder = StreamEncoderPtr()
 
     # Set encoder parameters
@@ -187,7 +187,7 @@ function save(f::File{format"FLAC"}, data::Array{T,2}, samplerate; bits_per_samp
 
     # Shove interleaved samples into the encoder by transposing, and convert to Int32
     data_t = data'
-    if !raw_Int_data
+    if eltype(data) <: AbstractFloat
         data_t = round.(Int32, data'*2^(bits_per_sample - 1))
     elseif eltype(data_t) != Int32
         data_t = Int32.(data_t)
